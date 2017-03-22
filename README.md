@@ -1,5 +1,7 @@
 # conex.io
 
+![our logo](img/logo.png)
+
 The conex.io API provides the functionality to interact with home automation devices, which are connected to a home automation server, detached from the manufacturer specific communication syntax.
 
 ## Overview  
