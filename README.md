@@ -1,5 +1,4 @@
-![our logo](img/logo.png)
-
+<img src="img/logo.png" alt="our logo" width="250">
 
 The conex.io API provides the functionality to interact with home automation devices, which are connected to a home automation server, detached from the manufacturer specific communication syntax.
 
