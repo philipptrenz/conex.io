@@ -1,0 +1,249 @@
+swagger: '2.0'
+info:
+  title: conex.io REST-Like API
+  description: "The conex.io API provides the functionality to interact with home automation devices, which are connected to a home automation server, detached from the manufacturer specific communication syntax."
+  version: 0.9.4
+  contact:
+    name: support@conex.io
+host: 'localhost:8080'
+basePath: /v0
+schemes:
+  - http
+produces:
+  - application/json
+consumes:
+  - application/json
+paths:
+  /devices:
+    post:
+      description: |
+        Get a list of `device` objects based on the specified filter.
+      parameters:
+        - name: filter
+          in: body
+          description: The user specified filter
+          required: true
+          schema:
+            $ref: '#/definitions/Filter'
+      responses:
+        '200':
+          description: The device objects
+          schema:
+            $ref: '#/definitions/Devices'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    patch:
+      description: |
+        Modifies the state of a single `device` or group of `devices`.
+      parameters:
+        - name: patcher
+          in: body
+          description: Filter object with function values
+          required: true
+          schema:
+            $ref: '#/definitions/Patcher'
+      responses:
+        '200':
+          description: OK
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /rooms:
+    post:
+      description: |
+        Get a list of room ID's.
+      parameters:
+        - name: filter
+          in: body
+          description: The user specified filter
+          required: true
+          schema:
+            $ref: '#/definitions/Filter'
+      responses:
+        '200':
+          description: List of room ID's
+          schema:
+            $ref: '#/definitions/Ids'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /groups:
+    post:
+      description: |
+        Get a list of group ID's.
+      parameters:
+        - name: filter
+          in: body
+          description: The user specified filter
+          required: true
+          schema:
+            $ref: '#/definitions/Filter'
+      responses:
+        '200':
+          description: List of group ID's
+          schema:
+            $ref: '#/definitions/Ids'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /functions:
+    post:
+      description: |
+        Get a list of function ID's.
+      parameters:
+        - name: filter
+          in: body
+          description: The user specified filter
+          required: true
+          schema:
+            $ref: '#/definitions/Filter'
+      responses:
+        '200':
+          description: List of function ID's
+          schema:
+            $ref: '#/definitions/Ids'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+definitions:
+  Device:
+    type: object
+    properties:
+      device_id:
+        type: string
+      room_ids:
+        type: array
+        items:
+          type: string
+      group_ids:
+        type: array
+        items:
+          type: string
+      functions:
+        type: array
+        items:
+          $ref: '#/definitions/Function'
+    required:
+      - device_id
+      - room_ids
+      - group_ids
+      - functions
+  Filter:
+    type: object
+    properties:
+      device_ids:
+        type: array
+        items:
+          type: string
+      room_ids:
+        type: array
+        items:
+          type: string
+      group_ids:
+        type: array
+        items:
+          type: string
+      function_ids:
+        type: array
+        items:
+          type: string
+  Patcher:
+    type: object
+    properties:
+      filter:
+        $ref: '#/definitions/Filter'
+      function:
+        $ref: '#/definitions/Function'
+    required:
+      - filter
+      - function
+  Ids:
+    type: object
+    properties:
+      ids:
+        type: array
+        items:
+          type: string
+    required:
+      - ids
+  Devices:
+    type: object
+    properties:
+      devices:
+        type: array
+        items:
+          $ref: '#/definitions/Device'
+    required:
+      - devices
+  Function:
+    description: Base Class for all functions
+    type: object
+    properties:
+      function_id:
+        type: string
+      timestamp:
+        type: string
+        format: date-time
+    required:
+      - function_id
+  OnOff:
+    description: Generic On-Off Switch
+    allOf:
+      - $ref: '#/definitions/Function'
+      - properties:
+          isOn:
+            type: boolean
+            default: false
+  Slider:
+    description: Generic Slider Switch
+    allOf:
+      - $ref: '#/definitions/Function'
+      - properties:
+          value:
+            type: integer
+            minimum: 0
+            maximum: 512
+            default: 0
+  RGBColorChooser:
+    description: Chooser for RGB colored devices
+    allOf:
+      - $ref: '#/definitions/Function'
+      - properties:
+          brightness:
+            type: integer
+            description: Total Brightness value (master value)
+            minimum: 0
+            maximum: 256
+            default: 0
+          r-channel:
+            description: Intesity of red channel
+            type: integer
+            minimum: 0
+            maximum: 256
+            default: 0
+          g-channel:
+            description: Intesity of green channel
+            type: integer
+            minimum: 0
+            maximum: 256
+            default: 0
+          b-channel:
+            description: Intesity of blue channel
+            type: integer
+            minimum: 0
+            maximum: 256
+            default: 0
+  Error:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
