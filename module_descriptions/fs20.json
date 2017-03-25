@@ -1,0 +1,48 @@
+{
+	"information": {
+		"filename":"fs20.json",
+		"description":"Mapping instructions for the FHEM module 'FS20'",
+		"author":"Philipp Trenz",
+		"last_edited": "2017-03-25"
+	},
+	"read": {
+		"onoff": {
+			"requirements": {
+				"contains": [
+					{
+						"key":"PossibleSets",
+						"attributes": [ "on", "off" ]
+					}
+				]
+			},
+			"properties": {
+                "isOn": {
+                    "type": "boolean",
+                    "default": false,
+                    "key":"Readings > state > Value",
+                    "cases": [ 
+                    	{
+                    		"value": true,
+                    		"regex": [ "on", "on-.*", "dim[0-9]{1,3}%" ]
+                    	}, 
+                    	{
+                    		"value": false,
+                    		"regex": [ "off", "off-.*" ]
+                    	}
+                    ]
+                }
+            }
+		},
+		"slider": {
+		
+		
+			
+		
+		}
+	},
+	"obey": {
+	
+	
+	
+	}
+}
