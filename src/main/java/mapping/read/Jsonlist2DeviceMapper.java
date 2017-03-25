@@ -1,4 +1,4 @@
-package mapping;
+package mapping.read;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,10 +17,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.swagger.model.Device;
 import io.swagger.model.Function;
 import io.swagger.model.OnOff;
+import mapping.exceptions.MalformedFHEMModuleDescriptionJsonException;
 
 /*
  * Class to load FHEM module descriptions
@@ -33,6 +35,7 @@ public class Jsonlist2DeviceMapper {
 	private String folderName;
 	private ObjectMapper mapper;
 	private MappingRequirementsValidator requirementsValidator;
+	private MappingValueExtractor extractor;
 	
 	/*
 	 * Constructor
@@ -42,6 +45,7 @@ public class Jsonlist2DeviceMapper {
 		this.reader = new ObjectMapper().reader();
 		this.mapper = new ObjectMapper();
 		this.requirementsValidator = new MappingRequirementsValidator();
+		this.extractor = new MappingValueExtractor();
 	}
 	
 	/*
@@ -76,7 +80,7 @@ public class Jsonlist2DeviceMapper {
 	/*
 	 * This function maps values from jsonlist2 to conex.io Functions
 	 */
-	private Function mapFunction(String functionName, JsonNode mappingDescription, JsonNode jsonlist2Device) throws ClassNotFoundException, InstantiationException, IllegalAccessException, JsonProcessingException  {
+	private Function mapFunction(String functionName, JsonNode mappingDescription, JsonNode jsonlist2Device) throws ClassNotFoundException, InstantiationException, IllegalAccessException, JsonProcessingException, MalformedFHEMModuleDescriptionJsonException  {
 		
 		// 0. Check if jsonlist2 data fits requirements
 		
@@ -86,18 +90,27 @@ public class Jsonlist2DeviceMapper {
 			String className = mappingDescription.get("classname").asText();
 			Class<?> functionClass = Class.forName(className);
 			Object function = functionClass.newInstance();
-			JsonNode proto = mapper.valueToTree(function);
+			ObjectNode proto = mapper.valueToTree(function);
 			
 			System.out.println(proto);
 			
-			// 2. Insert values from jsonlist2 
+			// 2. Insert values from jsonlist2 to prototype
 			
-			
-			
-		
-			// TODO: yeah
-			
-			
+			// iterate over all properties to get the values mapped
+			Iterator<Map.Entry<String, JsonNode>> fields;
+			try {
+				fields = mappingDescription.get("properties").fields();
+				while (fields.hasNext()) {
+					Map.Entry<String, JsonNode> entry = fields.next();
+					String key = entry.getKey();
+					JsonNode property = entry.getValue();
+					
+					String value = extractor.extractValue(jsonlist2Device, property);
+					proto.put(key, value);
+				}
+			} catch (NullPointerException e) {
+				throw new MalformedFHEMModuleDescriptionJsonException(functionName, folderName);
+			}
 			
 			// 3. Map back to Java object
 			

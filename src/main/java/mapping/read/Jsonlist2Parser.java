@@ -1,4 +1,4 @@
-package mapping;
+package mapping.read;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import io.swagger.model.Device;
+import mapping.FHEMJsonlist2Connector;
 
 public class Jsonlist2Parser {
 	
@@ -59,11 +60,11 @@ public class Jsonlist2Parser {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					
+					System.out.println();
 				} else {
-					System.out.println(jsonDevice.get("Name")+" ignored");
+					//System.out.println(jsonDevice.get("Name")+" ignored \n");
+					
 				}
-				System.out.println();
 				index++;
 			}
 			

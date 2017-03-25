@@ -21,6 +21,7 @@
                     "type": "boolean",
                     "default": false,
                     "key":"Readings/state/Value",
+                    "extract_mode":"bool",
                     "cases": [ 
                     	{
                     		"value": true,
@@ -42,7 +43,7 @@
 		
 		}
 	},
-	"obey": {
+	"command": {
 	
 	
 	

@@ -10,6 +10,7 @@ import interfaces.RequestHandlerInterface;
 import io.swagger.model.Device;
 import io.swagger.model.Filter;
 import io.swagger.model.Function;
+import mapping.read.Jsonlist2Parser;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

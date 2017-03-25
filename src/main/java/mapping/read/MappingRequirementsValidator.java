@@ -1,4 +1,4 @@
-package mapping;
+package mapping.read;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
