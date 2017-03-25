@@ -63,7 +63,7 @@ public class Jsonlist2Parser {
 				} else {
 					System.out.println(jsonDevice.get("Name")+" ignored");
 				}
-				
+				System.out.println();
 				index++;
 			}
 			

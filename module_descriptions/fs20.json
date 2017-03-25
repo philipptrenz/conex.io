@@ -7,6 +7,7 @@
 	},
 	"read": {
 		"onoff": {
+			"classname":"io.swagger.model.OnOff",
 			"requirements": {
 				"contains": [
 					{
@@ -19,7 +20,7 @@
                 "isOn": {
                     "type": "boolean",
                     "default": false,
-                    "key":"Readings > state > Value",
+                    "key":"Readings/state/Value",
                     "cases": [ 
                     	{
                     		"value": true,
@@ -34,6 +35,7 @@
             }
 		},
 		"slider": {
+			"classname":"io.swagger.model.Slider"
 		
 		
 			
