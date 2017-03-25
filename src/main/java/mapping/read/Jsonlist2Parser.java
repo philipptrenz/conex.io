@@ -1,15 +1,8 @@
 package mapping.read;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
-
-import javax.xml.bind.ParseConversionEvent;
-
-import org.hibernate.validator.internal.util.privilegedactions.NewInstance;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -63,7 +56,6 @@ public class Jsonlist2Parser {
 					System.out.println();
 				} else {
 					//System.out.println(jsonDevice.get("Name")+" ignored \n");
-					
 				}
 				index++;
 			}

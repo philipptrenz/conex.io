@@ -54,6 +54,8 @@ public class Jsonlist2DeviceMapper {
 	public Device mapJsonlist2Device(JsonNode jsonlist2Device) throws Exception {
 		Device newDevice = new Device();
 		
+		String deviceName = jsonlist2Device.get("Name").asText();
+		
 		try {
 			JsonNode moduleDescription = getModuleDescription(jsonlist2Device);
 			
@@ -71,7 +73,6 @@ public class Jsonlist2DeviceMapper {
 				if (mappedFunction != null) newDevice.addFunctionsItem(mappedFunction);
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return newDevice;
