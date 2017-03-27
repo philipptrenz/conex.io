@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import io.swagger.model.Device;
-import mapping.FHEMJsonlist2Connector;
+import mapping.FHEMConnector;
 
 public class Jsonlist2Parser {
 	
@@ -31,7 +31,7 @@ public class Jsonlist2Parser {
 		
 		try {
 			
-			String jsonlist2 = FHEMJsonlist2Connector.getJsonlist2Result();
+			String jsonlist2 = FHEMConnector.getJsonlist2Result();
 			
 			JsonNode root = reader.readTree(jsonlist2);
 			ArrayNode jsonlist2Devices = (ArrayNode) root.get("Results");
@@ -44,11 +44,15 @@ public class Jsonlist2Parser {
 				JsonNode jsonDevice = devicesIterator.next();		
 				
 				if (mapper.moduleDescriptionExists(jsonDevice)) {
-					System.out.println(jsonDevice.get("Name")+": module description exists; trying to map ...");
+					//System.out.println(jsonDevice.get("Name")+": module description exists; trying to map ...");
 					
 					try {
 						Device device = mapper.mapJsonlist2Device(jsonDevice);
-						deviceList.add(device);
+						if (device != null) {
+							//System.out.println("device added");
+							deviceList.add(device);
+						}
+						
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -60,7 +64,7 @@ public class Jsonlist2Parser {
 				index++;
 			}
 			
-			System.out.println("# devices: "+index);
+			System.out.println("# parsed devices: "+index);
 				
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block

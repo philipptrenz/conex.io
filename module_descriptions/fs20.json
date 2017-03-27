@@ -8,19 +8,19 @@
 	"read": {
 		"onoff": {
 			"classname":"io.swagger.model.OnOff",
-			"requirements": {
-				"contains": [
-					{
-						"key":"PossibleSets",
-						"attributes": [ "on", "off" ]
-					}
-				]
-			},
+			"requirements": [
+				{
+					"mode":"contains_all",
+					"key_path":"PossibleSets",
+					"attributes": [ "on", "off" ],
+					"delimiters": " "
+				}
+			],
 			"properties": {
                 "isOn": {
                     "type": "boolean",
                     "default": false,
-                    "key":"Readings/state/Value",
+                    "key_path":"Readings/state/Value",
                     "extract_mode":"bool",
                     "cases": [ 
                     	{

@@ -34,7 +34,7 @@ public class Jsonlist2DeviceMapper {
 	private ObjectReader reader;
 	private String folderName;
 	private ObjectMapper mapper;
-	private MappingRequirementsValidator requirementsValidator;
+	private FunctionMappingRequirementsValidator requirementsValidator;
 	private MappingValueExtractor extractor;
 	
 	/*
@@ -44,18 +44,22 @@ public class Jsonlist2DeviceMapper {
 		this.folderName = folderName;
 		this.reader = new ObjectMapper().reader();
 		this.mapper = new ObjectMapper();
-		this.requirementsValidator = new MappingRequirementsValidator();
+		this.requirementsValidator = new FunctionMappingRequirementsValidator();
 		this.extractor = new MappingValueExtractor();
 	}
 	
 	/*
 	 * 
 	 */
-	public Device mapJsonlist2Device(JsonNode jsonlist2Device) throws Exception {
+	public Device mapJsonlist2Device(JsonNode jsonlist2Device)  {
 		Device newDevice = new Device();
 		
 		String deviceName = jsonlist2Device.get("Name").asText();
+		System.out.println("Mapping device '"+deviceName+"'");
 		
+		newDevice.setDeviceId(deviceName);
+		
+
 		try {
 			JsonNode moduleDescription = getModuleDescription(jsonlist2Device);
 			
@@ -66,15 +70,34 @@ public class Jsonlist2DeviceMapper {
 			// iterate over all available functions defined in the module description
 			while (fields.hasNext()) {
 				Map.Entry<String, JsonNode> entry = fields.next();
-				System.out.println("Mapping function "+entry.getKey()+" ...");
+				//System.out.println("Mapping function "+entry.getKey()+" ...");
 				
-				Function mappedFunction = mapFunction(entry.getKey(), entry.getValue(), jsonlist2Device);
-				
-				if (mappedFunction != null) newDevice.addFunctionsItem(mappedFunction);
+				try {
+					Function mappedFunction = mapFunction(entry.getKey(), entry.getValue(), jsonlist2Device);
+					if (mappedFunction != null) newDevice.addFunctionsItem(mappedFunction);
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InstantiationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (JsonProcessingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (MalformedFHEMModuleDescriptionJsonException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
+			
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
 		return newDevice;
 	}
 	
@@ -84,8 +107,7 @@ public class Jsonlist2DeviceMapper {
 	private Function mapFunction(String functionName, JsonNode mappingDescription, JsonNode jsonlist2Device) throws ClassNotFoundException, InstantiationException, IllegalAccessException, JsonProcessingException, MalformedFHEMModuleDescriptionJsonException  {
 		
 		// 0. Check if jsonlist2 data fits requirements
-		
-		if (requirementsValidator.doFitRequirements(mappingDescription, jsonlist2Device)) {
+		if (requirementsValidator.doFitRequirements(mappingDescription.get("requirements"), jsonlist2Device)) {
 			
 			// 1. Generate prototype JSON as JsonNode from Java Class by classname
 			String className = mappingDescription.get("classname").asText();
@@ -93,7 +115,7 @@ public class Jsonlist2DeviceMapper {
 			Object function = functionClass.newInstance();
 			ObjectNode proto = mapper.valueToTree(function);
 			
-			System.out.println(proto);
+			//System.out.println(proto);
 			
 			// 2. Insert values from jsonlist2 to prototype
 			
