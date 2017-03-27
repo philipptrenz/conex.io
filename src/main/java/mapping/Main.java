@@ -1,21 +1,12 @@
 package mapping;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
+import org.joda.time.DateTime;
 
-import interfaces.RequestHandlerInterface;
 import io.swagger.model.Device;
-import io.swagger.model.Filter;
 import io.swagger.model.Function;
 import mapping.read.Jsonlist2Parser;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
 
 public class Main {
 	
@@ -25,8 +16,14 @@ public class Main {
 	 */
 	public static void main(String [] args){
 		
+		for (Device device : mapping.Main.getDevices()) {
+			System.out.println(device+"\n");
+		}
+		
+		System.out.println();
+		
 		Jsonlist2Parser parser = new Jsonlist2Parser();
-		ArrayList<Device> devices = parser.parse();
+		List<Device> devices = parser.parse();
 		
 		System.out.println("# mapped devices: "+devices.size());
 		
@@ -36,6 +33,51 @@ public class Main {
 		 *  1. Sort out with filter object
 		 *  2. return devices or retrieve ids (function, room, group) and return
 		 */
+	}
+	
+	public static List<Device> getDevices() {
+		List<Device> list = new ArrayList<Device>();
+		
+		int j = 0;
+		int k = 0;
+		for (int i = 0; i < 50; i++) {
+			
+			Device device = new Device();
+			device.setDeviceId("testdevice_"+i);
+			
+			device.addGroupIdsItem("testgroup_"+j);
+			device.addGroupIdsItem("testgroup_"+(j+1));
+			device.addGroupIdsItem("testgroup_"+(j+2));
+			
+			device.addRoomIdsItem("testroom_"+j);
+			device.addRoomIdsItem("testroom_"+(j+1));
+			device.addRoomIdsItem("testroom_"+(j+2));
+			
+			
+			Function f = new Function();
+			f.setFunctionId("testfunction_"+k);
+			f.setTimestamp(new DateTime());	
+			device.addFunctionsItem(f);
+			
+			Function f2 = new Function();
+			f2.setFunctionId("testfunction_"+(k+1));
+			f2.setTimestamp(new DateTime());	
+			device.addFunctionsItem(f2);
+			
+			Function f3 = new Function();
+			f3.setFunctionId("testfunction_"+(k+2));
+			f3.setTimestamp(new DateTime());	
+			device.addFunctionsItem(f3);
+			
+			
+			
+			list.add(device);
+			
+			j++;
+			if (j > 10) j = 0;
+			if (k > 15) k = 0;
+		}
+		return list;
 	}
 
 }
