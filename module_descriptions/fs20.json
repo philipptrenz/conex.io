@@ -25,11 +25,11 @@
                     "cases": [ 
                     	{
                     		"value": true,
-                    		"regex": [ "on", "on-.*", "dim[0-9]{1,3}%" ]
+                    		"regex": [ "on", "dim[0-9]{1,3}%" ]
                     	}, 
                     	{
                     		"value": false,
-                    		"regex": [ "off", "off-.*" ]
+                    		"regex": [ "off" ]
                     	}
                     ]
                 }

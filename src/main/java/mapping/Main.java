@@ -16,9 +16,10 @@ public class Main {
 	 */
 	public static void main(String [] args){
 		
+		/*
 		for (Device device : mapping.Main.getDevices()) {
 			System.out.println(device+"\n");
-		}
+		}*/
 		
 		System.out.println();
 		
