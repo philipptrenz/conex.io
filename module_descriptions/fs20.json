@@ -35,17 +35,32 @@
                 }
             }
 		},
-		"slider": {
-			"classname":"io.swagger.model.Slider"
-		
-		
-			
-		
+		"dimmer": {
+			"classname":"io.swagger.model.Dimmer",
+			"requirements": [
+				{
+					"mode":"contains_all",
+					"key_path":"PossibleSets",
+					"attributes": [ "on", "off", "dim06%", "dim12%", "dim18%", "dim25%", "dim31%", "dim37%", "dim43%", "dim50%", "dim56%", "dim62%", "dim68%", "dim75%", "dim81%", "dim87%", "dim93%", "dim100%"],
+					"delimiters": " "
+				}
+			],
+			"properties": {
+                "value": {
+                    "type": "integer",
+                    "default": 0,
+                    "key_path":"Readings/state/Value",
+                    "extract_mode":"range",
+                    "minimum":0,
+                    "maximum":100,
+                  	"regex": "([0-9]{1,2}[0]?|100)"
+                }
+            }
 		}
 	},
 	"command": {
 	
 	
 	
+		}
 	}
-}
