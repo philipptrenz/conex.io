@@ -1,5 +1,6 @@
 package io.swagger.api.calc;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.swagger.model.Device;
@@ -33,6 +34,47 @@ public class DeviceCalc {
 	}
 	public List<Device> getListFiltering() {
 		return ausgabe;
+	}
+	public List<String> getFuntionFiltering() {
+		List<String> functions = new ArrayList<String>();
+		while(ausgabe.iterator().hasNext()) {
+			Device d = ausgabe.iterator().next();
+			while(d.getFunctions().iterator().hasNext()) {
+				String func = d.getFunctions().iterator().next().getFunctionId();
+				if(!functions.contains(func)) {
+					functions.add(func);
+				}
+			}
+		}
+		return functions;
+	}
+	
+	public List<String> getGroupFiltering() {
+		List<String> gruppen = new ArrayList<String>();
+		while(ausgabe.iterator().hasNext()) {
+			Device d = ausgabe.iterator().next();
+			while(d.getGroupIds().iterator().hasNext()) {
+				String func = d.getGroupIds().iterator().next();
+				if(!gruppen.contains(func)) {
+					gruppen.add(func);
+				}
+			}
+		}
+		return gruppen;
+	}
+	
+	public List<String> getRoomFiltering() {
+		List<String> rooms = new ArrayList<String>();
+		while(ausgabe.iterator().hasNext()) {
+			Device d = ausgabe.iterator().next();
+			while(d.getRoomIds().iterator().hasNext()) {
+				String func = d.getRoomIds().iterator().next();
+				if(!rooms.contains(func)) {
+					rooms.add(func);
+				}
+			}
+		}
+		return rooms;
 	}
 	
 	
