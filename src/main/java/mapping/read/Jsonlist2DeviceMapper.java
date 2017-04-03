@@ -2,16 +2,11 @@ package mapping.read;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.Map;
-
-import javax.validation.constraints.Null;
-
-import org.springframework.context.annotation.EnableLoadTimeWeaving;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -21,7 +16,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.swagger.model.Device;
 import io.swagger.model.Function;
-import io.swagger.model.OnOff;
 import mapping.exceptions.MalformedFHEMModuleDescriptionJsonException;
 
 /*
@@ -128,7 +122,7 @@ public class Jsonlist2DeviceMapper {
 					String key = entry.getKey();
 					JsonNode property = entry.getValue();
 					
-					String value = extractor.extractValue(jsonlist2Device, property);
+					String value = extractor.extractValue(jsonlist2Device, property, key);
 					proto.put(key, value);
 				}
 			} catch (NullPointerException e) {

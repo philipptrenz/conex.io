@@ -27,50 +27,16 @@ public class FunctionMappingRequirementsValidator {
 		if (mappingRequirements == null || !mappingRequirements.isArray()) throw new MalformedFHEMModuleDescriptionJsonException();
 		
 		for (JsonNode requirement : mappingRequirements) {			
-			// mode: "contains_all"
-			if (requirement.get("mode").asText().equals("contains_all")) {
-				
-				String path = requirement.get("key_path").asText();
-				try {
-					String jsonlist2InputValue = navigateJsonKeyPath(jsonlist2Device, path).asText();
-					
-					if (jsonlist2InputValue.isEmpty()) {
-						System.out.println("Function can't be validated, needed value at key path '"+path+"' is missing");
-						return false;
-					}
-					
-					
-					
-					JsonNode array = requirement.get("attributes");
-					String delimiters = requirement.get("delimiters").asText();
-					
-					for (final JsonNode node : array) {
-						String value = node.asText();
-						String regex = ".*(^|["+delimiters+"])("+value+")($|["+delimiters+"]).*";
-						
-						if (!jsonlist2InputValue.matches(regex)) {
-							
-							System.out.println("Not matching regex: '"+regex+ "'\tvalue: '"+jsonlist2InputValue+"'");
-							return false;
-						}
-					}
-					
-					
-				} catch (NoValidKeyPathException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
+			
+			String mode = requirement.get("mode").asText();
+			
+			switch (mode) {
+			
+			case "contains_all": return modeContainsAll(requirement, jsonlist2Device);
+			
+			default: System.out.println("mode '"+mode+"' not found");
 				
 			}
-			
-			
-			
-			
-			
-			
-			
-			
 			
 		}
 		
@@ -82,19 +48,36 @@ public class FunctionMappingRequirementsValidator {
 		return true;
 	}
 	
-	private JsonNode navigateJsonKeyPath(JsonNode node, String path) throws NoValidKeyPathException {
-		// remove whitespaces, linebreaks etc
-		path = path.replaceAll("\\r\\n|\\r|\\n", "").replace(" ", "");
-		String[] keys = path.split("/");
-		
-		JsonNode temp = node;
-		for (String key : keys) {			
-			if (!temp.has(key)) throw new NoValidKeyPathException();
-			temp = temp.get(key);
+	private boolean modeContainsAll(JsonNode requirement, JsonNode jsonlist2Device) {
+		String path = requirement.get("key_path").asText();
+		try {
+			String jsonlist2InputValue = MappingReadHelper.navigateJsonKeyPath(jsonlist2Device, path).asText();
+			
+			if (jsonlist2InputValue.isEmpty()) {
+				System.out.println("Function can't be validated, needed value at key path '"+path+"' is missing");
+				return false;
+			}
+			
+			JsonNode array = requirement.get("attributes");
+			String delimiters = requirement.get("delimiters").asText();
+			
+			for (final JsonNode node : array) {
+				String value = node.asText();
+				String regex = ".*(^|["+delimiters+"])("+value+")($|["+delimiters+"]).*";
+				
+				if (!jsonlist2InputValue.matches(regex)) {
+					
+					System.out.println("Not matching regex: '"+regex+ "'\tvalue: '"+jsonlist2InputValue+"'");
+					return false;
+				}
+			}
+			
+			
+		} catch (NoValidKeyPathException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		
-		return temp;
-	}
-	
+		return true;
+	}	
 	
 }
