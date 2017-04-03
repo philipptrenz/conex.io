@@ -28,7 +28,6 @@ public class FunctionMappingRequirementsValidator {
 		
 		for (JsonNode requirement : mappingRequirements) {			
 			
-			
 			String mode = requirement.get("mode").asText();
 			
 			switch (mode) {
