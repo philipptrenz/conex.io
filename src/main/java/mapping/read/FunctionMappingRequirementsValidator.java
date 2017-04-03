@@ -66,8 +66,6 @@ public class FunctionMappingRequirementsValidator {
 				String regex = ".*(^|["+delimiters+"])("+value+")($|["+delimiters+"]).*";
 				
 				if (!jsonlist2InputValue.matches(regex)) {
-					
-					System.out.println("Not matching regex: '"+regex+ "'\tvalue: '"+jsonlist2InputValue+"'");
 					return false;
 				}
 			}

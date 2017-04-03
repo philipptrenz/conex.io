@@ -60,12 +60,12 @@
                     	}, 
                     	{
                     		"extract_mode":"direct",
-                    		"value": "0",
+                    		"constraint": "min",
                     		"regex": [ "off" ]
                     	}, 
                     	{
                     		"extract_mode":"direct",
-                    		"value": "512",
+                    		"constraint": "max",
                     		"regex": [ "on" ]
                     	}
                     ]

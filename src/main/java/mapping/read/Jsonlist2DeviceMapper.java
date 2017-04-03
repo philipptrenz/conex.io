@@ -109,7 +109,6 @@ public class Jsonlist2DeviceMapper {
 			Object function = functionClass.newInstance();
 			ObjectNode proto = mapper.valueToTree(function);
 			
-			//System.out.println(proto);
 			
 			// 2. Insert values from jsonlist2 to prototype
 			
@@ -122,7 +121,7 @@ public class Jsonlist2DeviceMapper {
 					String key = entry.getKey();
 					JsonNode property = entry.getValue();
 					
-					String value = extractor.extractValue(jsonlist2Device, property, key);
+					String value = extractor.extractValue(jsonlist2Device, property, key, function);
 					proto.put(key, value);
 				}
 			} catch (NullPointerException e) {
@@ -138,7 +137,6 @@ public class Jsonlist2DeviceMapper {
 			return (Function) function;
 		
 		} else {
-			System.out.println("Does not fit requirements, this type of device may not have been specified in FHEM module description");
 			return null;
 		}
 	}

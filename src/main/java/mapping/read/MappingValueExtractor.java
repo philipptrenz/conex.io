@@ -1,5 +1,10 @@
 package mapping.read;
 
+import java.lang.reflect.Method;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
@@ -20,7 +25,17 @@ public class MappingValueExtractor {
 	 * @param property the property
 	 * @return the string
 	 */
-	public String extractValue(JsonNode jsonlist2Device, JsonNode property, String attributeName) {		
+	
+	private Object function;
+	private String propertyName;
+	private JsonNode jsonlist2Device;
+	
+	public String extractValue(JsonNode jsonlist2Device, JsonNode property, String propertyName, Object function) {		
+		
+		this.function = function;
+		this.propertyName = propertyName;
+		this.jsonlist2Device = jsonlist2Device;
+		
 		
 		String key_path = property.get("key_path").asText();
 		String unmappedDeviceValue;
@@ -34,13 +49,13 @@ public class MappingValueExtractor {
 				switch (extractMode) {
 				
 				case "direct": 
-					String value = modeDirect(mappingCase, unmappedDeviceValue);
+					String value = modeDirect(mappingCase, unmappedDeviceValue, function);
 					if (value != null && !value.isEmpty()) {
 						return value;
 					}
 				
 				case "range":
-					System.out.println("not yet implemented");
+					System.out.println("extraction_mode 'range' not yet implemented");
 					break;
 					
 				default:
@@ -67,14 +82,49 @@ public class MappingValueExtractor {
 		return defaultValue;
 	}
 	
-	private String modeDirect(JsonNode mappingCase, String unmappedDeviceValue) {
+	private String modeDirect(JsonNode mappingCase, String unmappedDeviceValue, Object function) {
 		ArrayNode regexList = (ArrayNode) mappingCase.get("regex");
 		for (JsonNode regex : regexList ) {
 			if (unmappedDeviceValue.matches(regex.asText())) {
-				return mappingCase.get("value").asText();
+				
+				
+				if (mappingCase.has("value")) {
+					
+					return mappingCase.get("value").asText();
+					
+				} else if (mappingCase.has("constraint")) {
+					
+					String type = mappingCase.get("constraint").asText();
+					int constValue = getConstraintValueFromFunctionClassAnnotation(type);
+					
+					System.out.println("setting from constraint '"+type+"' value to "+constValue);
+					
+					return Integer.toString(constValue);
+					
+				}
+				
 			}
 		}
 		return null;
+	}
+	
+	private int getConstraintValueFromFunctionClassAnnotation(String type) {
+		Method[] methods = function.getClass().getMethods();
+		Method setMethod = null;
+		for (Method m : methods) {
+			if (m.getName().toLowerCase().contains("get"+propertyName.toLowerCase())) {
+				setMethod = m;
+				
+				if (type.equals("min")) {
+					return (int) setMethod.getAnnotation(Min.class).value();
+				} else if (type.equals("max")) {
+					return (int) setMethod.getAnnotation(Max.class).value();
+				} else {
+					System.out.println("Function 'getConstraintValueFromFunctionClassAnnotation' has no case for type '"+type+"'");
+				}
+			}
+		}
+		return 0;
 	}
 
 }
