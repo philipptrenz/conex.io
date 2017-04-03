@@ -14,11 +14,11 @@ import javax.validation.constraints.*;
 @ApiModel(description = "Generic Slider Switch")
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-03-22T14:12:09.728Z")
 
-public class Slider extends Function  {
+public class Dimmer extends Function  {
   @JsonProperty("value")
   private Integer value = null;
 
-  public Slider value(Integer value) {
+  public Dimmer value(Integer value) {
     this.value = value;
     return this;
   }
@@ -49,7 +49,7 @@ public class Slider extends Function  {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Slider slider = (Slider) o;
+    Dimmer slider = (Dimmer) o;
     return Objects.equals(this.value, slider.value) &&
         super.equals(o);
   }

@@ -56,16 +56,16 @@
                     		"extract_mode":"range",
                     		"minimum":0,
                     		"maximum":100,
-                  			"value": "dim([0-9]{1,2}|100)%"
+                  			"regex": "dim([0-9]{1,2}|100)%"
                     	}, 
                     	{
                     		"extract_mode":"direct",
-                    		"value": 0,
+                    		"value": "0",
                     		"regex": [ "off" ]
                     	}, 
                     	{
                     		"extract_mode":"direct",
-                    		"value": 100,
+                    		"value": "512",
                     		"regex": [ "on" ]
                     	}
                     ]

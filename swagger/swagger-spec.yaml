@@ -200,7 +200,7 @@ definitions:
           isOn:
             type: boolean
             default: false
-  Slider:
+  Dimmer:
     description: Generic Slider Switch
     allOf:
       - $ref: '#/definitions/Function'
