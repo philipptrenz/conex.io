@@ -1,6 +1,8 @@
 package mapping.read;
 
 import java.lang.reflect.Method;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -43,23 +45,26 @@ public class MappingValueExtractor {
 			unmappedDeviceValue = MappingReadHelper.navigateJsonKeyPath(jsonlist2Device, key_path).asText();
 			
 			ArrayNode cases = (ArrayNode) property.get("cases");
+			String value = "";
 			for (JsonNode mappingCase : cases) {
 				
 				String extractMode = mappingCase.get("extract_mode").asText();
 				switch (extractMode) {
 				
 				case "direct": 
-					String value = modeDirect(mappingCase, unmappedDeviceValue, function);
+					value = modeDirect(mappingCase, unmappedDeviceValue);
 					if (value != null && !value.isEmpty()) {
 						return value;
 					}
 				
 				case "range":
-					System.out.println("extraction_mode 'range' not yet implemented");
-					break;
+					value = modeRange(mappingCase, unmappedDeviceValue);
+					if (value != null && !value.isEmpty()) {
+						return value;
+					}
 					
 				default:
-					System.out.println("extract_mode not found, maybe function description is made for newer version of conex.io core");
+					//System.out.println("extract_mode '"+extractMode+"' not found for value '"+unmappedDeviceValue+"', maybe function description is made for newer version of conex.io core");
 					break;
 				}
 				
@@ -82,14 +87,12 @@ public class MappingValueExtractor {
 		return defaultValue;
 	}
 	
-	private String modeDirect(JsonNode mappingCase, String unmappedDeviceValue, Object function) {
+	private String modeDirect(JsonNode mappingCase, String unmappedDeviceValue) {
 		ArrayNode regexList = (ArrayNode) mappingCase.get("regex");
 		for (JsonNode regex : regexList ) {
 			if (unmappedDeviceValue.matches(regex.asText())) {
 				
-				
 				if (mappingCase.has("value")) {
-					
 					return mappingCase.get("value").asText();
 					
 				} else if (mappingCase.has("constraint")) {
@@ -99,13 +102,45 @@ public class MappingValueExtractor {
 					
 					System.out.println("setting from constraint '"+type+"' value to "+constValue);
 					
-					return Integer.toString(constValue);
+					return Integer.toString(constValue);	
 					
+				} else {
+					System.out.println("None of the available mappings for direct mode are fitting");
 				}
-				
 			}
 		}
 		return null;
+	}
+	
+	private String modeRange(JsonNode mappingCase, String unmappedDeviceValue) {
+		
+		try {
+			double minimumSourceValue = mappingCase.get("minimum").asDouble();
+			double maximumSourceValue = mappingCase.get("maximum").asDouble();
+			int minimumDestinationValue = getConstraintValueFromFunctionClassAnnotation("min");
+			int maximumDestinationValue = getConstraintValueFromFunctionClassAnnotation("max");
+			
+			String regex = mappingCase.get("regex").asText();
+			Pattern pattern = Pattern.compile(regex);
+			Matcher matcher = pattern.matcher(unmappedDeviceValue);
+
+			if(!matcher.find()) return null;
+			
+			String sourceStringValue = matcher.group(1);
+			sourceStringValue.replace(",", ".");
+			double sourceValue = Double.parseDouble(sourceStringValue);
+		    
+		    // normalize source value as rational number
+		    double rationalSourceValue = (sourceValue-minimumSourceValue) / (maximumSourceValue-minimumDestinationValue);
+		    double destinationValue = rationalSourceValue * (maximumDestinationValue-minimumDestinationValue)+minimumDestinationValue;
+		    
+		    int value = (int) destinationValue;
+		    return String.valueOf(value);
+
+		} catch (Exception e) {
+			return null;
+		}
+		
 	}
 	
 	private int getConstraintValueFromFunctionClassAnnotation(String type) {

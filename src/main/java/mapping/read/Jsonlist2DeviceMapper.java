@@ -91,8 +91,13 @@ public class Jsonlist2DeviceMapper {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		return newDevice;
+		
+		if (newDevice.getFunctions().size() > 0) {
+			return newDevice;
+		} else {
+			System.out.println("Device '"+newDevice.getDeviceId()+"' has no mapped functions, ignoring");
+			return null;
+		}
 	}
 	
 	/*
@@ -114,19 +119,16 @@ public class Jsonlist2DeviceMapper {
 			
 			// iterate over all properties to get the values mapped
 			Iterator<Map.Entry<String, JsonNode>> fields;
-			try {
-				fields = mappingDescription.get("properties").fields();
-				while (fields.hasNext()) {
-					Map.Entry<String, JsonNode> entry = fields.next();
-					String key = entry.getKey();
-					JsonNode property = entry.getValue();
-					
-					String value = extractor.extractValue(jsonlist2Device, property, key, function);
-					proto.put(key, value);
-				}
-			} catch (NullPointerException e) {
-				throw new MalformedFHEMModuleDescriptionJsonException(functionName, folderName);
+			fields = mappingDescription.get("properties").fields();
+			while (fields.hasNext()) {
+				Map.Entry<String, JsonNode> entry = fields.next();
+				String key = entry.getKey();
+				JsonNode property = entry.getValue();
+				
+				String value = extractor.extractValue(jsonlist2Device, property, key, function);
+				proto.put(key, value);
 			}
+			
 			
 			// 3. Map back to Java object
 			
