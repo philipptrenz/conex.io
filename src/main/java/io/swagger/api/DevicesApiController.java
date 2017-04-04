@@ -1,16 +1,11 @@
 package io.swagger.api;
 
-import io.swagger.model.Device;
 import io.swagger.model.Devices;
 import io.swagger.model.Filter;
-import io.swagger.model.Function;
 import io.swagger.model.Patcher;
 
 import io.swagger.annotations.*;
 import io.swagger.api.calc.DeviceCalc;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +26,6 @@ public class DevicesApiController implements DevicesApi {
         DeviceCalc calc = new DeviceCalc(filter);
         Devices list = new Devices();
         list.setDevices(calc.getListFiltering());
-    	return new ResponseEntity<Devices>(HttpStatus.OK);
+    	return new ResponseEntity<>(list, HttpStatus.OK);
     }
 }

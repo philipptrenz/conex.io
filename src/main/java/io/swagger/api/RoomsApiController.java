@@ -5,6 +5,7 @@ import io.swagger.model.Filter;
 import io.swagger.model.Ids;
 
 import io.swagger.annotations.*;
+import io.swagger.api.calc.DeviceCalc;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,8 +28,10 @@ public class RoomsApiController implements RoomsApi {
 
 
     public ResponseEntity<Ids> roomsPost(@ApiParam(value = "The user specified filter" ,required=true ) @RequestBody Filter filter) {
-        // do some magic!
-        return new ResponseEntity<Ids>(HttpStatus.OK);
+        DeviceCalc calc = new DeviceCalc(filter);
+        Ids id = new Ids();
+        id.setIds(calc.getRoomFiltering());
+        return new ResponseEntity<Ids>(id, HttpStatus.OK);
     }
 
 }
