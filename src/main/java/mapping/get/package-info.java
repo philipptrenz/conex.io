@@ -2,4 +2,4 @@
  * @author philipp
  *
  */
-package mapping.read;
+package mapping.get;

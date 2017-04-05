@@ -1,4 +1,4 @@
-package mapping.read;
+package mapping.get;
 
 import java.io.File;
 import java.io.IOException;
@@ -58,7 +58,7 @@ public class Jsonlist2DeviceMapper {
 			JsonNode moduleDescription = getModuleDescription(jsonlist2Device);
 			
 			// choose read part for FHEM to Java Mapping
-			JsonNode readDescription = moduleDescription.get("read");
+			JsonNode readDescription = moduleDescription.get("get");
 			Iterator<Map.Entry<String, JsonNode>> fields = readDescription.fields();
 			
 			// iterate over all available functions defined in the module description

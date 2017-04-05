@@ -1,4 +1,4 @@
-package mapping.read;
+package mapping.get;
 
 import java.lang.reflect.Method;
 import java.util.regex.Matcher;

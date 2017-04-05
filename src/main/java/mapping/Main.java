@@ -6,7 +6,7 @@ import org.joda.time.DateTime;
 
 import io.swagger.model.Device;
 import io.swagger.model.Function;
-import mapping.read.Jsonlist2Parser;
+import mapping.get.Jsonlist2Parser;
 
 public class Main {
 	

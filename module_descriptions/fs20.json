@@ -5,7 +5,7 @@
 		"author":"Philipp Trenz",
 		"last_edited": "2017-03-25"
 	},
-	"read": {
+	"get": {
 		"onoff": {
 			"classname":"io.swagger.model.OnOff",
 			"requirements": [
@@ -73,7 +73,7 @@
             }
 		}
 	},
-	"command": {
+	"set": {
 	
 	
 	
