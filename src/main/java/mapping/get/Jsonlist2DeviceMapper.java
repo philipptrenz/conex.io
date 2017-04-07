@@ -5,7 +5,10 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -17,6 +20,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.swagger.model.Device;
 import io.swagger.model.Function;
 import mapping.exceptions.MalformedFHEMModuleDescriptionJsonException;
+import mapping.exceptions.NoValidKeyPathException;
 
 /*
  * Class to load FHEM module descriptions
@@ -48,44 +52,20 @@ public class Jsonlist2DeviceMapper {
 	public Device mapJsonlist2Device(JsonNode jsonlist2Device)  {
 		Device newDevice = new Device();
 		
-		String deviceName = jsonlist2Device.get("Name").asText();
-		System.out.println("Mapping device '"+deviceName+"'");
-		
+		String deviceName = jsonlist2Device.get("Name").asText();		
 		newDevice.setDeviceId(deviceName);
 		
-
 		try {
 			JsonNode moduleDescription = getModuleDescription(jsonlist2Device);
 			
-			// choose read part for FHEM to Java Mapping
-			JsonNode readDescription = moduleDescription.get("get");
-			Iterator<Map.Entry<String, JsonNode>> fields = readDescription.fields();
+			// map rooms
+			newDevice.setRoomIds(getRoomIds(jsonlist2Device, moduleDescription));
 			
-			// iterate over all available functions defined in the module description
-			while (fields.hasNext()) {
-				Map.Entry<String, JsonNode> entry = fields.next();
-				//System.out.println("Mapping function "+entry.getKey()+" ...");
-				
-				try {
-					Function mappedFunction = mapFunction(entry.getKey(), entry.getValue(), jsonlist2Device);
-					if (mappedFunction != null) newDevice.addFunctionsItem(mappedFunction);
-				} catch (ClassNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (InstantiationException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (JsonProcessingException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (MalformedFHEMModuleDescriptionJsonException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
+			// map groups
+			newDevice.setGroupIds(getGroupIds(jsonlist2Device, moduleDescription));
+			
+			// map functions
+			newDevice.setFunctions(getFunctions(jsonlist2Device, moduleDescription));
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -128,19 +108,103 @@ public class Jsonlist2DeviceMapper {
 				String value = extractor.extractValue(jsonlist2Device, property, key, function);
 				proto.put(key, value);
 			}
+			proto.put("function_id", functionName);
 			
 			
 			// 3. Map back to Java object
 			
 			function = mapper.treeToValue(proto, Class.forName(className));
-			
-			System.out.println(function);
-			
 			return (Function) function;
 		
 		} else {
 			return null;
 		}
+	}
+	
+	private List<String> getRoomIds(JsonNode jsonlist2Device, JsonNode moduleDescription) {
+		if (moduleDescription.has("rooms")) {
+			JsonNode mappingDescription = moduleDescription.get("rooms");
+			
+			String string;
+			try {
+				string = MappingGetHelper.navigateJsonKeyPath(jsonlist2Device, mappingDescription.get("key_path").asText()).asText();
+			
+				String delimiter = mappingDescription.get("delimiters").asText();
+				String[] array = string.split(delimiter);
+				
+				List<String> list = new ArrayList();
+				Collections.addAll(list, array);
+				
+				return list;
+			} catch (Exception e) {
+				return new ArrayList<>();
+			}
+		} else {
+			return new ArrayList<>();
+		}
+	}
+	
+	
+	private List<String> getGroupIds(JsonNode jsonlist2Device, JsonNode moduleDescription) {
+		if (moduleDescription.has("groups")) {
+			JsonNode mappingDescription = moduleDescription.get("groups");
+			
+			String string;
+			try {
+				string = MappingGetHelper.navigateJsonKeyPath(jsonlist2Device, mappingDescription.get("key_path").asText()).asText();
+			
+				String delimiter = mappingDescription.get("delimiters").asText();
+				String[] array = string.split(delimiter);
+				
+				List<String> list = new ArrayList();
+				Collections.addAll(list, array);
+				
+				return list;
+			} catch (Exception e) {
+				return new ArrayList<>();
+			}
+		} else {
+			return new ArrayList<>();
+		}
+	}
+	
+	
+	private List<Function> getFunctions(JsonNode jsonlist2Device, JsonNode moduleDescription) {
+
+		List<Function> list = new ArrayList<>();
+		
+		// choose read part for FHEM to Java Mapping
+		JsonNode readDescription = moduleDescription.get("functions").get("get");
+		Iterator<Map.Entry<String, JsonNode>> fields = readDescription.fields();
+		
+		// iterate over all available functions defined in the module description
+		while (fields.hasNext()) {
+			Map.Entry<String, JsonNode> entry = fields.next();
+			//System.out.println("Mapping function "+entry.getKey()+" ...");
+			
+			try {
+				Function mappedFunction = mapFunction(entry.getKey(), entry.getValue(), jsonlist2Device);
+				if (mappedFunction != null) list.add(mappedFunction);
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InstantiationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JsonProcessingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (MalformedFHEMModuleDescriptionJsonException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		
+		return list;
 	}
 
 	/*

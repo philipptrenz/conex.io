@@ -51,7 +51,7 @@ public class FunctionMappingRequirementsValidator {
 	private boolean modeContainsAll(JsonNode requirement, JsonNode jsonlist2Device) {
 		String path = requirement.get("key_path").asText();
 		try {
-			String jsonlist2InputValue = MappingReadHelper.navigateJsonKeyPath(jsonlist2Device, path).asText();
+			String jsonlist2InputValue = MappingGetHelper.navigateJsonKeyPath(jsonlist2Device, path).asText();
 			
 			if (jsonlist2InputValue.isEmpty()) {
 				System.out.println("Function can't be validated, needed value at key path '"+path+"' is missing");

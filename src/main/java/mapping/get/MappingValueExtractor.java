@@ -42,7 +42,7 @@ public class MappingValueExtractor {
 		String key_path = property.get("key_path").asText();
 		String unmappedDeviceValue;
 		try {
-			unmappedDeviceValue = MappingReadHelper.navigateJsonKeyPath(jsonlist2Device, key_path).asText();
+			unmappedDeviceValue = MappingGetHelper.navigateJsonKeyPath(jsonlist2Device, key_path).asText();
 			
 			ArrayNode cases = (ArrayNode) property.get("cases");
 			String value = "";

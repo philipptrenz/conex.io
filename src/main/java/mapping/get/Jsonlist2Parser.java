@@ -51,13 +51,14 @@ public class Jsonlist2Parser {
 						if (device != null) {
 							//System.out.println("device added");
 							deviceList.add(device);
+							
+							System.out.println(device+"\n");
 						}
 						
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					System.out.println();
 				} else {
 					//System.out.println(jsonDevice.get("Name")+" ignored \n");
 				}

@@ -1,81 +1,120 @@
 {
 	"information": {
-		"filename":"fs20.json",
-		"description":"Mapping instructions for the FHEM module 'FS20'",
-		"author":"Philipp Trenz",
+		"filename": "fs20.json",
+		"description": "Mapping instructions for the FHEM module 'FS20'",
+		"author": "Philipp Trenz",
 		"last_edited": "2017-03-25"
 	},
-	"get": {
-		"onoff": {
-			"classname":"io.swagger.model.OnOff",
-			"requirements": [
-				{
-					"mode":"contains_all",
-					"key_path":"PossibleSets",
-					"attributes": [ "on", "off" ],
-					"delimiters": " "
-				}
-			],
-			"properties": {
-                "isOn": {
-                    "type": "boolean",
-                    "default": false,
-                    "key_path":"Readings/state/Value",
-                    "cases": [ 
-                    	{
-                    		"extract_mode":"direct",
-                    		"value": true,
-                    		"regex": [ "on", "dim([0-9]{1,2}|100)%" ]
-                    	}, 
-                    	{
-                    		"extract_mode":"direct",
-                    		"value": false,
-                    		"regex": [ "off" ]
-                    	}
-                    ]
-                }
-            }
-		},
-		"dimmer": {
-			"classname":"io.swagger.model.Dimmer",
-			"requirements": [
-				{
-					"mode":"contains_all",
-					"key_path":"PossibleSets",
-					"attributes": [ "on", "off", "dim06%", "dim12%", "dim18%", "dim25%", "dim31%", "dim37%", "dim43%", "dim50%", "dim56%", "dim62%", "dim68%", "dim75%", "dim81%", "dim87%", "dim93%", "dim100%"],
-					"delimiters": " "
-				}
-			],
-			"properties": {
-                "value": {
-                    "type": "integer",
-                    "default": 0,
-                    "key_path":"Readings/state/Value",
-                    "cases": [
-                    	{
-                    		"extract_mode":"range",
-                    		"minimum":0,
-                    		"maximum":100,
-                  			"regex": "dim([0-9]{1,2}|100)%"
-                    	}, 
-                    	{
-                    		"extract_mode":"direct",
-                    		"constraint": "min",
-                    		"regex": [ "off" ]
-                    	}, 
-                    	{
-                    		"extract_mode":"direct",
-                    		"constraint": "max",
-                    		"regex": [ "on" ]
-                    	}
-                    ]
-                }
-            }
-		}
+	"rooms": {
+		"key_path": "Attributes/room",
+		"delimiters": " "
 	},
-	"set": {
-	
-	
-	
+	"groups": {
+		"key_path": "Attributes/group",
+		"delimiters": " "
+	},
+	"functions": {
+		"get": {
+			"onoff": {
+				"classname": "io.swagger.model.OnOff",
+				"requirements": [
+					{
+						"mode": "contains_all",
+						"key_path": "PossibleSets",
+						"attributes": [
+							"on",
+							"off"
+						],
+						"delimiters": " "
+					}
+				],
+				"properties": {
+					"isOn": {
+						"type": "boolean",
+						"default": false,
+						"key_path": "Readings/state/Value",
+						"cases": [
+							{
+								"extract_mode": "direct",
+								"value": true,
+								"regex": [
+									"on",
+									"dim([0-9]{1,2}|100)%"
+								]
+							},
+							{
+								"extract_mode": "direct",
+								"value": false,
+								"regex": [
+									"off"
+								]
+							}
+						]
+					}
+				}
+			},
+			"dimmer": {
+				"classname": "io.swagger.model.Dimmer",
+				"requirements": [
+					{
+						"mode": "contains_all",
+						"key_path": "PossibleSets",
+						"attributes": [
+							"on",
+							"off",
+							"dim06%",
+							"dim12%",
+							"dim18%",
+							"dim25%",
+							"dim31%",
+							"dim37%",
+							"dim43%",
+							"dim50%",
+							"dim56%",
+							"dim62%",
+							"dim68%",
+							"dim75%",
+							"dim81%",
+							"dim87%",
+							"dim93%",
+							"dim100%"
+						],
+						"delimiters": " "
+					}
+				],
+				"properties": {
+					"value": {
+						"type": "integer",
+						"default": 0,
+						"key_path": "Readings/state/Value",
+						"cases": [
+							{
+								"extract_mode": "range",
+								"minimum": 0,
+								"maximum": 100,
+								"regex": "dim([0-9]{1,2}|100)%"
+							},
+							{
+								"extract_mode": "direct",
+								"constraint": "min",
+								"regex": [
+									"off"
+								]
+							},
+							{
+								"extract_mode": "direct",
+								"constraint": "max",
+								"regex": [
+									"on"
+								]
+							}
+						]
+					}
+				}
+			}
+		},
+		"set": {
+			
 		}
 	}
+}

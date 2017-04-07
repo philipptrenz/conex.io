@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import mapping.exceptions.NoValidKeyPathException;
 
-public class MappingReadHelper {
+public class MappingGetHelper {
 	public static JsonNode navigateJsonKeyPath(JsonNode node, String path) throws NoValidKeyPathException {
 		// remove whitespaces, linebreaks etc
 		path = path.replaceAll("\\r\\n|\\r|\\n", "").replace(" ", "");
@@ -15,7 +15,6 @@ public class MappingReadHelper {
 			if (!temp.has(key)) throw new NoValidKeyPathException();
 			temp = temp.get(key);
 		}
-		
 		return temp;
 	}
 }
