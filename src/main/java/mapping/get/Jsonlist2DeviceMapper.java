@@ -52,16 +52,17 @@ public class Jsonlist2DeviceMapper {
 	public Device mapJsonlist2Device(JsonNode jsonlist2Device)  {
 		Device newDevice = new Device();
 		
-		String deviceName = jsonlist2Device.get("Name").asText();		
-		newDevice.setDeviceId(deviceName);
-		
 		try {
 			JsonNode moduleDescription = getModuleDescription(jsonlist2Device);
 			
-			// map rooms
+			// map deviceId
+			String deviceName = jsonlist2Device.get("Name").asText();		
+			newDevice.setDeviceId(deviceName);
+			
+			// map roomIds
 			newDevice.setRoomIds(getRoomIds(jsonlist2Device, moduleDescription));
 			
-			// map groups
+			// map groupIds
 			newDevice.setGroupIds(getGroupIds(jsonlist2Device, moduleDescription));
 			
 			// map functions
@@ -72,12 +73,7 @@ public class Jsonlist2DeviceMapper {
 			e.printStackTrace();
 		}
 		
-		if (newDevice.getFunctions().size() > 0) {
-			return newDevice;
-		} else {
-			System.out.println("Device '"+newDevice.getDeviceId()+"' has no mapped functions, ignoring");
-			return null;
-		}
+		return newDevice;
 	}
 	
 	/*
