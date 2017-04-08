@@ -1,4 +1,4 @@
-package mapping.get;
+package mapping.get.functionMapper;
 
 import java.lang.reflect.Method;
 import java.util.regex.Matcher;
@@ -10,6 +10,7 @@ import javax.validation.constraints.Min;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
+import mapping.MappingHelper;
 import mapping.exceptions.NoValidKeyPathException;
 
 /**
@@ -18,7 +19,7 @@ import mapping.exceptions.NoValidKeyPathException;
  * This class validates the incoming FHEM device from jsonlist2 as JSON to fit the requirements
  * to get mapped defined in the FHEM module description (json file).
  */
-public class MappingValueExtractor {
+public class ValueExtractor {
 	
 	/**
 	 * Extract value.
@@ -42,7 +43,7 @@ public class MappingValueExtractor {
 		String key_path = property.get("key_path").asText();
 		String unmappedDeviceValue;
 		try {
-			unmappedDeviceValue = MappingGetHelper.navigateJsonKeyPath(jsonlist2Device, key_path).asText();
+			unmappedDeviceValue = MappingHelper.navigateJsonKeyPath(jsonlist2Device, key_path).asText();
 			
 			ArrayNode cases = (ArrayNode) property.get("cases");
 			String value = "";

@@ -5,6 +5,9 @@
 		"author": "Philipp Trenz",
 		"last_edited": "2017-03-25"
 	},
+	"name":{
+		"key_path": "Name"
+	},
 	"rooms": {
 		"key_path": "Attributes/room",
 		"delimiters": " "
@@ -14,9 +17,10 @@
 		"delimiters": " "
 	},
 	"functions": {
-		"get": {
-			"onoff": {
-				"classname": "io.swagger.model.OnOff",
+		"get": [
+			{
+				"function_id": "onoff",
+				"class_name": "io.swagger.model.OnOff",
 				"requirements": [
 					{
 						"mode": "contains_all",
@@ -53,8 +57,9 @@
 					}
 				}
 			},
-			"dimmer": {
-				"classname": "io.swagger.model.Dimmer",
+			{
+				"function_id":"dimmer",
+				"class_name": "io.swagger.model.Dimmer",
 				"requirements": [
 					{
 						"mode": "contains_all",
@@ -112,9 +117,9 @@
 					}
 				}
 			}
-		},
-		"set": {
+		],
+		"set": [
 			
-		}
+		]
 	}
 }

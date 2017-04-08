@@ -6,7 +6,7 @@ import org.joda.time.DateTime;
 
 import io.swagger.model.Device;
 import io.swagger.model.Function;
-import mapping.get.Jsonlist2Parser;
+import mapping.get.JsonParser;
 
 public class Main {
 	
@@ -23,7 +23,7 @@ public class Main {
 		
 		System.out.println();
 		
-		Jsonlist2Parser parser = new Jsonlist2Parser();
+		JsonParser parser = new JsonParser();
 		List<Device> devices = parser.parse();
 		
 		System.out.println("# mapped devices: "+devices.size());

@@ -1,7 +1,8 @@
-package mapping.get;
+package mapping.get.functionMapper;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import mapping.MappingHelper;
 import mapping.exceptions.MalformedFHEMModuleDescriptionJsonException;
 import mapping.exceptions.NoValidKeyPathException;
 
@@ -11,7 +12,7 @@ import mapping.exceptions.NoValidKeyPathException;
  * This class validates the incoming FHEM device from jsonlist2 as JSON to fit the requirements
  * to get mapped defined in the FHEM module description (json file).
  */
-public class FunctionMappingRequirementsValidator {
+public class RequirementsValidator {
 	
 	
 	/**
@@ -51,7 +52,7 @@ public class FunctionMappingRequirementsValidator {
 	private boolean modeContainsAll(JsonNode requirement, JsonNode jsonlist2Device) {
 		String path = requirement.get("key_path").asText();
 		try {
-			String jsonlist2InputValue = MappingGetHelper.navigateJsonKeyPath(jsonlist2Device, path).asText();
+			String jsonlist2InputValue = MappingHelper.navigateJsonKeyPath(jsonlist2Device, path).asText();
 			
 			if (jsonlist2InputValue.isEmpty()) {
 				System.out.println("Function can't be validated, needed value at key path '"+path+"' is missing");

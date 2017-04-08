@@ -13,15 +13,17 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import io.swagger.model.Device;
 import mapping.FHEMConnector;
 
-public class Jsonlist2Parser {
+public class JsonParser {
 	
-	ObjectReader reader;
-	Jsonlist2DeviceMapper mapper;
+	private ObjectReader reader;
+	private DeviceMapper mapper;
+	private ModuleDescriptionLoader loader;
 	
-	public Jsonlist2Parser() {
+	public JsonParser() {
 		
 		this.reader = new ObjectMapper().reader();
-		this.mapper = new Jsonlist2DeviceMapper("module_descriptions");
+		this.loader = new ModuleDescriptionLoader("module_descriptions");
+		this.mapper = new DeviceMapper(loader);
 
 	}
 	
@@ -43,11 +45,11 @@ public class Jsonlist2Parser {
 				
 				JsonNode jsonDevice = devicesIterator.next();		
 				
-				if (mapper.moduleDescriptionExists(jsonDevice)) {
+				if (loader.moduleDescriptionExists(jsonDevice)) {
 					//System.out.println(jsonDevice.get("Name")+": module description exists; trying to map ...");
 					
 					try {
-						Device device = mapper.mapJsonlist2Device(jsonDevice);
+						Device device = mapper.mapJsonToDevice(jsonDevice);
 						if (device != null) {
 							//System.out.println("device added");
 							deviceList.add(device);
