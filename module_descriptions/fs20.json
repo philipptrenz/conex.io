@@ -14,7 +14,7 @@
 	},
 	"groups": {
 		"key_path": "Attributes/group",
-		"delimiters": " "
+		"delimiters": ","
 	},
 	"functions": {
 		"get": [
