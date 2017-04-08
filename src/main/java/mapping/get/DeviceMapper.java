@@ -85,11 +85,14 @@ public class DeviceMapper {
 			try {
 				string = MappingHelper.navigateJsonKeyPath(jsonlist2Device, mappingDescription.get("key_path").asText()).asText();
 			
-				String delimiter = mappingDescription.get("delimiters").asText();
-				String[] array = string.split(delimiter);
-				
 				List<String> list = new ArrayList<>();
-				Collections.addAll(list, array);
+				if (mappingDescription.has("delimiters") && !mappingDescription.get("delimiters").asText().isEmpty()) {
+					String delimiter = mappingDescription.get("delimiters").asText();
+					String[] array = string.split(delimiter);
+					Collections.addAll(list, array);
+				} else {
+					list.add(string);
+				}
 				
 				return list;
 			} catch (Exception e) {
@@ -108,12 +111,15 @@ public class DeviceMapper {
 			String string;
 			try {
 				string = MappingHelper.navigateJsonKeyPath(jsonlist2Device, mappingDescription.get("key_path").asText()).asText();
-			
-				String delimiter = mappingDescription.get("delimiters").asText();
-				String[] array = string.split(delimiter);
 				
 				List<String> list = new ArrayList<>();
-				Collections.addAll(list, array);
+				if (mappingDescription.has("delimiters") && !mappingDescription.get("delimiters").asText().isEmpty()) {
+					String delimiter = mappingDescription.get("delimiters").asText();
+					String[] array = string.split(delimiter);
+					Collections.addAll(list, array);
+				} else {
+					list.add(string);
+				}
 				
 				return list;
 			} catch (Exception e) {
