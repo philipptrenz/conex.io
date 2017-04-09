@@ -10,7 +10,7 @@
 	},
 	"rooms": {
 		"key_path": "Attributes/room",
-		"delimiters": " "
+		"delimiters": ","
 	},
 	"groups": {
 		"key_path": "Attributes/group",
