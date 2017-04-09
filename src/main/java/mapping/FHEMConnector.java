@@ -10,6 +10,8 @@ public class FHEMConnector {
 	public static String getJsonlist2Result() {
 		
 		// TODO: Implement real network connector to get jsonlist2
+		// maybe: catch first time by jsonlist2, then wait on websockets
+		// for pushed data via longpoll
 		
 		return getJsonlist2MockupAsStringFromFile();
 	}
