@@ -39,6 +39,15 @@ public class ValueExtractor {
 		this.propertyName = propertyName;
 		this.jsonlist2Device = jsonlist2Device;
 		
+		System.out.println(propertyName);
+		
+		switch(propertyName) {
+		
+		
+		case "timestamp":
+		
+		default: break;
+		}
 		
 		String key_path = property.get("key_path").asText();
 		String unmappedDeviceValue;
