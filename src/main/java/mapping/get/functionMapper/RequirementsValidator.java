@@ -33,7 +33,9 @@ public class RequirementsValidator {
 			
 			switch (mode) {
 			
-			case "contains_all": return modeContainsAll(requirement, jsonlist2Device);
+			case "contains_all": return isModeContainsAll(requirement, jsonlist2Device);
+			
+			case "one_of": return isModeOneOf(requirement, jsonlist2Device);
 			
 			default: System.out.println("mode '"+mode+"' not found");
 				
@@ -49,7 +51,7 @@ public class RequirementsValidator {
 		return true;
 	}
 	
-	private boolean modeContainsAll(JsonNode requirement, JsonNode jsonlist2Device) {
+	private boolean isModeContainsAll(JsonNode requirement, JsonNode jsonlist2Device) {
 		String path = requirement.get("key_path").asText();
 		try {
 			String jsonlist2InputValue = MappingHelper.navigateJsonKeyPath(jsonlist2Device, path).asText();
@@ -78,5 +80,33 @@ public class RequirementsValidator {
 		}
 		return true;
 	}	
+	
+	private boolean isModeOneOf(JsonNode requirement, JsonNode jsonlist2Device) {
+		String path = requirement.get("key_path").asText();
+		try {
+			String jsonlist2InputValue = MappingHelper.navigateJsonKeyPath(jsonlist2Device, path).asText();
+			
+			if (jsonlist2InputValue.isEmpty()) {
+				System.out.println("Function can't be validated, needed value at key path '"+path+"' is missing");
+				return false;
+			}
+			
+			JsonNode array = requirement.get("attributes");
+			
+			for (final JsonNode node : array) {
+				String value = node.asText();
+				if (jsonlist2InputValue.equals(value)) return true;
+			}
+			return false;
+			
+			
+		} catch (NoValidKeyPathException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}	
+	
+	
 	
 }

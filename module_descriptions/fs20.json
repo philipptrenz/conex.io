@@ -3,7 +3,7 @@
 		"filename": "fs20.json",
 		"description": "Mapping instructions for the FHEM module 'FS20'",
 		"author": "Philipp Trenz",
-		"last_edited": "2017-03-25"
+		"last_edited": "2017-04-10"
 	},
 	"device_id":{
 		"key_path": "Name"

@@ -5,9 +5,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.validation.constraints.Size;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 import io.swagger.model.Device;
+import io.swagger.model.Function;
 import mapping.MappingHelper;
 import mapping.get.functionMapper.FunctionMapper;
 
@@ -49,7 +52,10 @@ public class DeviceMapper {
 			
 			// map functions
 			funcMapper = new FunctionMapper(jsonlist2Device, moduleDescription);
-			newDevice.setFunctions(funcMapper.mapJsonToFunctions());
+			
+			List<Function> functions = funcMapper.mapJsonToFunctions();
+			if (functions.size() == 0) return null; 
+			newDevice.setFunctions(functions);
 			
 			return newDevice;
 			
