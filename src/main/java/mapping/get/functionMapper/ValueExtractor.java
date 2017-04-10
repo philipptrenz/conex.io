@@ -1,11 +1,17 @@
 package mapping.get.functionMapper;
 
 import java.lang.reflect.Method;
+import java.security.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+
+import org.joda.time.DateTime;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -39,20 +45,19 @@ public class ValueExtractor {
 		this.propertyName = propertyName;
 		this.jsonlist2Device = jsonlist2Device;
 		
-		System.out.println(propertyName);
-		
-		switch(propertyName) {
-		
-		
-		case "timestamp":
-		
-		default: break;
-		}
-		
 		String key_path = property.get("key_path").asText();
 		String unmappedDeviceValue;
 		try {
 			unmappedDeviceValue = MappingHelper.navigateJsonKeyPath(jsonlist2Device, key_path).asText();
+			
+			switch(propertyName) {
+			
+			
+			case "timestamp": return getTimestamp(unmappedDeviceValue, property);
+			
+			default: break;
+			}
+			
 			
 			ArrayNode cases = (ArrayNode) property.get("cases");
 			String value = "";
@@ -95,6 +100,20 @@ public class ValueExtractor {
 		
 		String defaultValue = property.get("default").asText();
 		return defaultValue;
+	}
+	
+	private String getTimestamp(String unmappedDeviceValue, JsonNode property) {
+		try {
+			String pattern = property.get("format").asText();
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+			DateTime dateTime = new DateTime(simpleDateFormat.parse(unmappedDeviceValue));
+			
+			return dateTime.toString();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "";
+		}		
 	}
 	
 	private String modeDirect(JsonNode mappingCase, String unmappedDeviceValue) {
