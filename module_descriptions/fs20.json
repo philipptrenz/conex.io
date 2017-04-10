@@ -58,7 +58,7 @@
 					"timestamp": {
 						"type": "date-time",
 						"key_path": "Readings/state/Time",
-						"format": "yyyy-mm-dd hh:mm:ss"
+						"format": "yyyy-MM-dd HH:mm:ss"
 					}
 				}
 			},
@@ -108,7 +108,7 @@
 					"timestamp": {
 						"type": "date-time",
 						"key_path": "Readings/state/Time",
-						"format": "yyyy-mm-dd hh:mm:ss"
+						"format": "yyyy-MM-dd HH:mm:ss"
 					}
 				}
 			}
