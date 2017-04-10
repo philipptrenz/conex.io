@@ -1,21 +1,18 @@
 package mapping.get.functionMapper;
 
 import java.lang.reflect.Method;
-import java.security.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
-import org.joda.time.DateTime;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
+import io.swagger.RFC3339DateFormat;
 import mapping.MappingHelper;
 import mapping.exceptions.NoValidKeyPathException;
 
@@ -106,9 +103,9 @@ public class ValueExtractor {
 		try {
 			String pattern = property.get("format").asText();
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-			DateTime dateTime = new DateTime(simpleDateFormat.parse(unmappedDeviceValue));
-			
-			return dateTime.toString();
+
+			RFC3339DateFormat format = new RFC3339DateFormat();
+			return format.format(simpleDateFormat.parse(unmappedDeviceValue));
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
