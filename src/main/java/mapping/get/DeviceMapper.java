@@ -64,8 +64,8 @@ public class DeviceMapper {
 	
 	
 	private String getDeviceId(JsonNode jsonlist2Device, JsonNode moduleDescription) {
-		if (moduleDescription.has("name")) {
-			JsonNode mappingDescription = moduleDescription.get("name");
+		if (moduleDescription.has("device_id")) {
+			JsonNode mappingDescription = moduleDescription.get("device_id");
 		
 			try {
 				return MappingHelper.navigateJsonKeyPath(jsonlist2Device, mappingDescription.get("key_path").asText()).asText();

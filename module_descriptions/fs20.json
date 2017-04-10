@@ -5,7 +5,7 @@
 		"author": "Philipp Trenz",
 		"last_edited": "2017-03-25"
 	},
-	"name":{
+	"device_id":{
 		"key_path": "Name"
 	},
 	"rooms": {
