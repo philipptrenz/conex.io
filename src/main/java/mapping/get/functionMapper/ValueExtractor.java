@@ -1,7 +1,6 @@
 package mapping.get.functionMapper;
 
 import java.lang.reflect.Method;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -103,13 +102,10 @@ public class ValueExtractor {
 		try {
 			String pattern = property.get("format").asText();
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-
 			RFC3339DateFormat format = new RFC3339DateFormat();
 			
-			//return format.format(simpleDateFormat.parse(unmappedDeviceValue));
-			
-			
-			return null;
+			return format.format(simpleDateFormat.parse(unmappedDeviceValue));
+			//return null;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -129,8 +125,6 @@ public class ValueExtractor {
 					
 					String type = mappingCase.get("constraint").asText();
 					int constValue = getConstraintValueFromFunctionClassAnnotation(type);
-					
-					System.out.println("setting from constraint '"+type+"' value to "+constValue);
 					
 					return Integer.toString(constValue);	
 					
