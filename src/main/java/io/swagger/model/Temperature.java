@@ -13,7 +13,7 @@ import javax.validation.constraints.*;
  * Generic Temperature Sensor
  */
 @ApiModel(description = "Generic Temperature Sensor")
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-12T10:59:29.046Z")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-12T11:08:27.892Z")
 
 public class Temperature extends Function  {
   @JsonProperty("value")

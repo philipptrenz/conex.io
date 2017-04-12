@@ -12,7 +12,7 @@ import javax.validation.constraints.*;
  * Generic On-Off Switch
  */
 @ApiModel(description = "Generic On-Off Switch")
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-12T10:59:29.046Z")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-12T11:08:27.892Z")
 
 public class OnOff extends Function  {
   @JsonProperty("isOn")

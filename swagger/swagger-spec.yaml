@@ -117,6 +117,10 @@ definitions:
     properties:
       device_id:
         type: string
+      type_id:
+        type: string
+      model_id:
+        type: string
       room_ids:
         type: array
         items:

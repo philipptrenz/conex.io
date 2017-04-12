@@ -1,5 +1,6 @@
 package mapping;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -23,7 +24,11 @@ public class FHEMConnector {
 	private static String getJsonlist2MockupAsStringFromFile() {
 		byte[] encoded;
 		try {
-			encoded = Files.readAllBytes(Paths.get("testdata/jsonlist2_cooltux_sensitive.json"));
+			String file;
+			file = "jsonlist2_p.a.trick_sensitive.json";
+			//file = "jsonlist2_cooltux_sensitive.json";
+			
+			encoded = Files.readAllBytes(Paths.get("testdata/"+file));
 			return new String(encoded, StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			try {
