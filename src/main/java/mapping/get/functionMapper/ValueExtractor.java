@@ -105,10 +105,11 @@ public class ValueExtractor {
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
 			RFC3339DateFormat format = new RFC3339DateFormat();
-			//return format.format(simpleDateFormat.parse(unmappedDeviceValue));
+			
+			return format.format(simpleDateFormat.parse(unmappedDeviceValue));
 			
 			
-			return null;
+			//return null;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

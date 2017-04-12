@@ -37,6 +37,11 @@ public class Main {
 	}
 	
 	public static List<Device> getDevices() {
+		JsonParser parser = new JsonParser();
+		List<Device> devices = parser.parse();
+		return devices;
+		
+		/*
 		List<Device> list = new ArrayList<Device>();
 		
 		int j = 0;
@@ -76,6 +81,7 @@ public class Main {
 			if (k > 15) k = 0;
 		}
 		return list;
+		*/
 	}
 
 }
