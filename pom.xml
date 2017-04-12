@@ -18,6 +18,7 @@
     </parent>
     <build>
         <sourceDirectory>src/main/java</sourceDirectory>
+        <pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -30,7 +31,36 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- Swagger-Maven Plugin Integration -->
+                        <!-- activate the plugin -->
+            <plugin>
+    			<groupId>io.swagger</groupId>
+    			<artifactId>swagger-codegen-maven-plugin</artifactId>
+    			<version>2.2.2</version>
+    			<executions>
+        			<execution>
+            			<goals>
+                			<goal>generate</goal>
+            			</goals>
+            		<configuration>
+                		<inputSpec>swagger/swagger-spec.yaml</inputSpec>
+                		<language>spring</language>
+                		<configOptions>
+                   			<sourceFolder>src/main/java</sourceFolder>
+                		</configOptions>
+                
+                		<generateApis>false</generateApis>
+                		<generateApiTests>false</generateApiTests>
+                		<generateApiDocumentation>false</generateApiDocumentation>
+                		<generateModels>true</generateModels>
+                
+                		<output>${project.build.directory}/src/main/java</output>
+            		</configuration>
+        		</execution>
+    		</executions>
+		   </plugin>
         </plugins>
+      </pluginManagement>
     </build>
     <dependencies>
         <dependency>
