@@ -12,11 +12,14 @@ import javax.validation.constraints.*;
  * Generic Slider Switch
  */
 @ApiModel(description = "Generic Slider Switch")
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-03-22T14:12:09.728Z")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-12T10:59:29.046Z")
 
 public class Dimmer extends Function  {
   @JsonProperty("value")
   private Integer value = null;
+
+  @JsonProperty("timestamp")
+  private DateTime timestamp = null;
 
   public Dimmer value(Integer value) {
     this.value = value;
@@ -40,6 +43,24 @@ public class Dimmer extends Function  {
     this.value = value;
   }
 
+  public Dimmer timestamp(DateTime timestamp) {
+    this.timestamp = timestamp;
+    return this;
+  }
+
+   /**
+   * Get timestamp
+   * @return timestamp
+  **/
+  @ApiModelProperty(value = "")
+  public DateTime getTimestamp() {
+    return timestamp;
+  }
+
+  public void setTimestamp(DateTime timestamp) {
+    this.timestamp = timestamp;
+  }
+
 
   @Override
   public boolean equals(java.lang.Object o) {
@@ -49,22 +70,24 @@ public class Dimmer extends Function  {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Dimmer slider = (Dimmer) o;
-    return Objects.equals(this.value, slider.value) &&
+    Dimmer dimmer = (Dimmer) o;
+    return Objects.equals(this.value, dimmer.value) &&
+        Objects.equals(this.timestamp, dimmer.timestamp) &&
         super.equals(o);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(value, super.hashCode());
+    return Objects.hash(value, timestamp, super.hashCode());
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class Slider {\n");
+    sb.append("class Dimmer {\n");
     sb.append("    ").append(toIndentedString(super.toString())).append("\n");
     sb.append("    value: ").append(toIndentedString(value)).append("\n");
+    sb.append("    timestamp: ").append(toIndentedString(timestamp)).append("\n");
     sb.append("}");
     return sb.toString();
   }

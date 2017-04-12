@@ -22,10 +22,8 @@ public class FHEMConnector {
 	 */
 	private static String getJsonlist2MockupAsStringFromFile() {
 		byte[] encoded;
-		
-		
 		try {
-			encoded = Files.readAllBytes(Paths.get("testdata/jsonlist2_20170409_p.a.trick.json"));
+			encoded = Files.readAllBytes(Paths.get("testdata/jsonlist2_cooltux_sensitive.json"));
 			return new String(encoded, StandardCharsets.UTF_8);
 		} catch (IOException e) {
 			try {

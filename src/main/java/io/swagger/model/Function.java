@@ -5,20 +5,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import org.joda.time.DateTime;
 import javax.validation.constraints.*;
 /**
  * Base Class for all functions
  */
 @ApiModel(description = "Base Class for all functions")
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-03-22T14:12:09.728Z")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-12T10:59:29.046Z")
 
 public class Function   {
   @JsonProperty("function_id")
   private String functionId = null;
-
-  @JsonProperty("timestamp")
-  private DateTime timestamp = null;
 
   public Function functionId(String functionId) {
     this.functionId = functionId;
@@ -39,24 +35,6 @@ public class Function   {
     this.functionId = functionId;
   }
 
-  public Function timestamp(DateTime timestamp) {
-    this.timestamp = timestamp;
-    return this;
-  }
-
-   /**
-   * Get timestamp
-   * @return timestamp
-  **/
-  @ApiModelProperty(value = "")
-  public DateTime getTimestamp() {
-    return timestamp;
-  }
-
-  public void setTimestamp(DateTime timestamp) {
-    this.timestamp = timestamp;
-  }
-
 
   @Override
   public boolean equals(java.lang.Object o) {
@@ -67,13 +45,12 @@ public class Function   {
       return false;
     }
     Function function = (Function) o;
-    return Objects.equals(this.functionId, function.functionId) &&
-        Objects.equals(this.timestamp, function.timestamp);
+    return Objects.equals(this.functionId, function.functionId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(functionId, timestamp);
+    return Objects.hash(functionId);
   }
 
   @Override
@@ -82,7 +59,6 @@ public class Function   {
     sb.append("class Function {\n");
     
     sb.append("    functionId: ").append(toIndentedString(functionId)).append("\n");
-    sb.append("    timestamp: ").append(toIndentedString(timestamp)).append("\n");
     sb.append("}");
     return sb.toString();
   }

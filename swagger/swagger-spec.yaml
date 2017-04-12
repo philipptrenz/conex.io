@@ -213,6 +213,22 @@ definitions:
           timestamp:
             type: string
             format: date-time
+            
+  Temperature:
+    description: Generic Temperature Sensor
+    allOf:
+      - $ref: '#/definitions/Function'
+      - properties:
+          value:
+            type: number
+            minimum: 0
+            maximum: 512
+            default: 0
+          timestamp:
+            type: string
+            format: date-time
+            
+      
   Error:
     type: object
     properties:

@@ -6,40 +6,45 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.model.Function;
+import java.math.BigDecimal;
 import org.joda.time.DateTime;
 import javax.validation.constraints.*;
 /**
- * Generic On-Off Switch
+ * Generic Temperature Sensor
  */
-@ApiModel(description = "Generic On-Off Switch")
+@ApiModel(description = "Generic Temperature Sensor")
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-12T10:59:29.046Z")
 
-public class OnOff extends Function  {
-  @JsonProperty("isOn")
-  private Boolean isOn = false;
+public class Temperature extends Function  {
+  @JsonProperty("value")
+  private BigDecimal value = null;
 
   @JsonProperty("timestamp")
   private DateTime timestamp = null;
 
-  public OnOff isOn(Boolean isOn) {
-    this.isOn = isOn;
+  public Temperature value(BigDecimal value) {
+    this.value = value;
     return this;
   }
 
    /**
-   * Get isOn
-   * @return isOn
+   * Get value
+   * minimum: 0
+   * maximum: 512
+   * @return value
   **/
   @ApiModelProperty(value = "")
-  public Boolean getIsOn() {
-    return isOn;
+  @DecimalMin("0")
+  @DecimalMax("512")
+  public BigDecimal getValue() {
+    return value;
   }
 
-  public void setIsOn(Boolean isOn) {
-    this.isOn = isOn;
+  public void setValue(BigDecimal value) {
+    this.value = value;
   }
 
-  public OnOff timestamp(DateTime timestamp) {
+  public Temperature timestamp(DateTime timestamp) {
     this.timestamp = timestamp;
     return this;
   }
@@ -66,23 +71,23 @@ public class OnOff extends Function  {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    OnOff onOff = (OnOff) o;
-    return Objects.equals(this.isOn, onOff.isOn) &&
-        Objects.equals(this.timestamp, onOff.timestamp) &&
+    Temperature temperature = (Temperature) o;
+    return Objects.equals(this.value, temperature.value) &&
+        Objects.equals(this.timestamp, temperature.timestamp) &&
         super.equals(o);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(isOn, timestamp, super.hashCode());
+    return Objects.hash(value, timestamp, super.hashCode());
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class OnOff {\n");
+    sb.append("class Temperature {\n");
     sb.append("    ").append(toIndentedString(super.toString())).append("\n");
-    sb.append("    isOn: ").append(toIndentedString(isOn)).append("\n");
+    sb.append("    value: ").append(toIndentedString(value)).append("\n");
     sb.append("    timestamp: ").append(toIndentedString(timestamp)).append("\n");
     sb.append("}");
     return sb.toString();

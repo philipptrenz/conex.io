@@ -57,17 +57,14 @@ public class Main {
 			
 			Function f = new Function();
 			f.setFunctionId("testfunction_"+k);
-			f.setTimestamp(new DateTime());	
 			device.addFunctionsItem(f);
 			
 			Function f2 = new Function();
-			f2.setFunctionId("testfunction_"+(k+1));
-			f2.setTimestamp(new DateTime());	
+			f2.setFunctionId("testfunction_"+(k+1));	
 			device.addFunctionsItem(f2);
 			
 			Function f3 = new Function();
 			f3.setFunctionId("testfunction_"+(k+2));
-			f3.setTimestamp(new DateTime());	
 			device.addFunctionsItem(f3);
 			
 			
