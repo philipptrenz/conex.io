@@ -6,7 +6,7 @@
     <name>swagger-spring</name>
     <version>1.0.0</version>
     <properties>
-        <java.version>1.7</java.version>
+        <java.version>1.8</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <springfox-version>2.5.0</springfox-version>
@@ -49,12 +49,12 @@
                    			<sourceFolder>src/main/java</sourceFolder>
                 		</configOptions>
                 
-                		<generateApis>false</generateApis>
+                		<!--<generateApis>false</generateApis>
                 		<generateApiTests>false</generateApiTests>
                 		<generateApiDocumentation>false</generateApiDocumentation>
-                		<generateModels>true</generateModels>
+                		<generateModels>true</generateModels>-->
                 
-                		<output>${project.build.directory}/src/main/java</output>
+                		<output>${project.build.directory}/NEUER_Ordner</output>
             		</configuration>
         		</execution>
     		</executions>
@@ -72,6 +72,11 @@
             <artifactId>spring-boot-starter-tomcat</artifactId>
             <scope>provided</scope>
         </dependency>
+		<dependency>
+    		<groupId>org.springframework</groupId>
+    		<artifactId>spring-test</artifactId>
+    		<scope>test</scope>
+		</dependency>
         <!--SpringFox dependencies -->
         <dependency>
             <groupId>io.springfox</groupId>
