@@ -46,6 +46,7 @@ public class ValueExtractor {
 		try {
 			unmappedDeviceValue = MappingHelper.navigateJsonKeyPath(jsonlist2Device, key_path).asText();
 			
+			// watch for property name
 			switch(propertyName) {
 			
 			
@@ -58,8 +59,9 @@ public class ValueExtractor {
 			ArrayNode cases = (ArrayNode) property.get("cases");
 			String value = "";
 			for (JsonNode mappingCase : cases) {
-				
 				String extractMode = mappingCase.get("extract_mode").asText();
+				
+				// watch for extract mode
 				switch (extractMode) {
 				
 				case "direct": 

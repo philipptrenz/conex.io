@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.datatype.joda.JodaModule;
 
 import io.swagger.model.Function;
 
@@ -28,6 +29,9 @@ public class FunctionMapper {
 		this.mapper = new ObjectMapper();
 		this.requirementsValidator = new RequirementsValidator();
 		this.extractor = new ValueExtractor();
+		
+		// register Joda module for org.joda.time.DateTime parsing
+		mapper.registerModule(new JodaModule());
 	}
 	
 	/*
@@ -81,9 +85,7 @@ public class FunctionMapper {
 				}
 				proto.put("function_id", functionId);
 				
-				
 				// 3. Map back to Java object
-				
 				function = mapper.treeToValue(proto, Class.forName(className));
 				return (Function) function;
 				
