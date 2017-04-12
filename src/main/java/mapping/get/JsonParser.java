@@ -11,7 +11,6 @@ import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import io.swagger.model.Device;
-import mapping.FHEMConnector;
 
 public class JsonParser {
 	
@@ -27,14 +26,11 @@ public class JsonParser {
 
 	}
 	
-	public ArrayList<Device> parse() {
+	public ArrayList<Device> parse(String jsonlist2) {
 		
 		ArrayList<Device> deviceList = new ArrayList<>();
 		
-		try {
-			
-			String jsonlist2 = FHEMConnector.getJsonlist2Result();
-			
+		try {			
 			JsonNode root = reader.readTree(jsonlist2);
 			ArrayNode jsonlist2Devices = (ArrayNode) root.get("Results");
 			Iterator<JsonNode> devicesIterator = jsonlist2Devices.elements();
