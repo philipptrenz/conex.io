@@ -1,11 +1,8 @@
 package mapping;
 
-import java.util.ArrayList;
 import java.util.List;
-import org.joda.time.DateTime;
 
 import io.swagger.model.Device;
-import io.swagger.model.Function;
 import mapping.get.JsonParser;
 
 public class Main {
