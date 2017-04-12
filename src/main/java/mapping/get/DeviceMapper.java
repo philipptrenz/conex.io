@@ -44,6 +44,9 @@ public class DeviceMapper {
 			// map deviceId
 			newDevice.setDeviceId(getDeviceId(jsonlist2Device, moduleDescription));
 			
+			// map typeId
+			newDevice.setTypeId(getTypeId(jsonlist2Device, moduleDescription));
+			
 			// map roomIds
 			newDevice.setRoomIds(getRoomIds(jsonlist2Device, moduleDescription));
 			
@@ -75,6 +78,20 @@ public class DeviceMapper {
 		
 			try {
 				return MappingHelper.navigateJsonKeyPath(jsonlist2Device, mappingDescription.get("key_path").asText()).asText();
+			} catch (Exception e) {
+				return null;
+			}
+		} else {
+			return null;
+		}
+	}
+	
+	private String getTypeId(JsonNode jsonlist2Device, JsonNode moduleDescription) {
+		if (moduleDescription.has("type_id")) {
+			JsonNode mappingDescription = moduleDescription.get("type_id");
+		
+			try {
+				return MappingHelper.navigateJsonKeyPath(jsonlist2Device, mappingDescription.get("key_path").asText()).asText().toLowerCase();
 			} catch (Exception e) {
 				return null;
 			}
