@@ -11,15 +11,8 @@ import io.swagger.model.Device;
 import mapping.FHEMConnector;
 
 public class WebsocketParser {
-	private ObjectReader reader;
-	private DeviceMapper mapper;
-	private ModuleDescriptionLoader loader;
 	
 	public WebsocketParser() {
-		
-		this.reader = new ObjectMapper().reader();
-		this.loader = new ModuleDescriptionLoader("module_descriptions");
-		this.mapper = new DeviceMapper(loader);
 
 	}
 	
@@ -56,7 +49,7 @@ public class WebsocketParser {
 				
 				if (updateMessage.reading.equals("DEFINED")) {
 					// new device defined, reload whole Map via jsonlist2!
-					connector.reloadJsonlist2();
+					connector.reload();
 				}
 				
 				return false;
@@ -66,17 +59,21 @@ public class WebsocketParser {
 				Device device = deviceMap.get(updateMessage.deviceId);
 				
 				if (device != null) {
+					
 					if (updateMessage.reading.toLowerCase().equals("room")) {
 						
 						// TODO: Update room
+						System.out.println("TODO: Update room");
 						
 					} else if (updateMessage.reading.toLowerCase().equals("group")) {
 						
 						// TODO: Update group from map
+						System.out.println("TODO: Update group");
 						
 					} else {
 						
 						// TODO: update values somehow ...
+						System.out.println("TODO: Update device '"+updateMessage.reading+"' (NEW: value: '"+updateMessage.value+"', timestamp: '"+updateMessage.timestamp+"')");
 						
 					}
 				}

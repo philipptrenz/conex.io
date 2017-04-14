@@ -47,9 +47,7 @@ public class FHEMConnector {
 		
 		// TODO: Validate ipAddress and port
 		
-		
-		long now = System.currentTimeMillis() / 1000l;
-		if (reloadJsonlist2()) startWebsocket(now);		
+		reload();		
 	}
 	
 	public FHEMConnector getInstance(String ipAddress, int port) {
@@ -65,7 +63,7 @@ public class FHEMConnector {
 		String filter = ".*";
 		String nowString = Long.toString(now);
 		
-		String query = "?XHR=1&inform=type=status;addglobal=1;filter="+filter+";since="+null+";fmt=JSON;&timestamp="+nowString;
+		String query = "?XHR=1&inform=type=status;addglobal=1;filter="+filter+";since="+since+";fmt=JSON;&timestamp="+nowString;
 		
 		try {
 			URI uri = new URI("ws://"+ipAddress+":"+port+"/fhem.pl"+query);
@@ -132,7 +130,7 @@ public class FHEMConnector {
 		return (List<Device>) deviceMap.values();
 	}
 	
-	public boolean reloadJsonlist2() {
+	public boolean reload() {
 		String jsonlist2 = null;
 		try {
 			jsonlist2 = sendFhemCommand("jsonlist2");
@@ -141,10 +139,14 @@ public class FHEMConnector {
 			e.printStackTrace();
 		}
 		
+		long now = System.currentTimeMillis() / 1000l;
+		
 		if (jsonlist2 == null || jsonlist2.isEmpty()) {
 			System.err.println("No jsonlist2 data received! 'longpoll' has to be set to 'websocket' and since FHEM 5.8 'csrfToken' must be 'none'.");
 			return false;
 		}
+		
+		startWebsocket(now);
 		
 		List<Device> devices = jsonParser.parse(jsonlist2);
 		deviceMap = devices.stream().collect(Collectors.toMap(Device::getDeviceId, Device -> Device));
@@ -165,6 +167,4 @@ public class FHEMConnector {
 			return "";
 		}
 	}	
-	
-
 }
