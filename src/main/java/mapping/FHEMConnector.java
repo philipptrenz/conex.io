@@ -47,25 +47,9 @@ public class FHEMConnector {
 		
 		// TODO: Validate ipAddress and port
 		
-		String jsonlist2 = null;
-		try {
-			jsonlist2 = sendFhemCommand("jsonlist2");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		
-		if (jsonlist2 == null || jsonlist2.isEmpty()) {
-			System.err.println("No jsonlist2 data received!");
-		} else {
-			
-			long now = System.currentTimeMillis() / 1000l;
-			List<Device> devices = jsonParser.parse(jsonlist2);
-			
-			deviceMap = devices.stream().collect(Collectors.toMap(Device::getDeviceId, Device -> Device));
-			
-			startWebsocket(now);
-		}		
+		long now = System.currentTimeMillis() / 1000l;
+		if (reloadJsonlist2()) startWebsocket(now);		
 	}
 	
 	public FHEMConnector getInstance(String ipAddress, int port) {
@@ -86,7 +70,6 @@ public class FHEMConnector {
 		try {
 			URI uri = new URI("ws://"+ipAddress+":"+port+"/fhem.pl"+query);
 			
-			
 			websocket = new WebSocketClient(uri) {
 
 				@Override
@@ -103,7 +86,7 @@ public class FHEMConnector {
 
 				@Override
 				public void onMessage(String message) {
-					websocketParser.update(message, deviceMap);
+					websocketParser.update(message, deviceMap, instance);
 				}
 
 				@Override
@@ -147,6 +130,25 @@ public class FHEMConnector {
 	
 	private List<Device> getAllDevices() {
 		return (List<Device>) deviceMap.values();
+	}
+	
+	public boolean reloadJsonlist2() {
+		String jsonlist2 = null;
+		try {
+			jsonlist2 = sendFhemCommand("jsonlist2");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		if (jsonlist2 == null || jsonlist2.isEmpty()) {
+			System.err.println("No jsonlist2 data received! 'longpoll' has to be set to 'websocket' and since FHEM 5.8 'csrfToken' must be 'none'.");
+			return false;
+		}
+		
+		List<Device> devices = jsonParser.parse(jsonlist2);
+		deviceMap = devices.stream().collect(Collectors.toMap(Device::getDeviceId, Device -> Device));
+		return true;
 	}
 	
 	/*
