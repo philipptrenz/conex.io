@@ -4,9 +4,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
-
 import io.swagger.model.Device;
 import mapping.FHEMConnector;
 
@@ -34,8 +31,6 @@ public class WebsocketParser {
 		
 		DeviceUpdateMessage updateMessage = parseWebsocketMessage(websocketMessage);
 		if (updateMessage != null) {
-			
-			System.out.println("yey! Device exists, time for mapping! Not yet implemented ...");
 			
 			if (updateMessage.deviceId.startsWith("#FHEMWEB")) {
 				
@@ -73,7 +68,7 @@ public class WebsocketParser {
 					} else {
 						
 						// TODO: update values somehow ...
-						System.out.println("TODO: Update device '"+updateMessage.reading+"' (NEW: value: '"+updateMessage.value+"', timestamp: '"+updateMessage.timestamp+"')");
+						System.out.println("TODO: Update '"+updateMessage.reading+"' @ '"+updateMessage.deviceId+"': value: '"+updateMessage.value+"', timestamp: '"+updateMessage.timestamp+"'");
 						
 					}
 				}
@@ -119,8 +114,6 @@ public class WebsocketParser {
 			deviceUpdateMessage.reading = matcher.group(4).replace(deviceUpdateMessage.deviceId+"-", "");
 			deviceUpdateMessage.value = matcher.group(5);
 			deviceUpdateMessage.timestamp = matcher.group(8);
-			
-			System.out.println("matched: \n"+deviceUpdateMessage);
 		}
 		return deviceUpdateMessage;
 	}
