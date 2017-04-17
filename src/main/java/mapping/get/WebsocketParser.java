@@ -77,13 +77,13 @@ public class WebsocketParser {
 					} else {
 						
 						// TODO: update values somehow ...
-						System.out.println("TODO: Update '"+updateMessage.reading+"' @ '"+updateMessage.deviceId+"': value: '"+updateMessage.value+"', timestamp: '"+updateMessage.timestamp+"'");
+						//System.out.println("TODO: Update '"+updateMessage.reading+"' @ '"+updateMessage.deviceId+"': value: '"+updateMessage.value+"', timestamp: '"+updateMessage.timestamp+"'");
 						
-						String deviceType = "fs20";
+						JsonNode moduleDescription = loader.getModuleDescription(device.getTypeId());
 						
-						JsonNode moduleDescription = loader.getModuleDescription(deviceType);
-						
-						if (moduleDescription != null) mapper.mapWebsocketValuesToFunction(device, updateMessage, moduleDescription);
+						if (moduleDescription != null) {
+							mapper.mapWebsocketValuesToFunction(device, updateMessage, moduleDescription);
+						}
 						
 					}
 				}

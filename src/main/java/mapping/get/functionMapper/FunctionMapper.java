@@ -5,6 +5,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.omg.CosNaming._BindingIteratorImplBase;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -61,7 +64,7 @@ public class FunctionMapper {
 				
 				// 1. Generate prototype JSON as JsonNode from Java Class by classname
 				String className = funcDescription.get("class_name").asText();
-				Class<?> functionClass = Class.forName(className);
+				Class<Function> functionClass = (Class<Function>) Class.forName(className);
 				Object function = functionClass.newInstance();
 				ObjectNode proto = mapper.valueToTree(function);
 				
@@ -100,45 +103,89 @@ public class FunctionMapper {
 	 */
 	public boolean mapWebsocketValuesToFunction(Device device, WebsocketDeviceUpdateMessage message, JsonNode moduleDescription)  {
 		
+		boolean updated = false;
 		List<Function> functionsList = device.getFunctions();
 		
 		// choose read part for FHEM to Java Mapping
 		ArrayNode readDescription = (ArrayNode) moduleDescription.get("functions").get("get");
 		
-		for (JsonNode funcDescription : readDescription) {
-			for (Function f : functionsList) {
+		List<Function> updatedList = new ArrayList<>(functionsList);
+		
+		for (Function f : updatedList) {
+			
+			for (JsonNode funcDescription : readDescription) {	
 				
-				Class<?> clazz;
+				Class<Function> clazz = null;
 				try {
-					clazz = Class.forName(funcDescription.get("class_name").asText());
+					clazz = (Class<Function>) Class.forName(funcDescription.get("class_name").asText());
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				// if device has this Function
+				if (clazz != null && f.getClass().equals(clazz)) {
 					
-					// if device has this Function
-					if (f.getClass().equals(clazz)) {
+					// yey, this Function looks correct						
+					boolean valueMapped = false;
+					boolean timestampMapped = false;
+											
+					Iterator<Map.Entry<String, JsonNode>> properties;
+					properties = funcDescription.get("properties").fields();
+					
+					while (properties.hasNext()) {
+						Map.Entry<String, JsonNode> entry = properties.next();
+						String key = entry.getKey();
+						JsonNode prop = entry.getValue();
 						
-						// yey, this Function looks correct
-						JsonNode properties = funcDescription.get("properties");
+						String keyPath = prop.get("key_path").asText().toLowerCase();
 						
-						for(JsonNode prop : properties) {
-							String keyPath = prop.get("key_path").asText();
+						// if reading is defined in this Function
+						if (keyPath.startsWith("readings/"+message.reading.toLowerCase())) {
+
+							String value = null;
+							if (keyPath.equals("readings/"+message.reading.toLowerCase()+"/value")) {								
+								value = extractor.extractValue(message.value, prop, key, f);
+								valueMapped = true;
+							} else if (keyPath.equals("readings/"+message.reading.toLowerCase()+"/time")) {
+								value = extractor.extractValue(message.timestamp, prop, key, f);
+								timestampMapped = true;
+							} else {
+								value = null;
+							}
 							
-							// if reading is defined in this Function
-							if (keyPath.toLowerCase().startsWith("readings/"+message.reading.toLowerCase())) {
+							if (value != null && !value.isEmpty()) {
+								ObjectNode proto = mapper.valueToTree(updatedList.get(functionsList.indexOf(f)));
 								
-								// Value should be mapped to function
-								System.out.println("TODO: should be mapped ...");
+								proto.put(key, value);
+								Function updatedFunction;
+								try {
+									updatedFunction = (Function) mapper.treeToValue(proto, clazz);
+									
+									// replace in device
+									updatedList.set(updatedList.indexOf(f), updatedFunction);
+									
+									updated = true;
+								} catch (JsonProcessingException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+								
 								
 							}
 						}
 					}
-				} catch (ClassNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
 			}
 			
 		}
 		
-		return false;
+		if (updated) {
+			device.setFunctions(updatedList);
+			System.out.println("device updated:\n"+device);
+		}
+		
+		return updated;
 	}
-	
+
 }

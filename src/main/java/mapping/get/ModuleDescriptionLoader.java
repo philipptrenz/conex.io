@@ -51,6 +51,8 @@ public class ModuleDescriptionLoader {
 	}
 	
 	public JsonNode getModuleDescription(String deviceType) {
+		if (deviceType == null) return null;
+		
 		byte[] encoded;
 		try {
 			encoded = Files.readAllBytes(Paths.get(folderName+"/"+deviceType.toLowerCase()+".json"));

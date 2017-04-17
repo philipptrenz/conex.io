@@ -31,60 +31,58 @@ public class ValueExtractor {
 	 * @return the string
 	 */
 	
-	private Object function;
-	private String propertyName;
-	private JsonNode jsonlist2Device;
 	
 	public String extractValue(JsonNode jsonlist2Device, JsonNode property, String propertyName, Object function) {		
-		
-		this.function = function;
-		this.propertyName = propertyName;
-		this.jsonlist2Device = jsonlist2Device;
 		
 		String key_path = property.get("key_path").asText();
 		String unmappedDeviceValue;
 		try {
 			unmappedDeviceValue = MappingHelper.navigateJsonKeyPath(jsonlist2Device, key_path).asText();
-			
-			// watch for property name
-			switch(propertyName) {
-			
-			
-			case "timestamp": return getTimestamp(unmappedDeviceValue, property);
-			
-			default: break;
-			}
-			
-			
-			ArrayNode cases = (ArrayNode) property.get("cases");
-			String value = "";
-			for (JsonNode mappingCase : cases) {
-				String extractMode = mappingCase.get("extract_mode").asText();
-				
-				// watch for extract mode
-				switch (extractMode) {
-				
-				case "direct": 
-					value = modeDirect(mappingCase, unmappedDeviceValue);
-					if (value != null && !value.isEmpty()) {
-						return value;
-					}
-				
-				case "range":
-					value = modeRange(mappingCase, unmappedDeviceValue);
-					if (value != null && !value.isEmpty()) {
-						return value;
-					}
-					
-				default:
-					//System.out.println("extract_mode '"+extractMode+"' not found for value '"+unmappedDeviceValue+"', maybe function description is made for newer version of conex.io core");
-					break;
-				}
-				
-			}
+			return extractValue(unmappedDeviceValue, property, propertyName, function);
 		} catch (NoValidKeyPathException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public String extractValue(String unmappedDeviceValue, JsonNode property, String propertyName, Object function) {
+		
+		// watch for property name
+		switch(propertyName) {
+		
+		case "timestamp": return getTimestamp(unmappedDeviceValue, property);
+		
+		default: break;
+		}
+		
+		if (!property.has("cases")) System.out.println("this shouldn't happen");
+		ArrayNode cases = (ArrayNode) property.get("cases");
+
+		String value = "";
+		for (JsonNode mappingCase : cases) {
+			String extractMode = mappingCase.get("extract_mode").asText();
+			
+			// watch for extract mode
+			switch (extractMode) {
+			
+			case "direct": 
+				value = modeDirect(mappingCase, unmappedDeviceValue, propertyName, function);
+				if (value != null && !value.isEmpty()) {
+					return value;
+				}
+			
+			case "range":
+				value = modeRange(mappingCase, unmappedDeviceValue, propertyName, function);
+				if (value != null && !value.isEmpty()) {
+					return value;
+				}
+				
+			default:
+				//System.out.println("extract_mode '"+extractMode+"' not found for value '"+unmappedDeviceValue+"', maybe function description is made for newer version of conex.io core");
+				break;
+			}
+			
 		}
 		
 		/*
@@ -115,7 +113,7 @@ public class ValueExtractor {
 		}		
 	}
 	
-	private String modeDirect(JsonNode mappingCase, String unmappedDeviceValue) {
+	private String modeDirect(JsonNode mappingCase, String unmappedDeviceValue, String propertyName, Object function) {
 		ArrayNode regexList = (ArrayNode) mappingCase.get("regex");
 		for (JsonNode regex : regexList ) {
 			if (unmappedDeviceValue.matches(regex.asText())) {
@@ -126,7 +124,7 @@ public class ValueExtractor {
 				} else if (mappingCase.has("constraint")) {
 					
 					String type = mappingCase.get("constraint").asText();
-					int constValue = getConstraintValueFromFunctionClassAnnotation(type);
+					int constValue = getConstraintValueFromFunctionClassAnnotation(type, propertyName, function);
 					
 					return Integer.toString(constValue);	
 					
@@ -138,13 +136,13 @@ public class ValueExtractor {
 		return null;
 	}
 	
-	private String modeRange(JsonNode mappingCase, String unmappedDeviceValue) {
+	private String modeRange(JsonNode mappingCase, String unmappedDeviceValue, String propertyName, Object function) {
 		
 		try {
 			double minimumSourceValue = mappingCase.get("minimum").asDouble();
 			double maximumSourceValue = mappingCase.get("maximum").asDouble();
-			int minimumDestinationValue = getConstraintValueFromFunctionClassAnnotation("min");
-			int maximumDestinationValue = getConstraintValueFromFunctionClassAnnotation("max");
+			int minimumDestinationValue = getConstraintValueFromFunctionClassAnnotation("min", propertyName, function);
+			int maximumDestinationValue = getConstraintValueFromFunctionClassAnnotation("max", propertyName, function);
 			
 			String regex = mappingCase.get("regex").asText();
 			Pattern pattern = Pattern.compile(regex);
@@ -169,21 +167,29 @@ public class ValueExtractor {
 		
 	}
 	
-	private int getConstraintValueFromFunctionClassAnnotation(String type) {
-		Method[] methods = function.getClass().getMethods();
-		Method setMethod = null;
-		for (Method m : methods) {
-			if (m.getName().toLowerCase().contains("get"+propertyName.toLowerCase())) {
-				setMethod = m;
+	private int getConstraintValueFromFunctionClassAnnotation(String type, String propertyName, Object function) {
+		try {
+			Method[] methods = function.getClass().getMethods();
+			Method setMethod = null;
+			for (Method m : methods) {
 				
-				if (type.equals("min")) {
-					return (int) setMethod.getAnnotation(Min.class).value();
-				} else if (type.equals("max")) {
-					return (int) setMethod.getAnnotation(Max.class).value();
-				} else {
-					System.out.println("Function 'getConstraintValueFromFunctionClassAnnotation' has no case for type '"+type+"'");
+				if (propertyName == null) System.out.println("ups");
+				
+				if (m.getName().toLowerCase().contains("get"+propertyName.toLowerCase())) {
+					setMethod = m;
+					
+					if (type.equals("min")) {
+						return (int) setMethod.getAnnotation(Min.class).value();
+					} else if (type.equals("max")) {
+						return (int) setMethod.getAnnotation(Max.class).value();
+					} else {
+						System.out.println("Function 'getConstraintValueFromFunctionClassAnnotation' has no case for type '"+type+"'");
+					}
 				}
 			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
 		}
 		return 0;
 	}

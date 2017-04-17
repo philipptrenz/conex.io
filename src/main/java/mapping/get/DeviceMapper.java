@@ -41,6 +41,9 @@ public class DeviceMapper {
 		// map deviceId
 		newDevice.setDeviceId(getDeviceId(jsonlist2Device, moduleDescription));
 		
+		// map typeId
+		newDevice.setTypeId(getTypeId(jsonlist2Device, moduleDescription));
+		
 		// map roomIds
 		newDevice.setRoomIds(getRoomIds(jsonlist2Device, moduleDescription));
 		
