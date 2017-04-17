@@ -3,13 +3,10 @@
 		"filename": "fs20.json",
 		"description": "Mapping instructions for the FHEM module 'FS20'",
 		"author": "Philipp Trenz",
-		"last_edited": "2017-04-10"
+		"last_edited": "2017-03-25"
 	},
-	"device_id":{
+	"name":{
 		"key_path": "Name"
-	},
-	"type_id":{
-		"key_path": "Internals/TYPE"
 	},
 	"rooms": {
 		"key_path": "Attributes/room",
@@ -57,11 +54,6 @@
 								]
 							}
 						]
-					},
-					"timestamp": {
-						"type": "date-time",
-						"key_path": "Readings/state/Time",
-						"format": "yyyy-MM-dd HH:mm:ss"
 					}
 				}
 			},
@@ -107,11 +99,6 @@
 								]
 							}
 						]
-					},
-					"timestamp": {
-						"type": "date-time",
-						"key_path": "Readings/state/Time",
-						"format": "yyyy-MM-dd HH:mm:ss"
 					}
 				}
 			}
