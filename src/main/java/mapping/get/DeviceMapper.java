@@ -1,6 +1,5 @@
 package mapping.get;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -26,6 +25,7 @@ public class DeviceMapper {
 	 */
 	public DeviceMapper(ModuleDescriptionLoader loader) {
 		this.loader = loader;
+		this.funcMapper = new FunctionMapper();
 	}
 	
 	/*
@@ -33,32 +33,24 @@ public class DeviceMapper {
 	 */
 	public Device mapJsonToDevice(JsonNode jsonlist2Device)  {
 		
-		try {
-			Device newDevice = new Device();
-			
-			JsonNode moduleDescription = loader.getModuleDescription(jsonlist2Device);
-			
-			// map deviceId
-			newDevice.setDeviceId(getDeviceId(jsonlist2Device, moduleDescription));
-			
-			// map roomIds
-			newDevice.setRoomIds(getRoomIds(jsonlist2Device, moduleDescription));
-			
-			// map groupIds
-			newDevice.setGroupIds(getGroupIds(jsonlist2Device, moduleDescription));
-			
-			// map functions
-			funcMapper = new FunctionMapper(jsonlist2Device, moduleDescription);
-			newDevice.setFunctions(funcMapper.mapJsonToFunctions());
-			
-			return newDevice;
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		Device newDevice = new Device();
 		
-		return null;
+		JsonNode moduleDescription = loader.getModuleDescription(jsonlist2Device);
+		
+		// map deviceId
+		newDevice.setDeviceId(getDeviceId(jsonlist2Device, moduleDescription));
+		
+		// map roomIds
+		newDevice.setRoomIds(getRoomIds(jsonlist2Device, moduleDescription));
+		
+		// map groupIds
+		newDevice.setGroupIds(getGroupIds(jsonlist2Device, moduleDescription));
+		
+		// map functions
+		
+		newDevice.setFunctions(funcMapper.mapJsonToFunctions(jsonlist2Device, moduleDescription));
+		
+		return newDevice;
 	}
 	
 	

@@ -10,21 +10,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import io.swagger.model.Device;
 import io.swagger.model.Function;
+import mapping.get.WebsocketDeviceUpdateMessage;
 
 public class FunctionMapper {
 	
 	private ObjectMapper mapper;
 	private RequirementsValidator requirementsValidator;
 	private ValueExtractor extractor;
-	private JsonNode json;
-	private JsonNode moduleDescription;
 	
 	
-	public FunctionMapper(JsonNode json, JsonNode moduleDescription) {
-		this.json = json;
-		this.moduleDescription = moduleDescription;
-		
+	public FunctionMapper() {
 		this.mapper = new ObjectMapper();
 		this.requirementsValidator = new RequirementsValidator();
 		this.extractor = new ValueExtractor();
@@ -33,7 +30,7 @@ public class FunctionMapper {
 	/*
 	 * This function maps values from jsonlist2 to conex.io Functions
 	 */
-	public List<Function> mapJsonToFunctions()  {
+	public List<Function> mapJsonToFunctions(JsonNode json, JsonNode moduleDescription)  {
 		
 		List<Function> list = new ArrayList<>();
 		
@@ -42,15 +39,14 @@ public class FunctionMapper {
 		
 		for (JsonNode funcDescription : readDescription) {
 			
-			Function function = mapFunction(funcDescription);
+			Function function = mapFunction(funcDescription, json);
 			if (function != null) list.add(function);
 		}
 		
 		return list;
-		
 	}
 	
-	private Function mapFunction(JsonNode funcDescription){
+	private Function mapFunction(JsonNode funcDescription, JsonNode json){
 
 		try {
 			
@@ -95,6 +91,52 @@ public class FunctionMapper {
 			return null;
 		}
 			
+	}
+	
+	/*
+	 * This function maps values from websocket connection to conex.io Functions
+	 */
+	public boolean mapWebsocketValuesToFunction(Device device, WebsocketDeviceUpdateMessage message, JsonNode moduleDescription)  {
+		
+		List<Function> functionsList = device.getFunctions();
+		
+		// choose read part for FHEM to Java Mapping
+		ArrayNode readDescription = (ArrayNode) moduleDescription.get("functions").get("get");
+		
+		for (JsonNode funcDescription : readDescription) {
+			for (Function f : functionsList) {
+				
+				Class<?> clazz;
+				try {
+					clazz = Class.forName(funcDescription.get("class_name").asText());
+					
+					// if device has this Function
+					if (f.getClass().equals(clazz)) {
+						
+						// yey, this Function looks correct
+						JsonNode properties = funcDescription.get("properties");
+						
+						for(JsonNode prop : properties) {
+							String keyPath = prop.get("key_path").asText();
+							
+							// if reading is defined in this Function
+							if (keyPath.toLowerCase().startsWith("readings/"+message.reading.toLowerCase())) {
+								
+								// Value should be mapped to function
+								System.out.println("TODO: should be mapped ...");
+								
+							}
+						}
+					}
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+		}
+		
+		return false;
 	}
 	
 }

@@ -1,16 +1,24 @@
 package mapping.get;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import io.swagger.model.Device;
 import mapping.FHEMConnector;
+import mapping.get.functionMapper.FunctionMapper;
 
 public class WebsocketParser {
 	
+	private ModuleDescriptionLoader loader;
+	private FunctionMapper mapper;
+	
 	public WebsocketParser() {
-
+		this.loader = new ModuleDescriptionLoader("module_descriptions");
+		this.mapper = new FunctionMapper();
 	}
 	
 	public boolean update(String websocketMessage, Map<String, Device> deviceMap, FHEMConnector connector) {
@@ -29,7 +37,7 @@ public class WebsocketParser {
 		// test end
 		*/  
 		
-		DeviceUpdateMessage updateMessage = parseWebsocketMessage(websocketMessage);
+		WebsocketDeviceUpdateMessage updateMessage = parseWebsocketMessage(websocketMessage);
 		if (updateMessage != null) {
 			
 			if (updateMessage.deviceId.startsWith("#FHEMWEB")) {
@@ -44,6 +52,7 @@ public class WebsocketParser {
 				
 				if (updateMessage.reading.equals("DEFINED")) {
 					// new device defined, reload whole Map via jsonlist2!
+					System.out.println("reload jsonlist2 data");
 					connector.reload();
 				}
 				
@@ -70,6 +79,12 @@ public class WebsocketParser {
 						// TODO: update values somehow ...
 						System.out.println("TODO: Update '"+updateMessage.reading+"' @ '"+updateMessage.deviceId+"': value: '"+updateMessage.value+"', timestamp: '"+updateMessage.timestamp+"'");
 						
+						String deviceType = "fs20";
+						
+						JsonNode moduleDescription = loader.getModuleDescription(deviceType);
+						
+						if (moduleDescription != null) mapper.mapWebsocketValuesToFunction(device, updateMessage, moduleDescription);
+						
 					}
 				}
 			}
@@ -79,7 +94,7 @@ public class WebsocketParser {
 		return false;
 	}
 	
-	private DeviceUpdateMessage parseWebsocketMessage(String message) {
+	private WebsocketDeviceUpdateMessage parseWebsocketMessage(String message) {
 				
 		/*
 		 * Example:
@@ -97,7 +112,7 @@ public class WebsocketParser {
 		
 		Pattern pattern = Pattern.compile(regex);
 		Matcher matcher = pattern.matcher(message);
-		DeviceUpdateMessage deviceUpdateMessage = null;
+		WebsocketDeviceUpdateMessage deviceUpdateMessage = null;
 		
 		if (matcher.matches()) {
 			
@@ -109,33 +124,12 @@ public class WebsocketParser {
 			 * [ <reading>, <value> , - ]
 			 * [ - , <timestamp> , - ]
 			 */
-			deviceUpdateMessage = new DeviceUpdateMessage();
+			deviceUpdateMessage = new WebsocketDeviceUpdateMessage();
 			deviceUpdateMessage.deviceId = matcher.group(1);
 			deviceUpdateMessage.reading = matcher.group(4).replace(deviceUpdateMessage.deviceId+"-", "");
 			deviceUpdateMessage.value = matcher.group(5);
 			deviceUpdateMessage.timestamp = matcher.group(8);
 		}
 		return deviceUpdateMessage;
-	}
-	
-	
-	private class DeviceUpdateMessage {
-		public String deviceId;
-		public String reading;
-		public String value;
-		public String timestamp;
-		
-		@Override
-		public String toString() {
-			String string = 
-				"DeviceUpdateMessage {"+"\n"
-				+ "\tdevice_id: "+deviceId+"\n"
-				+ "\treading: "+reading+"\n"
-				+ "\tvalue: "+value+"\n"
-				+ "\ttimestamp: "+timestamp+"\n"
-				+ "}";
-			return string;
-		}
-		
 	}
 }

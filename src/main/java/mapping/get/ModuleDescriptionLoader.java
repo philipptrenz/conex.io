@@ -36,12 +36,31 @@ public class ModuleDescriptionLoader {
 	/*
 	 * This function returns the correct module description for the device from the TYPE-property of jsonlist2
 	 */
-	public JsonNode getModuleDescription(JsonNode jsonlist2Device) throws IOException {
+	public JsonNode getModuleDescription(JsonNode jsonlist2Device) {
 		String deviceType = jsonlist2Device.get("Internals").get("TYPE").asText();
-		byte[] encoded = Files.readAllBytes(Paths.get(folderName+"/"+deviceType.toLowerCase()+".json"));
-		
-		String moduleDescription = new String(encoded, StandardCharsets.UTF_8);
-		return reader.readTree(moduleDescription);
+		byte[] encoded;
+		try {
+			encoded = Files.readAllBytes(Paths.get(folderName+"/"+deviceType.toLowerCase()+".json"));
+			String moduleDescription = new String(encoded, StandardCharsets.UTF_8);
+			return reader.readTree(moduleDescription);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public JsonNode getModuleDescription(String deviceType) {
+		byte[] encoded;
+		try {
+			encoded = Files.readAllBytes(Paths.get(folderName+"/"+deviceType.toLowerCase()+".json"));
+			String moduleDescription = new String(encoded, StandardCharsets.UTF_8);
+			return reader.readTree(moduleDescription);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }
