@@ -2,18 +2,24 @@ package io.swagger.model;
 
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.model.Function;
+import org.joda.time.DateTime;
+import javax.validation.constraints.*;
 /**
  * Generic On-Off Switch
  */
 @ApiModel(description = "Generic On-Off Switch")
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-03-22T14:12:09.728Z")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-12T11:08:27.892Z")
 
 public class OnOff extends Function  {
   @JsonProperty("isOn")
   private Boolean isOn = false;
+
+  @JsonProperty("timestamp")
+  private DateTime timestamp = null;
 
   public OnOff isOn(Boolean isOn) {
     this.isOn = isOn;
@@ -33,6 +39,24 @@ public class OnOff extends Function  {
     this.isOn = isOn;
   }
 
+  public OnOff timestamp(DateTime timestamp) {
+    this.timestamp = timestamp;
+    return this;
+  }
+
+   /**
+   * Get timestamp
+   * @return timestamp
+  **/
+  @ApiModelProperty(value = "")
+  public DateTime getTimestamp() {
+    return timestamp;
+  }
+
+  public void setTimestamp(DateTime timestamp) {
+    this.timestamp = timestamp;
+  }
+
 
   @Override
   public boolean equals(java.lang.Object o) {
@@ -44,12 +68,13 @@ public class OnOff extends Function  {
     }
     OnOff onOff = (OnOff) o;
     return Objects.equals(this.isOn, onOff.isOn) &&
+        Objects.equals(this.timestamp, onOff.timestamp) &&
         super.equals(o);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(isOn, super.hashCode());
+    return Objects.hash(isOn, timestamp, super.hashCode());
   }
 
   @Override
@@ -58,6 +83,7 @@ public class OnOff extends Function  {
     sb.append("class OnOff {\n");
     sb.append("    ").append(toIndentedString(super.toString())).append("\n");
     sb.append("    isOn: ").append(toIndentedString(isOn)).append("\n");
+    sb.append("    timestamp: ").append(toIndentedString(timestamp)).append("\n");
     sb.append("}");
     return sb.toString();
   }

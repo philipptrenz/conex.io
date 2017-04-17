@@ -6,22 +6,23 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.model.Function;
+import java.math.BigDecimal;
 import org.joda.time.DateTime;
 import javax.validation.constraints.*;
 /**
- * Generic Slider Switch
+ * Generic Temperature Sensor
  */
-@ApiModel(description = "Generic Slider Switch")
+@ApiModel(description = "Generic Temperature Sensor")
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-12T11:08:27.892Z")
 
-public class Dimmer extends Function  {
+public class Temperature extends Function  {
   @JsonProperty("value")
-  private Integer value = null;
+  private BigDecimal value = null;
 
   @JsonProperty("timestamp")
   private DateTime timestamp = null;
 
-  public Dimmer value(Integer value) {
+  public Temperature value(BigDecimal value) {
     this.value = value;
     return this;
   }
@@ -33,17 +34,17 @@ public class Dimmer extends Function  {
    * @return value
   **/
   @ApiModelProperty(value = "")
-  @Min(0)
-  @Max(512)
-  public Integer getValue() {
+  @DecimalMin("0")
+  @DecimalMax("512")
+  public BigDecimal getValue() {
     return value;
   }
 
-  public void setValue(Integer value) {
+  public void setValue(BigDecimal value) {
     this.value = value;
   }
 
-  public Dimmer timestamp(DateTime timestamp) {
+  public Temperature timestamp(DateTime timestamp) {
     this.timestamp = timestamp;
     return this;
   }
@@ -70,9 +71,9 @@ public class Dimmer extends Function  {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Dimmer dimmer = (Dimmer) o;
-    return Objects.equals(this.value, dimmer.value) &&
-        Objects.equals(this.timestamp, dimmer.timestamp) &&
+    Temperature temperature = (Temperature) o;
+    return Objects.equals(this.value, temperature.value) &&
+        Objects.equals(this.timestamp, temperature.timestamp) &&
         super.equals(o);
   }
 
@@ -84,7 +85,7 @@ public class Dimmer extends Function  {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class Dimmer {\n");
+    sb.append("class Temperature {\n");
     sb.append("    ").append(toIndentedString(super.toString())).append("\n");
     sb.append("    value: ").append(toIndentedString(value)).append("\n");
     sb.append("    timestamp: ").append(toIndentedString(timestamp)).append("\n");

@@ -12,11 +12,14 @@ import javax.validation.constraints.*;
 /**
  * Device
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-03-22T14:12:09.728Z")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-12T11:16:22.579Z")
 
 public class Device   {
   @JsonProperty("device_id")
   private String deviceId = null;
+
+  @JsonProperty("type_id")
+  private String typeId = null;
 
   @JsonProperty("room_ids")
   private List<String> roomIds = new ArrayList<String>();
@@ -44,6 +47,24 @@ public class Device   {
 
   public void setDeviceId(String deviceId) {
     this.deviceId = deviceId;
+  }
+
+  public Device typeId(String typeId) {
+    this.typeId = typeId;
+    return this;
+  }
+
+   /**
+   * Get typeId
+   * @return typeId
+  **/
+  @ApiModelProperty(value = "")
+  public String getTypeId() {
+    return typeId;
+  }
+
+  public void setTypeId(String typeId) {
+    this.typeId = typeId;
   }
 
   public Device roomIds(List<String> roomIds) {
@@ -129,6 +150,7 @@ public class Device   {
     }
     Device device = (Device) o;
     return Objects.equals(this.deviceId, device.deviceId) &&
+        Objects.equals(this.typeId, device.typeId) &&
         Objects.equals(this.roomIds, device.roomIds) &&
         Objects.equals(this.groupIds, device.groupIds) &&
         Objects.equals(this.functions, device.functions);
@@ -136,7 +158,7 @@ public class Device   {
 
   @Override
   public int hashCode() {
-    return Objects.hash(deviceId, roomIds, groupIds, functions);
+    return Objects.hash(deviceId, typeId, roomIds, groupIds, functions);
   }
 
   @Override
@@ -145,6 +167,7 @@ public class Device   {
     sb.append("class Device {\n");
     
     sb.append("    deviceId: ").append(toIndentedString(deviceId)).append("\n");
+    sb.append("    typeId: ").append(toIndentedString(typeId)).append("\n");
     sb.append("    roomIds: ").append(toIndentedString(roomIds)).append("\n");
     sb.append("    groupIds: ").append(toIndentedString(groupIds)).append("\n");
     sb.append("    functions: ").append(toIndentedString(functions)).append("\n");

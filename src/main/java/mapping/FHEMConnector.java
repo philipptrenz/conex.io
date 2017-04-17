@@ -159,12 +159,21 @@ public class FHEMConnector {
 	public static String getJsonlist2MockupAsStringFromFile() {
 		byte[] encoded;
 		try {
-			encoded = Files.readAllBytes(Paths.get("testdata/jsonlist2_20170324.json"));
+			String file;
+			file = "jsonlist2_p.a.trick_sensitive.json";
+			//file = "jsonlist2_cooltux_sensitive.json";
+			
+			encoded = Files.readAllBytes(Paths.get("testdata/"+file));
 			return new String(encoded, StandardCharsets.UTF_8);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return "";
+			try {
+				encoded = Files.readAllBytes(Paths.get("testdata/jsonlist2_20170324.json"));
+				return new String(encoded, StandardCharsets.UTF_8);
+			} catch (IOException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+				return "";
+			}
 		}
 	}	
 }

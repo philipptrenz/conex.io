@@ -7,6 +7,7 @@ import java.util.List;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import io.swagger.model.Device;
+import io.swagger.model.Function;
 import mapping.MappingHelper;
 import mapping.get.functionMapper.FunctionMapper;
 
@@ -34,7 +35,7 @@ public class DeviceMapper {
 	public Device mapJsonToDevice(JsonNode jsonlist2Device)  {
 		
 		Device newDevice = new Device();
-		
+	
 		JsonNode moduleDescription = loader.getModuleDescription(jsonlist2Device);
 		
 		// map deviceId
@@ -56,11 +57,25 @@ public class DeviceMapper {
 	
 	
 	private String getDeviceId(JsonNode jsonlist2Device, JsonNode moduleDescription) {
-		if (moduleDescription.has("name")) {
-			JsonNode mappingDescription = moduleDescription.get("name");
+		if (moduleDescription.has("device_id")) {
+			JsonNode mappingDescription = moduleDescription.get("device_id");
 		
 			try {
 				return MappingHelper.navigateJsonKeyPath(jsonlist2Device, mappingDescription.get("key_path").asText()).asText();
+			} catch (Exception e) {
+				return null;
+			}
+		} else {
+			return null;
+		}
+	}
+	
+	private String getTypeId(JsonNode jsonlist2Device, JsonNode moduleDescription) {
+		if (moduleDescription.has("type_id")) {
+			JsonNode mappingDescription = moduleDescription.get("type_id");
+		
+			try {
+				return MappingHelper.navigateJsonKeyPath(jsonlist2Device, mappingDescription.get("key_path").asText()).asText().toLowerCase();
 			} catch (Exception e) {
 				return null;
 			}

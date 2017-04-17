@@ -1,6 +1,7 @@
 package mapping.get.functionMapper;
 
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -10,6 +11,7 @@ import javax.validation.constraints.Min;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
+import io.swagger.RFC3339DateFormat;
 import mapping.MappingHelper;
 import mapping.exceptions.NoValidKeyPathException;
 
@@ -39,17 +41,27 @@ public class ValueExtractor {
 		this.propertyName = propertyName;
 		this.jsonlist2Device = jsonlist2Device;
 		
-		
 		String key_path = property.get("key_path").asText();
 		String unmappedDeviceValue;
 		try {
 			unmappedDeviceValue = MappingHelper.navigateJsonKeyPath(jsonlist2Device, key_path).asText();
 			
+			// watch for property name
+			switch(propertyName) {
+			
+			
+			case "timestamp": return getTimestamp(unmappedDeviceValue, property);
+			
+			default: break;
+			}
+			
+			
 			ArrayNode cases = (ArrayNode) property.get("cases");
 			String value = "";
 			for (JsonNode mappingCase : cases) {
-				
 				String extractMode = mappingCase.get("extract_mode").asText();
+				
+				// watch for extract mode
 				switch (extractMode) {
 				
 				case "direct": 
@@ -88,6 +100,21 @@ public class ValueExtractor {
 		return defaultValue;
 	}
 	
+	private String getTimestamp(String unmappedDeviceValue, JsonNode property) {
+		try {
+			String pattern = property.get("format").asText();
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+			RFC3339DateFormat format = new RFC3339DateFormat();
+			
+			return format.format(simpleDateFormat.parse(unmappedDeviceValue));
+			//return null;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "";
+		}		
+	}
+	
 	private String modeDirect(JsonNode mappingCase, String unmappedDeviceValue) {
 		ArrayNode regexList = (ArrayNode) mappingCase.get("regex");
 		for (JsonNode regex : regexList ) {
@@ -100,8 +127,6 @@ public class ValueExtractor {
 					
 					String type = mappingCase.get("constraint").asText();
 					int constValue = getConstraintValueFromFunctionClassAnnotation(type);
-					
-					System.out.println("setting from constraint '"+type+"' value to "+constValue);
 					
 					return Integer.toString(constValue);	
 					

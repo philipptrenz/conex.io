@@ -22,5 +22,5 @@
 # Then explicitly reverse the ignore rule for a single file:
 #!docs/README.md
 
-io/swagger/*
-!io/swagger/model/*
+#io/swagger/*
+#!io/swagger/model/*

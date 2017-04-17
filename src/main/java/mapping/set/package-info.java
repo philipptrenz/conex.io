@@ -2,4 +2,4 @@
  * @author philipp
  *
  */
-package mapping.command;
+package mapping.set;

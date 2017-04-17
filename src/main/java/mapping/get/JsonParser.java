@@ -62,8 +62,6 @@ public class JsonParser {
 				}
 				index++;
 			}
-			
-			System.out.println("# parsed devices: "+index);
 				
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block

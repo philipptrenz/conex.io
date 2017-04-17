@@ -117,6 +117,8 @@ definitions:
     properties:
       device_id:
         type: string
+      type_id:
+        type: string
       room_ids:
         type: array
         items:
@@ -187,9 +189,6 @@ definitions:
     properties:
       function_id:
         type: string
-      timestamp:
-        type: string
-        format: date-time
     required:
       - function_id
   OnOff:
@@ -200,6 +199,9 @@ definitions:
           isOn:
             type: boolean
             default: false
+          timestamp:
+            type: string
+            format: date-time
   Dimmer:
     description: Generic Slider Switch
     allOf:
@@ -210,35 +212,25 @@ definitions:
             minimum: 0
             maximum: 512
             default: 0
-  RGBColorChooser:
-    description: Chooser for RGB colored devices
+          timestamp:
+            type: string
+            format: date-time
+            
+  Temperature:
+    description: Generic Temperature Sensor
     allOf:
       - $ref: '#/definitions/Function'
       - properties:
-          brightness:
-            type: integer
-            description: Total Brightness value (master value)
+          value:
+            type: number
             minimum: 0
-            maximum: 256
+            maximum: 512
             default: 0
-          r-channel:
-            description: Intesity of red channel
-            type: integer
-            minimum: 0
-            maximum: 256
-            default: 0
-          g-channel:
-            description: Intesity of green channel
-            type: integer
-            minimum: 0
-            maximum: 256
-            default: 0
-          b-channel:
-            description: Intesity of blue channel
-            type: integer
-            minimum: 0
-            maximum: 256
-            default: 0
+          timestamp:
+            type: string
+            format: date-time
+            
+      
   Error:
     type: object
     properties:
