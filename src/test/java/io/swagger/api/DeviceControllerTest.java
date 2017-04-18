@@ -113,13 +113,13 @@ public class DeviceControllerTest {
                 .andExpect(content().contentType(contentType))
                 
                 //Defined for only 1 Device -> Iterator ?
-                .andExpect(jsonPath("$.device[1].device_Ids", hasItems(sucheDevice)))
-                .andExpect(jsonPath("$.device[1].room_ids", hasItems(sucheRooms)))
-        		.andExpect(jsonPath("$.device[1].group_ids", hasItems(sucheGroups)))
-                .andExpect(jsonPath("$.device[1].function_ids", hasItems(sucheFunctions)));
+                .andExpect(jsonPath("$.device[0].device_Ids", hasItems(sucheDevice)))
+                .andExpect(jsonPath("$.device[0].room_ids", hasItems(sucheRooms)))
+        		.andExpect(jsonPath("$.device[0].group_ids", hasItems(sucheGroups)))
+                .andExpect(jsonPath("$.device[0].function_ids", hasItems(sucheFunctions)));
     }
     @Test
-    public void getDeviceByDevice() throws Exception {
+    public void getDevicesByDevice() throws Exception {
     	List <String> sucheDevice = Arrays.asList("");
     	
     	Filter f = new Filter();
