@@ -18,7 +18,7 @@ public class Main {
 	 */
 	public static void main(String [] args){
 		
-		connector = new FHEMConnector("127.0.0.1", 8083);
+		connector = new FHEMConnector("127.0.0.1", 8083, "5.8");
 		
 	}
 	

@@ -1,14 +1,11 @@
 package mapping;
 
 import java.io.BufferedReader;
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,16 +28,20 @@ public class FHEMConnector {
 	
 	private String ipAddress;
 	private int port;
+	private float fhemVersion;
 	
 	private WebSocketClient websocket;
 	private WebsocketParser websocketParser;
 	private JsonParser jsonParser;
 	private Map <String, Device> deviceMap = new HashMap<>();
 	
-	protected FHEMConnector(String ipAddress, int port) {
+	protected FHEMConnector(String ipAddress, int port, String fhemVersion) {
 		
 		this.ipAddress = ipAddress;
 		this.port = port;
+		this.fhemVersion = Float.parseFloat(fhemVersion);
+		
+		// TODO: add fhem version validation (websockets for >= 5.8)
 		
 		this.websocketParser = new WebsocketParser();
 		this.jsonParser = new JsonParser();
@@ -50,9 +51,32 @@ public class FHEMConnector {
 		reload();		
 	}
 	
-	public FHEMConnector getInstance(String ipAddress, int port) {
+	public boolean reload() {
+		String jsonlist2 = null;
+		try {
+			jsonlist2 = sendFhemCommand("jsonlist2");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		long now = System.currentTimeMillis() / 1000l;
+		
+		if (jsonlist2 == null || jsonlist2.isEmpty()) {
+			System.err.println("No jsonlist2 data received! 'longpoll' has to be set to 'websocket' and since FHEM 5.8 'csrfToken' must be 'none'.");
+			return false;
+		}
+		
+		startWebsocket(now);
+		
+		List<Device> devices = jsonParser.parse(jsonlist2);
+		deviceMap = devices.stream().collect(Collectors.toMap(Device::getDeviceId, Device -> Device));
+		return true;
+	}
+	
+	public FHEMConnector getInstance(String ipAddress, int port, String fhemVersion) {
 		if(instance == null) {
-	         instance = new FHEMConnector(ipAddress, port);
+	         instance = new FHEMConnector(ipAddress, port, fhemVersion);
 	      }
 	      return instance;
 	}
@@ -128,29 +152,6 @@ public class FHEMConnector {
 	
 	private List<Device> getAllDevices() {
 		return (List<Device>) deviceMap.values();
-	}
-	
-	public boolean reload() {
-		String jsonlist2 = null;
-		try {
-			jsonlist2 = sendFhemCommand("jsonlist2");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		long now = System.currentTimeMillis() / 1000l;
-		
-		if (jsonlist2 == null || jsonlist2.isEmpty()) {
-			System.err.println("No jsonlist2 data received! 'longpoll' has to be set to 'websocket' and since FHEM 5.8 'csrfToken' must be 'none'.");
-			return false;
-		}
-		
-		startWebsocket(now);
-		
-		List<Device> devices = jsonParser.parse(jsonlist2);
-		deviceMap = devices.stream().collect(Collectors.toMap(Device::getDeviceId, Device -> Device));
-		return true;
 	}
 	
 	/*
