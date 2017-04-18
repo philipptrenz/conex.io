@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.model.Device;
 import io.swagger.model.Function;
 import mapping.MappingHelper;
+import mapping.exceptions.NoValidKeyPathException;
 import mapping.get.functionMapper.FunctionMapper;
 
 /*
@@ -87,26 +88,29 @@ public class DeviceMapper {
 	}
 	
 	private List<String> getRoomIds(JsonNode jsonlist2Device, JsonNode moduleDescription) {
-		if (moduleDescription.has("rooms")) {
+		JsonNode mappingDescription = moduleDescription.get("rooms");
+		String string;
+		try {
+			string = MappingHelper.navigateJsonKeyPath(jsonlist2Device, mappingDescription.get("key_path").asText()).asText();
+		} catch (NoValidKeyPathException e) {
+			string = null;
+		}
+		return mapRoomIds(string, moduleDescription);
+	}
+	
+	public List<String> mapRoomIds(String string, JsonNode moduleDescription) {
+		if (string != null && !string.isEmpty() && moduleDescription.has("rooms")) {
 			JsonNode mappingDescription = moduleDescription.get("rooms");
-			
-			String string;
-			try {
-				string = MappingHelper.navigateJsonKeyPath(jsonlist2Device, mappingDescription.get("key_path").asText()).asText();
-			
-				List<String> list = new ArrayList<>();
-				if (mappingDescription.has("delimiters") && !mappingDescription.get("delimiters").asText().isEmpty()) {
-					String delimiter = mappingDescription.get("delimiters").asText();
-					String[] array = string.split(delimiter);
-					Collections.addAll(list, array);
-				} else {
-					list.add(string);
-				}
-				
-				return list;
-			} catch (Exception e) {
-				return new ArrayList<>();
+			List<String> list = new ArrayList<>();
+			if (mappingDescription.has("delimiters") && !mappingDescription.get("delimiters").asText().isEmpty()) {
+				String delimiter = mappingDescription.get("delimiters").asText();
+				String[] array = string.split(delimiter);
+				Collections.addAll(list, array);
+			} else {
+				list.add(string);
 			}
+			
+			return list;
 		} else {
 			return new ArrayList<>();
 		}
@@ -114,26 +118,30 @@ public class DeviceMapper {
 	
 	
 	private List<String> getGroupIds(JsonNode jsonlist2Device, JsonNode moduleDescription) {
-		if (moduleDescription.has("groups")) {
+		JsonNode mappingDescription = moduleDescription.get("groups");
+		String string;
+		try {
+			string = MappingHelper.navigateJsonKeyPath(jsonlist2Device, mappingDescription.get("key_path").asText()).asText();
+		} catch (NoValidKeyPathException e) {
+			string = null;
+		}
+		return mapGroupIds(string, moduleDescription);
+		
+	}
+	
+	public List<String> mapGroupIds(String string, JsonNode moduleDescription) {
+		if (string != null && !string.isEmpty() && moduleDescription.has("groups")) {
 			JsonNode mappingDescription = moduleDescription.get("groups");
-			
-			String string;
-			try {
-				string = MappingHelper.navigateJsonKeyPath(jsonlist2Device, mappingDescription.get("key_path").asText()).asText();
-				
-				List<String> list = new ArrayList<>();
-				if (mappingDescription.has("delimiters") && !mappingDescription.get("delimiters").asText().isEmpty()) {
-					String delimiter = mappingDescription.get("delimiters").asText();
-					String[] array = string.split(delimiter);
-					Collections.addAll(list, array);
-				} else {
-					list.add(string);
-				}
-				
-				return list;
-			} catch (Exception e) {
-				return new ArrayList<>();
+			List<String> list = new ArrayList<>();
+			if (mappingDescription.has("delimiters") && !mappingDescription.get("delimiters").asText().isEmpty()) {
+				String delimiter = mappingDescription.get("delimiters").asText();
+				String[] array = string.split(delimiter);
+				Collections.addAll(list, array);
+			} else {
+				list.add(string);
 			}
+			
+			return list;
 		} else {
 			return new ArrayList<>();
 		}

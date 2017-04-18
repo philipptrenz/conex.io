@@ -30,6 +30,8 @@ public class JsonParser {
 		
 		ArrayList<Device> deviceList = new ArrayList<>();
 		
+		
+		long startTime = System.currentTimeMillis();
 		try {			
 			JsonNode root = reader.readTree(jsonlist2);
 			ArrayNode jsonlist2Devices = (ArrayNode) root.get("Results");
@@ -70,6 +72,10 @@ public class JsonParser {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		long stopTime = System.currentTimeMillis();
+	    long elapsedTime = stopTime - startTime;
+		System.out.println(deviceList.size()+" devices mapped in "+elapsedTime+"ms");
 		
 		return deviceList;
 	}

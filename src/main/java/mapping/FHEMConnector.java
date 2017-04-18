@@ -35,7 +35,7 @@ public class FHEMConnector {
 	private JsonParser jsonParser;
 	private Map <String, Device> deviceMap = new HashMap<>();
 	
-	protected FHEMConnector(String ipAddress, int port, String fhemVersion) {
+	private FHEMConnector(String ipAddress, int port, String fhemVersion) {
 		
 		this.ipAddress = ipAddress;
 		this.port = port;
@@ -52,6 +52,9 @@ public class FHEMConnector {
 	}
 	
 	public boolean reload() {
+		
+		closeWebsocket();
+		
 		String jsonlist2 = null;
 		try {
 			jsonlist2 = sendFhemCommand("jsonlist2");
@@ -74,7 +77,7 @@ public class FHEMConnector {
 		return true;
 	}
 	
-	public FHEMConnector getInstance(String ipAddress, int port, String fhemVersion) {
+	protected static FHEMConnector getInstance(String ipAddress, int port, String fhemVersion) {
 		if(instance == null) {
 	         instance = new FHEMConnector(ipAddress, port, fhemVersion);
 	      }
@@ -86,6 +89,7 @@ public class FHEMConnector {
 		String since = null;
 		String filter = ".*";
 		String nowString = Long.toString(now);
+		FHEMConnector itsMe = this;
 		
 		String query = "?XHR=1&inform=type=status;addglobal=1;filter="+filter+";since="+since+";fmt=JSON;&timestamp="+nowString;
 		
@@ -108,12 +112,12 @@ public class FHEMConnector {
 
 				@Override
 				public void onMessage(String message) {
-					websocketParser.update(message, deviceMap, instance);
+					websocketParser.update(message, deviceMap, itsMe);
 				}
 
 				@Override
 				public void onError(Exception ex) {
-					System.err.println("an error occurred:" + ex);
+					ex.printStackTrace();
 					// TODO
 				}
 			};
@@ -124,7 +128,7 @@ public class FHEMConnector {
 	}
 	
 	public void closeWebsocket() {
-		websocket.close();
+		if (websocket != null) websocket.close();
 		websocket = null;
 	}
 	

@@ -103,7 +103,7 @@ public class FunctionMapper {
 	public boolean mapWebsocketValuesToFunction(Device device, WebsocketDeviceUpdateMessage message, JsonNode moduleDescription)  {
 		
 		boolean updated = false;
-		List<Function> functionsList = device.getFunctions();
+		final List<Function> functionsList = device.getFunctions();
 		
 		// choose read part for FHEM to Java Mapping
 		ArrayNode readDescription = (ArrayNode) moduleDescription.get("functions").get("get");
@@ -179,7 +179,6 @@ public class FunctionMapper {
 		
 		if (updated) {
 			device.setFunctions(updatedList);
-			System.out.println("device updated:\n"+device);
 		}
 		
 		return updated;
