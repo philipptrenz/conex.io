@@ -37,7 +37,6 @@ public class DeviceCalc {
         				if (!filter.getDeviceIds().contains(d.getDeviceId())) {
         					geraete.remove(d);
         					i--;
-        					System.out.println("Device: " + d.getDeviceId() + " wurde entfernt!");
         					continue;
         				}
         			}
@@ -45,7 +44,6 @@ public class DeviceCalc {
         				if(Collections.disjoint(filter.getRoomIds(), d.getRoomIds())) {
         					geraete.remove(d);
         					i--;
-        					System.out.println("Device: " + d.getDeviceId() + " wurde entfernt durch ROOMS!");
         					continue;
         				}
         			}
@@ -53,7 +51,6 @@ public class DeviceCalc {
         				if(Collections.disjoint(filter.getGroupIds(), d.getGroupIds())) {
         					geraete.remove(d);
         					i--;
-        					System.out.println("Device: " + d.getDeviceId() + " wurde entfernt durch GROUP!");
         					continue;
         				}
         			}
@@ -67,7 +64,6 @@ public class DeviceCalc {
         	        			if(!check) {
         	        				geraete.remove(d);
         	    					i--;
-                					System.out.println("Device: " + d.getDeviceId() + " wurde entfernt durch FUNCTION!");
         	        					}
         						}
         					}
