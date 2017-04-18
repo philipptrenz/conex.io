@@ -1,5 +1,6 @@
 package io.swagger.api;
 
+import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,10 +25,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 /**
  * @author Timo Schwan
  */
@@ -43,13 +47,9 @@ public class DeviceControllerTest {
 
     private MockMvc mockMvc;
 
-    private String userName = "bdussault";
-
     private HttpMessageConverter mappingJackson2HttpMessageConverter;
 
     private Device device;
-
-    private List<Device> bookmarkList = new ArrayList<>();
 
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -66,17 +66,10 @@ public class DeviceControllerTest {
                 this.mappingJackson2HttpMessageConverter);
     }
 
-    /*@Before
+    @Before
     public void setup() throws Exception {
         this.mockMvc = webAppContextSetup(webApplicationContext).build();
-
-        this.bookmarkRepository.deleteAllInBatch();
-        this.accountRepository.deleteAllInBatch();
-
-        this.account = accountRepository.save(new Account(userName, "password"));
-        this.bookmarkList.add(bookmarkRepository.save(new Bookmark(account, "http://bookmark.com/1/" + userName, "A description")));
-        this.bookmarkList.add(bookmarkRepository.save(new Bookmark(account, "http://bookmark.com/2/" + userName, "A description")));
-    }*/
+    }
 
     /**
      * Kein passendes Gerät gefunden -> Gibt alle Geräte zurück
@@ -84,8 +77,12 @@ public class DeviceControllerTest {
      */
     @Test
     public void noMatchFound() throws Exception {
+    	Filter f = new Filter();
+    	f.setDeviceIds(Arrays.asList("", ""));
+    	f.setRoomIds(Arrays.asList("", ""));
+    	
         mockMvc.perform(post("/devices")
-                .content(this.json(new Filter()))
+                .content(this.json(f))
                 .contentType(contentType))
                 .andExpect(status().isNotFound());
     }
@@ -96,11 +93,17 @@ public class DeviceControllerTest {
      */
     @Test
     public void getDeviceByAllFitlers() throws Exception {
+    	List <String> sucheDevice = Arrays.asList("");
+    	List <String> sucheFunctions = Arrays.asList("");
+    	List <String> sucheGroups = Arrays.asList("");
+    	List <String> sucheRooms = Arrays.asList("");
+    	
     	Filter f = new Filter();
-    	f.setDeviceIds(Arrays.asList("", ""));
-    	f.setFunctionIds(Arrays.asList("", ""));
-    	f.setGroupIds(Arrays.asList("", ""));
-    	f.setRoomIds(Arrays.asList("", ""));
+    	
+    	f.setDeviceIds(sucheDevice);
+    	f.setFunctionIds(sucheFunctions);
+    	f.setGroupIds(sucheGroups);
+    	f.setRoomIds(sucheRooms);
     	
     	
         mockMvc.perform(post("/devices")
@@ -108,24 +111,38 @@ public class DeviceControllerTest {
         		.contentType(contentType))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(contentType))
-                .andExpect(jsonPath("$.device_Ids", is(f.getDeviceIds())))
-                .andExpect(jsonPath("$.room_ids", is(f.getRoomIds())))
-        		.andExpect(jsonPath("$.group_ids", is(f.getFunctionIds())))
-                .andExpect(jsonPath("$.function_ids", is(f.getFunctionIds())));
+                
+                //Defined for only 1 Device -> Iterator ?
+                .andExpect(jsonPath("$.device[1].device_Ids", hasItems(sucheDevice)))
+                .andExpect(jsonPath("$.device[1].room_ids", hasItems(sucheRooms)))
+        		.andExpect(jsonPath("$.device[1].group_ids", hasItems(sucheGroups)))
+                .andExpect(jsonPath("$.device[1].function_ids", hasItems(sucheFunctions)));
+    }
+    @Test
+    public void getDeviceByDevice() throws Exception {
+    	List <String> sucheDevice = Arrays.asList("");
+    	
+    	Filter f = new Filter();
+    	
+    	f.setDeviceIds(sucheDevice);
+    	
+    	
+        mockMvc.perform(post("/devices")
+        		.content(this.json(f))
+        		.contentType(contentType))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(contentType))
+                
+                //Defined for only 1 Device -> Iterator ?
+                //hasItems testing...
+                .andExpect(jsonPath("$.device[1].device_Ids", hasItems(sucheDevice)));
     }
 
     @Test
-    public void readBookmarks() throws Exception {
-        mockMvc.perform(get("/" + userName + "/bookmarks"))
+    public void readDevices() throws Exception {
+        mockMvc.perform(get("/devices"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(contentType))
-               // .andExpect(jsonPath("$", hasSize(2)))
-               // .andExpect(jsonPath("$[0].id", is(this.bookmarkList.get(0).getId().intValue())))
-                .andExpect(jsonPath("$[0].uri", is("http://bookmark.com/1/" + userName)))
-                .andExpect(jsonPath("$[0].description", is("A description")))
-               // .andExpect(jsonPath("$[1].id", is(this.bookmarkList.get(1).getId().intValue())))
-                .andExpect(jsonPath("$[1].uri", is("http://bookmark.com/2/" + userName)))
-                .andExpect(jsonPath("$[1].description", is("A description")));
+                .andExpect(content().contentType(contentType));
     }
 
    /* @Test
