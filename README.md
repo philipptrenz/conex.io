@@ -6,9 +6,7 @@ This is a prototypical implemementation for the home automation server [FHEM](ht
 
 ## Overview  
 
-conex.io provides a simple but powerful API interface to equip your smart home server with a growing pool of not only mobile applications.
-
-This is a first prototype implemented in Java using the SpringBoot framework with bindings for the open source server [FHEM](https://fhem.de/).
+...
 
 ## Helpful notes
 
