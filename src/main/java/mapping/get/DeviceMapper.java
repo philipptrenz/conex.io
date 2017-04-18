@@ -54,37 +54,37 @@ public class DeviceMapper {
 		
 		newDevice.setFunctions(funcMapper.mapJsonToFunctions(jsonlist2Device, moduleDescription));
 		
-		return newDevice;
+		if (newDevice.getDeviceId() != null) return newDevice;
+		System.out.println("device_id mapping failed");
+		return null;
 	}
 	
 	
 	
 	private String getDeviceId(JsonNode jsonlist2Device, JsonNode moduleDescription) {
-		if (moduleDescription.has("device_id")) {
-			JsonNode mappingDescription = moduleDescription.get("device_id");
-		
-			try {
-				return MappingHelper.navigateJsonKeyPath(jsonlist2Device, mappingDescription.get("key_path").asText()).asText();
-			} catch (Exception e) {
-				return null;
-			}
-		} else {
-			return null;
+		JsonNode mappingDescription = moduleDescription.get("device_id");
+		String id = null;
+		try {
+			String keyPath = mappingDescription.get("key_path").asText();
+			JsonNode type = MappingHelper.navigateJsonKeyPath(jsonlist2Device, keyPath);
+			id = type.asText().toLowerCase();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		return id;
 	}
 	
 	private String getTypeId(JsonNode jsonlist2Device, JsonNode moduleDescription) {
-		if (moduleDescription.has("type_id")) {
-			JsonNode mappingDescription = moduleDescription.get("type_id");
-		
-			try {
-				return MappingHelper.navigateJsonKeyPath(jsonlist2Device, mappingDescription.get("key_path").asText()).asText().toLowerCase();
-			} catch (Exception e) {
-				return null;
-			}
-		} else {
-			return null;
+		JsonNode mappingDescription = moduleDescription.get("type_id");
+		String id = null;
+		try {
+			String keyPath = mappingDescription.get("key_path").asText();
+			JsonNode type = MappingHelper.navigateJsonKeyPath(jsonlist2Device, keyPath);
+			id = type.asText().toLowerCase();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		return id;
 	}
 	
 	private List<String> getRoomIds(JsonNode jsonlist2Device, JsonNode moduleDescription) {

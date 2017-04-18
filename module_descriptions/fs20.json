@@ -5,8 +5,11 @@
 		"author": "Philipp Trenz",
 		"last_edited": "2017-03-25"
 	},
-	"name":{
+	"device_id":{
 		"key_path": "Name"
+	},
+	"type_id":{
+		"key_path": "Internals/TYPE"
 	},
 	"rooms": {
 		"key_path": "Attributes/room",
