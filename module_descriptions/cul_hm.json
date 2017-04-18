@@ -55,6 +55,11 @@
 								]
 							}
 						]
+					},
+					"timestamp": {
+						"type": "date-time",
+						"key_path": "Readings/state/Time",
+						"format": "yyyy-MM-dd HH:mm:ss"
 					}
 				}
 			}

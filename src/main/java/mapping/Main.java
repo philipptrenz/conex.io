@@ -18,7 +18,9 @@ public class Main {
 	 */
 	public static void main(String [] args){
 		
-		connector = new FHEMConnector("127.0.0.1", 8083, "5.8");
+		//connector = FHEMConnector.getInstance("127.0.0.1", 8083, "5.8");
+		
+		new JsonParser().parse(FHEMConnector.getJsonlist2MockupAsStringFromFile());
 		
 	}
 	
@@ -62,7 +64,19 @@ public class Main {
 			if (k > 15) k = 0;
 		}
 		return list;
+	}
+	
+	public static void setDevices(List<Device> deviceList, Function toSet) {
 		
+		String devices = "";
+		
+		int i = 0;
+		for (Device device : deviceList) {
+			devices += device.getDeviceId();
+			if (i++ < deviceList.size()) devices += ",";
+		}
+		
+		System.out.println("set "+devices+" ?");
 	}
 
 }

@@ -140,47 +140,47 @@ public class WebsocketParser {
 		switch(updateMessage.reading) {
 		
 		case "INITIALIZED":
-			//after initialization is finished.
+			// after initialization is finished.
 			break;
 			
 		case "REREADCFG":
-			//after the configuration is reread.
+			// after the configuration is reread.
 			break;
 			
 		case "SAVE":
-			//before the configuration is saved.
+			// before the configuration is saved.
 			break;
 			
 		case "SHUTDOWN":
-			//before FHEM is shut down.
+			// before FHEM is shut down.
 			break;
 			
 		case "DEFINED":
-			//after a device is defined.
+			// after a device is defined.
 			connector.reload();
 			break;
 			
 		case "DELETED":
-			//after a device was deleted.
+			// after a device was deleted.
 			connector.reload();
 			break;
 			
 		case "RENAMED":
-			//after a device was renamed.
+			// after a device was renamed.
 			connector.reload();
 			break;
 			
 		case "UNDEFINED":
-			//upon reception of a message for an undefined device.
+			// upon reception of a message for an undefined device.
 			break;
 			
 		case "MODIFIED":
-			//after a device modification.
+			// after a device modification.
 			connector.reload();
 			break;
 			
 		case "UPDATE":
-			//after an update is completed.
+			// after an update is completed.
 			break;
 			
 		default: 

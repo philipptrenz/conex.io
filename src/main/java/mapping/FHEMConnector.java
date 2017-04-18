@@ -35,7 +35,7 @@ public class FHEMConnector {
 	private JsonParser jsonParser;
 	private Map <String, Device> deviceMap = new HashMap<>();
 	
-	protected FHEMConnector(String ipAddress, int port, String fhemVersion) {
+	private FHEMConnector(String ipAddress, int port, String fhemVersion) {
 		
 		this.ipAddress = ipAddress;
 		this.port = port;
@@ -77,7 +77,7 @@ public class FHEMConnector {
 		return true;
 	}
 	
-	public FHEMConnector getInstance(String ipAddress, int port, String fhemVersion) {
+	protected static FHEMConnector getInstance(String ipAddress, int port, String fhemVersion) {
 		if(instance == null) {
 	         instance = new FHEMConnector(ipAddress, port, fhemVersion);
 	      }
