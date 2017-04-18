@@ -2,6 +2,8 @@
 
 The conex.io API provides the functionality to interact with home automation devices, which are connected to a home automation server, detached from the manufacturer specific communication syntax.
 
+This is a prototypical implemementation for the home automation server [FHEM](https://fhem.de/).
+
 ## Overview  
 
 conex.io provides a simple but powerful API interface to equip your smart home server with a growing pool of not only mobile applications.
