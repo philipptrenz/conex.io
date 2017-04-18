@@ -15,10 +15,12 @@ public class WebsocketParser {
 	
 	private ModuleDescriptionLoader loader;
 	private FunctionMapper mapper;
+	private DeviceMapper deviceMapper;
 	
 	public WebsocketParser() {
 		this.loader = new ModuleDescriptionLoader("module_descriptions");
 		this.mapper = new FunctionMapper();
+		this.deviceMapper = new DeviceMapper(loader);
 	}
 	
 	public boolean update(String websocketMessage, Map<String, Device> deviceMap, FHEMConnector connector) {
@@ -38,53 +40,43 @@ public class WebsocketParser {
 		*/  
 		
 		WebsocketDeviceUpdateMessage updateMessage = parseWebsocketMessage(websocketMessage);
-		if (updateMessage != null) {
+		if (updateMessage != null && updateMessage.deviceId != null) {
 			
 			if (updateMessage.deviceId.startsWith("#FHEMWEB")) {
 				
 				// just a FHEMWEB device update, ignore
-				
 				return false;
 				
 			} else if (updateMessage.deviceId.equals("global")) {
 				
-				// global status update from FHEM, could be important
-				
-				if (updateMessage.reading.equals("DEFINED")) {
-					// new device defined, reload whole Map via jsonlist2!
-					System.out.println("reload jsonlist2 data");
-					connector.reload();
-				}
-				
+				handleFHEMGlobalEvent(updateMessage, connector);
 				return false;
 				
 			} else {
 				
 				Device device = deviceMap.get(updateMessage.deviceId);
-				
-				if (device != null) {
+				if (isParsable(updateMessage)) {
+					JsonNode moduleDescription = loader.getModuleDescription(device.getTypeId());
 					
-					if (updateMessage.reading.toLowerCase().equals("room")) {
+					if (moduleDescription != null) {
 						
-						// TODO: Update room
-						System.out.println("TODO: Update room");
-						
-					} else if (updateMessage.reading.toLowerCase().equals("group")) {
-						
-						// TODO: Update group from map
-						System.out.println("TODO: Update group");
-						
-					} else {
-						
-						// TODO: update values somehow ...
-						//System.out.println("TODO: Update '"+updateMessage.reading+"' @ '"+updateMessage.deviceId+"': value: '"+updateMessage.value+"', timestamp: '"+updateMessage.timestamp+"'");
-						
-						JsonNode moduleDescription = loader.getModuleDescription(device.getTypeId());
-						
-						if (moduleDescription != null) {
-							mapper.mapWebsocketValuesToFunction(device, updateMessage, moduleDescription);
+						if (updateMessage.reading.toLowerCase().equals("room")) {
+							
+							device.setRoomIds(deviceMapper.mapRoomIds(updateMessage.value, moduleDescription));
+							
+						} else if (updateMessage.reading.toLowerCase().equals("group")) {
+							
+							device.setGroupIds(deviceMapper.mapGroupIds(updateMessage.value, moduleDescription));
+							
+						} else {
+
+							if (moduleDescription != null) {
+								mapper.mapWebsocketValuesToFunction(device, updateMessage, moduleDescription);
+							}
+							
 						}
 						
+						System.out.println("updated device:\n"+device);
 					}
 				}
 			}
@@ -108,14 +100,13 @@ public class WebsocketParser {
 		 * ^\["(.*)","(.*)","(.*)"\]\n\["(.*)","(.*)","(.*)"\]\n\["(.*)","(.*)","(.*)"\]\n*$
 		 */
 		
-		String regex = "^\\[\"(.*)\",\"(.*)\",\"(.*)\"\\]\\n\\[\"(.*)\",\"(.*)\",\"(.*)\"\\]\\n\\[\"(.*)\",\"(.*)\",\"(.*)\"\\]\\n*$";
+		String regex = "^\\[\"(.*)\",\"(.*)\",\"(.*)\"\\](\\n\\[\"(.*)\",\"(.*)\",\"(.*)\"\\](\\n\\[\"(.*)\",\"(.*)\",\"(.*)\"\\])?)?\\n*$";
 		
 		Pattern pattern = Pattern.compile(regex);
 		Matcher matcher = pattern.matcher(message);
 		WebsocketDeviceUpdateMessage deviceUpdateMessage = null;
 		
 		if (matcher.matches()) {
-			
 			
 			/*
 			 * Parse in format:
@@ -125,11 +116,45 @@ public class WebsocketParser {
 			 * [ - , <timestamp> , - ]
 			 */
 			deviceUpdateMessage = new WebsocketDeviceUpdateMessage();
-			deviceUpdateMessage.deviceId = matcher.group(1);
-			deviceUpdateMessage.reading = matcher.group(4).replace(deviceUpdateMessage.deviceId+"-", "");
-			deviceUpdateMessage.value = matcher.group(5);
-			deviceUpdateMessage.timestamp = matcher.group(8);
+			
+			try {
+				deviceUpdateMessage.deviceId = matcher.group(1) != null ? matcher.group(1) : null;
+				
+				deviceUpdateMessage.reading = matcher.group(5) != null ? matcher.group(5) : null;
+				if (deviceUpdateMessage.reading != null && deviceUpdateMessage.deviceId != null) deviceUpdateMessage.reading = deviceUpdateMessage.reading.replace(deviceUpdateMessage.deviceId+"-", "");
+				
+				deviceUpdateMessage.value = matcher.group(6) != null ? matcher.group(6) : null;
+				
+				deviceUpdateMessage.timestamp = matcher.group(10) != null ? matcher.group(10) : null;
+			}catch (NullPointerException e) {
+				// TODO: handle exception
+				e.printStackTrace();
+			}
 		}
 		return deviceUpdateMessage;
+	}
+	
+	private boolean isParsable(WebsocketDeviceUpdateMessage message) {
+		return (message != null && message.deviceId != null && !message.deviceId.isEmpty() && message.reading != null && !message.reading.isEmpty() && message.value != null && !message.value.isEmpty() && message.timestamp != null && !message.timestamp.isEmpty());
+	}
+	
+	private void handleFHEMGlobalEvent(WebsocketDeviceUpdateMessage updateMessage, FHEMConnector connector) {
+		switch(updateMessage.reading) {
+		
+		case "DEFINED":
+			System.out.println("new device defined, reload jsonlist2 data");
+			connector.reload();
+			break;
+			
+		case "DELETEATTR":
+			System.out.println("attribute deleted, reload jsonlist2 data");
+			connector.reload();
+			break;
+			
+		default: 
+			System.out.println("'"+updateMessage.reading+" happend, preventive reload");
+			connector.reload();
+			break;
+		}
 	}
 }
