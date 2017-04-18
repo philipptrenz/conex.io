@@ -81,8 +81,6 @@ public class WebsocketParser {
 				}
 			}
 		}
-		
-		
 		return false;
 	}
 	
@@ -141,18 +139,51 @@ public class WebsocketParser {
 	private void handleFHEMGlobalEvent(WebsocketDeviceUpdateMessage updateMessage, FHEMConnector connector) {
 		switch(updateMessage.reading) {
 		
+		case "INITIALIZED":
+			//after initialization is finished.
+			break;
+			
+		case "REREADCFG":
+			//after the configuration is reread.
+			break;
+			
+		case "SAVE":
+			//before the configuration is saved.
+			break;
+			
+		case "SHUTDOWN":
+			//before FHEM is shut down.
+			break;
+			
 		case "DEFINED":
-			//System.out.println("new device defined, reload jsonlist2 data");
+			//after a device is defined.
 			connector.reload();
 			break;
 			
-		case "DELETEATTR":
-			//System.out.println("attribute deleted, reload jsonlist2 data");
+		case "DELETED":
+			//after a device was deleted.
 			connector.reload();
+			break;
+			
+		case "RENAMED":
+			//after a device was renamed.
+			connector.reload();
+			break;
+			
+		case "UNDEFINED":
+			//upon reception of a message for an undefined device.
+			break;
+			
+		case "MODIFIED":
+			//after a device modification.
+			connector.reload();
+			break;
+			
+		case "UPDATE":
+			//after an update is completed.
 			break;
 			
 		default: 
-			//System.out.println("'"+updateMessage.reading+" happend, preventive reload");
 			connector.reload();
 			break;
 		}
