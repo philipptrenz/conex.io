@@ -5,17 +5,26 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.TestRestTemplate;
 import org.springframework.test.context.web.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.mock.http.MockHttpOutputMessage;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.WebApplicationContext;
 
+import io.swagger.Swagger2SpringBoot;
 import io.swagger.model.Device;
+import io.swagger.model.Devices;
 import io.swagger.model.Filter;
 
 import java.io.IOException;
@@ -36,14 +45,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Timo Schwan
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-//@SpringBootTest(classes = Application.class)
+@ContextConfiguration(classes = Swagger2SpringBoot.class)
 @WebAppConfiguration
 public class DeviceControllerTest {
 
 
-    private MediaType contentType = new MediaType(MediaType.APPLICATION_JSON.getType(),
-            MediaType.APPLICATION_JSON.getSubtype(),
-            Charset.forName("utf8"));
+    private MediaType contentType = MediaType.APPLICATION_JSON;
 
     private MockMvc mockMvc;
 
@@ -53,6 +60,9 @@ public class DeviceControllerTest {
 
     @Autowired
     private WebApplicationContext webApplicationContext;
+    
+    @Autowired
+    private TestRestTemplate restTemplate;
 
     @Autowired
     void setConverters(HttpMessageConverter<?>[] converters) {
@@ -81,10 +91,17 @@ public class DeviceControllerTest {
     	f.setDeviceIds(Arrays.asList("", ""));
     	f.setRoomIds(Arrays.asList("", ""));
     	
-        mockMvc.perform(post("/devices")
-                .content(this.json(f))
-                .contentType(contentType))
-                .andExpect(status().isNotFound());
+        MvcResult result =mockMvc.perform(post("/devices")
+                			.content(this.json(f))
+                			.contentType(contentType))
+                			.andExpect(status().isNotFound())
+                			.andReturn();
+        result.getResponse().getContentAsString();
+        
+        Devices devices = this.restTemplate.getForObject("localhost:8080/v0/devices", Devices.class);
+        for(Device d : devices.getDevices()) {
+        	
+        }
     }
 
     /**
@@ -92,11 +109,11 @@ public class DeviceControllerTest {
      * @throws Exception
      */
     @Test
-    public void getDeviceByAllFitlers() throws Exception {
-    	List <String> sucheDevice = Arrays.asList("");
-    	List <String> sucheFunctions = Arrays.asList("");
-    	List <String> sucheGroups = Arrays.asList("");
-    	List <String> sucheRooms = Arrays.asList("");
+    public void getDeviceByAllFilters() throws Exception {
+    	List <String> sucheDevice = Arrays.asList("testdevice_0");
+    	List <String> sucheFunctions = Arrays.asList("testfunction_0");
+    	List <String> sucheGroups = Arrays.asList("testgroup_0");
+    	List <String> sucheRooms = Arrays.asList("testroom_0");
     	
     	Filter f = new Filter();
     	
@@ -106,17 +123,31 @@ public class DeviceControllerTest {
     	f.setRoomIds(sucheRooms);
     	
     	
-        mockMvc.perform(post("/devices")
-        		.content(this.json(f))
-        		.contentType(contentType))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(contentType))
+        MvcResult result = mockMvc.perform(post("/devices")
+        					.content(this.json(f))
+        					.contentType(contentType))
+                			.andExpect(status().isOk())
+                			.andExpect(content().contentType(contentType))
+                			.andReturn();
                 
                 //Defined for only 1 Device -> Iterator ?
-                .andExpect(jsonPath("$.device[0].device_Ids", hasItems(sucheDevice)))
-                .andExpect(jsonPath("$.device[0].room_ids", hasItems(sucheRooms)))
-        		.andExpect(jsonPath("$.device[0].group_ids", hasItems(sucheGroups)))
-                .andExpect(jsonPath("$.device[0].function_ids", hasItems(sucheFunctions)));
+                /*.andExpect(jsonPath("$.devices.device_Ids", hasItems(sucheDevice)))
+                .andExpect(jsonPath("$.devices.room_ids", hasItems(sucheRooms)))
+        		.andExpect(jsonPath("$.devices.group_ids", hasItems(sucheGroups)))
+                .andExpect(jsonPath("$.devices.function_ids", hasItems(sucheFunctions)));*/
+        
+        result.getResponse().getContentAsString();
+        
+        Devices devices = this.restTemplate.getForObject("localhost:8080/v0/devices", Devices.class);
+        
+        HttpEntity<Devices> request = new HttpEntity<>(new Devices());
+        ResponseEntity<Devices> response = restTemplate
+        		.exchange("", HttpMethod.POST, request, Devices.class);
+        
+        assertThat(response.getStatusCode(), is(HttpStatus.OK));
+        Devices geraete = response.getBody();
+
+        
     }
     @Test
     public void getDevicesByDevice() throws Exception {
@@ -144,17 +175,6 @@ public class DeviceControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(contentType));
     }
-
-   /* @Test
-    public void createBookmark() throws Exception {
-        String bookmarkJson = json(new Bookmark(
-                this.account, "http://spring.io", "a bookmark to the best resource for Spring news and information"));
-
-        this.mockMvc.perform(post("/" + userName + "/bookmarks")
-                .contentType(contentType)
-                .content(bookmarkJson))
-                .andExpect(status().isCreated());
-    }*/
 
     protected String json(Object o) throws IOException {
         MockHttpOutputMessage mockHttpOutputMessage = new MockHttpOutputMessage();
