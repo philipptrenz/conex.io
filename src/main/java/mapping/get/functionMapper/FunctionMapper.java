@@ -78,7 +78,6 @@ public class FunctionMapper {
 					Map.Entry<String, JsonNode> entry = fields.next();
 					String key = entry.getKey();
 					JsonNode property = entry.getValue();
-					
 					String value = extractor.extractValue(json, property, key, function);
 					proto.put(key, value);
 				}
@@ -111,7 +110,7 @@ public class FunctionMapper {
 		
 		List<Function> updatedList = new ArrayList<>(functionsList);
 		
-		for (Function f : updatedList) {
+		for (Function f : functionsList) {
 			
 			for (JsonNode funcDescription : readDescription) {	
 				
@@ -163,15 +162,13 @@ public class FunctionMapper {
 									updatedFunction = (Function) mapper.treeToValue(proto, clazz);
 									
 									// replace in device
-									updatedList.set(updatedList.indexOf(f), updatedFunction);
+									updatedList.set(functionsList.indexOf(f), updatedFunction);
 									
 									updated = true;
 								} catch (JsonProcessingException e) {
 									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
-								
-								
 							}
 						}
 					}

@@ -3,12 +3,12 @@
 		"filename": "fs20.json",
 		"description": "Mapping instructions for the FHEM module 'FS20'",
 		"author": "Philipp Trenz",
-		"last_edited": "2017-03-25"
+		"last_edited": "2017-04-10"
 	},
-	"device_id":{
+	"device_id": {
 		"key_path": "Name"
 	},
-	"type_id":{
+	"type_id": {
 		"key_path": "Internals/TYPE"
 	},
 	"rooms": {
@@ -57,11 +57,16 @@
 								]
 							}
 						]
+					},
+					"timestamp": {
+						"type": "date-time",
+						"key_path": "Readings/state/Time",
+						"format": "yyyy-MM-dd HH:mm:ss"
 					}
 				}
 			},
 			{
-				"function_id":"dimmer",
+				"function_id": "dimmer",
 				"class_name": "io.swagger.model.Dimmer",
 				"requirements": [
 					{
@@ -102,12 +107,149 @@
 								]
 							}
 						]
+					},
+					"timestamp": {
+						"type": "date-time",
+						"key_path": "Readings/state/Time",
+						"format": "yyyy-MM-dd HH:mm:ss"
 					}
 				}
 			}
 		],
 		"set": [
-			
+			{
+				"function_id": "onoff",
+				"class_name": "io.swagger.model.OnOff",
+				"properties": {
+					"isOn": {
+						"type": "boolean",
+						"cases": [
+							{
+								"inject_mode": "direct",
+								"value": true,
+								"parameter": "on"
+							},
+							{
+								"inject_mode": "direct",
+								"value": false,
+								"parameter": "off"
+							}
+						]
+					}
+				}
+			},
+			{
+				"function_id": "dimmer",
+				"class_name": "io.swagger.model.Dimmer",
+				"properties": {
+					"isOn": {
+						"type": "integer",
+						"cases": [
+							{
+								"inject_mode": "direct",
+								"value": 0,
+								"parameter": "off"
+							},
+							{
+								"inject_mode": "range",
+								"minimum": 1,
+								"maximum": 6,
+								"parameter": "dim06%"
+							},
+							{
+								"inject_mode": "range",
+								"minimum": 7,
+								"maximum": 12,
+								"parameter": "dim12%"
+							},
+							{
+								"inject_mode": "range",
+								"minimum": 13,
+								"maximum": 18,
+								"parameter": "dim18%"
+							},
+							{
+								"inject_mode": "range",
+								"minimum": 19,
+								"maximum": 25,
+								"parameter": "dim25%"
+							},
+							{
+								"inject_mode": "range",
+								"minimum": 26,
+								"maximum": 31,
+								"parameter": "dim31%"
+							},
+							{
+								"inject_mode": "range",
+								"minimum": 32,
+								"maximum": 37,
+								"parameter": "dim37%"
+							},
+							{
+								"inject_mode": "range",
+								"minimum": 38,
+								"maximum": 43,
+								"parameter": "dim43%"
+							},
+							{
+								"inject_mode": "range",
+								"minimum": 44,
+								"maximum": 50,
+								"parameter": "dim50%"
+							},
+							{
+								"inject_mode": "range",
+								"minimum": 51,
+								"maximum": 56,
+								"parameter": "dim56%"
+							},
+							{
+								"inject_mode": "range",
+								"minimum": 57,
+								"maximum": 62,
+								"parameter": "dim62%"
+							},
+							{
+								"inject_mode": "range",
+								"minimum": 63,
+								"maximum": 68,
+								"parameter": "dim68%"
+							},
+							{
+								"inject_mode": "range",
+								"minimum": 69,
+								"maximum": 75,
+								"parameter": "dim75%"
+							},
+							{
+								"inject_mode": "range",
+								"minimum": 76,
+								"maximum": 81,
+								"parameter": "dim81%"
+							},
+							{
+								"inject_mode": "range",
+								"minimum": 82,
+								"maximum": 87,
+								"parameter": "dim87%"
+							},
+							{
+								"inject_mode": "range",
+								"minimum": 88,
+								"maximum": 93,
+								"parameter": "dim93%"
+							},
+							{
+								"inject_mode": "range",
+								"minimum": 94,
+								"maximum": 100,
+								"parameter": "dim100%"
+							}
+						]
+					}
+				}
+			}
 		]
 	}
 }

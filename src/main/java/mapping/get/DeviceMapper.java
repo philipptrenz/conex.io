@@ -51,7 +51,6 @@ public class DeviceMapper {
 		newDevice.setGroupIds(getGroupIds(jsonlist2Device, moduleDescription));
 		
 		// map functions
-		
 		newDevice.setFunctions(funcMapper.mapJsonToFunctions(jsonlist2Device, moduleDescription));
 		
 		if (newDevice.getDeviceId() != null) return newDevice;
