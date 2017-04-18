@@ -142,17 +142,17 @@ public class WebsocketParser {
 		switch(updateMessage.reading) {
 		
 		case "DEFINED":
-			System.out.println("new device defined, reload jsonlist2 data");
+			//System.out.println("new device defined, reload jsonlist2 data");
 			connector.reload();
 			break;
 			
 		case "DELETEATTR":
-			System.out.println("attribute deleted, reload jsonlist2 data");
+			//System.out.println("attribute deleted, reload jsonlist2 data");
 			connector.reload();
 			break;
 			
 		default: 
-			System.out.println("'"+updateMessage.reading+" happend, preventive reload");
+			//System.out.println("'"+updateMessage.reading+" happend, preventive reload");
 			connector.reload();
 			break;
 		}
