@@ -145,10 +145,12 @@ public class WebsocketParser {
 			
 		case "REREADCFG":
 			// after the configuration is reread.
+			connector.reload();
 			break;
 			
 		case "SAVE":
 			// before the configuration is saved.
+			connector.reload();
 			break;
 			
 		case "SHUTDOWN":

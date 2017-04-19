@@ -3,6 +3,9 @@ package mapping;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import javax.swing.text.html.parser.Parser;
+
 import org.joda.time.DateTime;
 import io.swagger.model.Device;
 import io.swagger.model.Devices;
@@ -18,14 +21,17 @@ public class Main {
 	 */
 	public static void main(String [] args){
 		
-		//connector = FHEMConnector.getInstance("127.0.0.1", 8083, "5.8");
+		connector = FHEMConnector.getInstance("127.0.0.1", 8083, "5.8");
 		
-		new JsonParser().parse(FHEMConnector.getJsonlist2MockupAsStringFromFile());
+		//new JsonParser().parse(FHEMConnector.getJsonlist2MockupAsStringFromFile());
 		
 	}
 	
 	public static List<Device> getDevices() {
 		
+		return new JsonParser().parse(FHEMConnector.getJsonlist2MockupAsStringFromFile());
+		
+		/*
 		List<Device> list = new ArrayList<Device>();
 		int j = 0;
 		int k = 0;
@@ -64,6 +70,8 @@ public class Main {
 			if (k > 15) k = 0;
 		}
 		return list;
+		
+		*/
 	}
 	
 	public static void setDevices(List<Device> deviceList, Function toSet) {
