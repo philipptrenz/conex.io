@@ -2,9 +2,9 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.swagger</groupId>
-	<artifactId>swagger-spring</artifactId>
+	<artifactId>conex-io</artifactId>
 	<packaging>jar</packaging>
-	<name>swagger-spring</name>
+	<name>conex.io</name>
 	<version>1.0.0</version>
 	<properties>
 		<java.version>1.8</java.version>
@@ -20,7 +20,41 @@
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
 		<pluginManagement>
-			<plugins>
+		<!-- Swagger-Maven Plugin Integration -->
+				<!-- activate the plugin -->
+				<plugins>
+				<plugin>
+					<groupId>io.swagger</groupId>
+					<artifactId>swagger-codegen-maven-plugin</artifactId>
+					<version>2.2.2</version>
+					<executions>
+						<execution>
+						<!--  <phase>generate</phase> -->
+							<goals>
+								<goal>generate</goal>
+							</goals>
+							<configuration>
+								<inputSpec>src/main/resources/swagger-spec.yaml</inputSpec>
+								<language>java</language>
+								
+								
+								<configOptions>
+                                	<library>jersey2</library>
+                                	<dateLibrary>java8</dateLibrary>
+                            	</configOptions>
+								<!-- <configOptions>
+									<sourceFolder>src/main/java</sourceFolder>
+								</configOptions> -->
+
+								<!--<generateApis>false</generateApis> <generateApiTests>false</generateApiTests> 
+									<generateApiDocumentation>false</generateApiDocumentation> <generateModels>true</generateModels> -->
+
+								<output>target/generated-sources</output>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+			
 				<plugin>
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-maven-plugin</artifactId>
@@ -32,32 +66,7 @@
 						</execution>
 					</executions>
 				</plugin>
-				<!-- Swagger-Maven Plugin Integration -->
-				<!-- activate the plugin -->
-				<plugin>
-					<groupId>io.swagger</groupId>
-					<artifactId>swagger-codegen-maven-plugin</artifactId>
-					<version>2.2.2</version>
-					<executions>
-						<execution>
-							<goals>
-								<goal>generate</goal>
-							</goals>
-							<configuration>
-								<inputSpec>swagger/swagger-spec.yaml</inputSpec>
-								<language>spring</language>
-								<configOptions>
-									<sourceFolder>src/main/java</sourceFolder>
-								</configOptions>
-
-								<!--<generateApis>false</generateApis> <generateApiTests>false</generateApiTests> 
-									<generateApiDocumentation>false</generateApiDocumentation> <generateModels>true</generateModels> -->
-
-								<output>${project.build.directory}/NEUER_Ordner</output>
-							</configuration>
-						</execution>
-					</executions>
-				</plugin>
+				
 			</plugins>
 		</pluginManagement>
 	</build>
@@ -83,10 +92,10 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-     		<groupId>com.jayway.jsonpath</groupId>
-    		<artifactId>json-path</artifactId>
-    		<scope>test</scope>
- 		</dependency>
+			<groupId>com.jayway.jsonpath</groupId>
+			<artifactId>json-path</artifactId>
+			<scope>test</scope>
+		</dependency>
 
 		<!-- Junit Integration -->
 		<dependency>
@@ -127,6 +136,18 @@
 			<version>1.1.0.Final</version>
 			<scope>provided</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>io.swagger</groupId>
+			<artifactId>swagger-codegen-maven-plugin</artifactId>
+			<version>2.2.2</version>
+		</dependency>
+		<dependency>
+    		<groupId>io.swagger</groupId>
+    		<artifactId>swagger-codegen-cli</artifactId>
+    		<version>2.1.2</version>
+		</dependency>
+		
 		<!-- All above is spring, below is own stuff -->
 	</dependencies>
 

@@ -1,12 +1,25 @@
 package io.swagger.api;
 
-import org.hamcrest.Matcher;
+import static org.hamcrest.CoreMatchers.hasItems;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.TestRestTemplate;
-import org.springframework.test.context.web.*;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -23,31 +36,18 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.swagger.Swagger2SpringBoot;
+import io.swagger.api.calc.DeviceCalc;
 import io.swagger.model.Device;
 import io.swagger.model.Devices;
 import io.swagger.model.Filter;
-
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import io.swagger.model.Function;
 /**
  * @author Timo Schwan
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = Swagger2SpringBoot.class)
 @WebAppConfiguration
-public class DeviceControllerTest {
+public class DeviceEndpointTest {
 
 
     private MediaType contentType = MediaType.APPLICATION_JSON;
@@ -100,62 +100,49 @@ public class DeviceControllerTest {
         
         Devices devices = this.restTemplate.getForObject("localhost:8080/v0/devices", Devices.class);
         for(Device d : devices.getDevices()) {
-        	
+        	//if(filter.getDeviceIDs.contains(d.getDeviceId())) {
         }
     }
 
     /**
      * Gibt ein Gerät anhand aller Filterattribute zurück
+     * Status [Complete]
      * @throws Exception
      */
     @Test
     public void getDeviceByAllFilters() throws Exception {
-    	List <String> sucheDevice = Arrays.asList("testdevice_0");
-    	List <String> sucheFunctions = Arrays.asList("testfunction_0");
-    	List <String> sucheGroups = Arrays.asList("testgroup_0");
-    	List <String> sucheRooms = Arrays.asList("testroom_0");
+    	List <String> searchDevices = Arrays.asList("testdevice_0");
+    	List <String> searchFunctions = Arrays.asList("testfunction_0");
+    	List <String> searchGroups = Arrays.asList("testgroup_0");
+    	List <String> searchRooms = Arrays.asList("testroom_0");
     	
     	Filter f = new Filter();
     	
-    	f.setDeviceIds(sucheDevice);
-    	f.setFunctionIds(sucheFunctions);
-    	f.setGroupIds(sucheGroups);
-    	f.setRoomIds(sucheRooms);
-    	
-    	
-        MvcResult result = mockMvc.perform(post("/devices")
-        					.content(this.json(f))
-        					.contentType(contentType))
-                			.andExpect(status().isOk())
-                			.andExpect(content().contentType(contentType))
-                			.andReturn();
-                
-                //Defined for only 1 Device -> Iterator ?
-                /*.andExpect(jsonPath("$.devices.device_Ids", hasItems(sucheDevice)))
-                .andExpect(jsonPath("$.devices.room_ids", hasItems(sucheRooms)))
-        		.andExpect(jsonPath("$.devices.group_ids", hasItems(sucheGroups)))
-                .andExpect(jsonPath("$.devices.function_ids", hasItems(sucheFunctions)));*/
+    	f.setDeviceIds(searchDevices);
+    	f.setFunctionIds(searchFunctions);
+    	f.setGroupIds(searchGroups);
+    	f.setRoomIds(searchRooms);
         
-        result.getResponse().getContentAsString();
-        
-        Devices devices = this.restTemplate.getForObject("localhost:8080/v0/devices", Devices.class);
-        
-        HttpEntity<Devices> request = new HttpEntity<>(new Devices());
+        //TODO Auch ein Header lässt sich im HttpEntity mit einbinden
+        HttpEntity<Filter> request = new HttpEntity<>(new Filter());
         ResponseEntity<Devices> response = restTemplate
-        		.exchange("", HttpMethod.POST, request, Devices.class);
+        		.exchange("localhost:8080/v0/devices", HttpMethod.POST, request, Devices.class);
         
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
-        Devices geraete = response.getBody();
-
         
+        Devices geraete = response.getBody();
+        for (Device d : geraete.getDevices()) {
+        assertTrue(DeviceCalc.isDeviceMatchingFiltering(d, f));
+        }
     }
-    @Test
+
+	@Test
     public void getDevicesByDevice() throws Exception {
-    	List <String> sucheDevice = Arrays.asList("");
+    	List <String> searchDevice = Arrays.asList("");
     	
     	Filter f = new Filter();
     	
-    	f.setDeviceIds(sucheDevice);
+    	f.setDeviceIds(searchDevice);
     	
     	
         mockMvc.perform(post("/devices")
@@ -166,7 +153,7 @@ public class DeviceControllerTest {
                 
                 //Defined for only 1 Device -> Iterator ?
                 //hasItems testing...
-                .andExpect(jsonPath("$.device[1].device_Ids", hasItems(sucheDevice)));
+                .andExpect(jsonPath("$.device[1].device_Ids", hasItems(searchDevice)));
     }
 
     @Test

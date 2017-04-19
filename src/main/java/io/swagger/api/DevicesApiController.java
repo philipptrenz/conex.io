@@ -25,7 +25,7 @@ public class DevicesApiController implements DevicesApi {
     public ResponseEntity<Devices> devicesPost(@ApiParam(value = "The user specified filter" ,required=true ) @RequestBody Filter filter) {
         DeviceCalc calc = new DeviceCalc(filter);
         Devices list = new Devices();
-        list.setDevices(calc.getListFiltering());
+        list.setDevices(calc.getDeviceListFiltered());
     	return new ResponseEntity<>(list, HttpStatus.OK);
     }
 }

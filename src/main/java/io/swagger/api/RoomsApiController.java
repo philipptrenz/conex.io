@@ -30,7 +30,7 @@ public class RoomsApiController implements RoomsApi {
     public ResponseEntity<Ids> roomsPost(@ApiParam(value = "The user specified filter" ,required=true ) @RequestBody Filter filter) {
         DeviceCalc calc = new DeviceCalc(filter);
         Ids id = new Ids();
-        id.setIds(calc.getRoomFiltering());
+        id.setIds(calc.getRoomsByDevicesFiltered());
         return new ResponseEntity<Ids>(id, HttpStatus.OK);
     }
 
