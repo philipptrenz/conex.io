@@ -7,7 +7,6 @@ import java.util.List;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import io.swagger.model.Device;
-import io.swagger.model.Function;
 import mapping.MappingHelper;
 import mapping.exceptions.NoValidKeyPathException;
 import mapping.get.functionMapper.FunctionMapper;
@@ -115,7 +114,6 @@ public class DeviceMapper {
 			return new ArrayList<>();
 		}
 	}
-	
 	
 	private List<String> getGroupIds(JsonNode jsonlist2Device, JsonNode moduleDescription) {
 		JsonNode mappingDescription = moduleDescription.get("groups");

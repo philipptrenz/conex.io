@@ -7,6 +7,8 @@ import io.swagger.model.Patcher;
 import io.swagger.annotations.*;
 import io.swagger.api.calc.DeviceCalc;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -18,7 +20,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class DevicesApiController implements DevicesApi {
 
     public ResponseEntity<Void> devicesPatch(@ApiParam(value = "Filter object with function values" ,required=true ) @RequestBody Patcher patcher) {
-        // do some magic!
+        
+    	// TODO: add function_id from patcher to filter
+    	
+    	DeviceCalc calc = new DeviceCalc(patcher.getFilter());
+        Devices list = new Devices();
+        list.setDevices(calc.getListFiltering());
+        mapping.Main.setDevices(list.getDevices(), patcher.getFunction());
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 

@@ -19,8 +19,10 @@ import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
 import io.swagger.model.Device;
+import io.swagger.model.Function;
 import mapping.get.JsonParser;
 import mapping.get.WebsocketParser;
+import mapping.set.FHEMCommandBuilder;
 
 public class FHEMConnector {
 	
@@ -32,7 +34,10 @@ public class FHEMConnector {
 	
 	private WebSocketClient websocket;
 	private WebsocketParser websocketParser;
+	
 	private JsonParser jsonParser;
+	private FHEMCommandBuilder commandBuilder;
+	
 	private Map <String, Device> deviceMap = new HashMap<>();
 	
 	private FHEMConnector(String ipAddress, int port, String fhemVersion) {
@@ -44,44 +49,13 @@ public class FHEMConnector {
 		// TODO: add fhem version validation (websockets for >= 5.8)
 		
 		this.websocketParser = new WebsocketParser();
+		
 		this.jsonParser = new JsonParser();
+		this.commandBuilder = new FHEMCommandBuilder(this);
 		
 		// TODO: Validate ipAddress and port
 		
 		reload();		
-	}
-	
-	public boolean reload() {
-		
-		closeWebsocket();
-		
-		String jsonlist2 = null;
-		try {
-			jsonlist2 = sendFhemCommand("jsonlist2");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		long now = System.currentTimeMillis() / 1000l;
-		
-		if (jsonlist2 == null || jsonlist2.isEmpty()) {
-			System.err.println("No jsonlist2 data received! 'longpoll' has to be set to 'websocket' and since FHEM 5.8 'csrfToken' must be 'none'.");
-			return false;
-		}
-		
-		startWebsocket(now);
-		
-		List<Device> devices = jsonParser.parse(jsonlist2);
-		deviceMap = devices.stream().collect(Collectors.toMap(Device::getDeviceId, Device -> Device));
-		return true;
-	}
-	
-	protected static FHEMConnector getInstance(String ipAddress, int port, String fhemVersion) {
-		if(instance == null) {
-	         instance = new FHEMConnector(ipAddress, port, fhemVersion);
-	      }
-	      return instance;
 	}
 	
 	private void startWebsocket(long now) {
@@ -127,12 +101,12 @@ public class FHEMConnector {
 		}
 	}
 	
-	public void closeWebsocket() {
+	private void closeWebsocket() {
 		if (websocket != null) websocket.close();
 		websocket = null;
 	}
 	
-	public String sendFhemCommand(String command) throws IOException {
+	private String sendFhemCommand(String command) throws IOException {
 		
 		String commandEnc = URLEncoder.encode(command, "UTF-8");
 		String url = "http://"+ipAddress+":"+port+"/fhem?cmd="+commandEnc+"&XHR=1";
@@ -154,8 +128,60 @@ public class FHEMConnector {
 		return response.toString();
 	}
 	
-	private List<Device> getAllDevices() {
+	// --------------------------------------------------------------------------------- //
+	
+	public static FHEMConnector getInstance(String ipAddress, int port, String fhemVersion) {
+		if(instance == null) {
+	         instance = new FHEMConnector(ipAddress, port, fhemVersion);
+	      }
+	      return instance;
+	}
+	
+	public boolean reload() {
+		
+		closeWebsocket();
+		
+		String jsonlist2 = null;
+		try {
+			jsonlist2 = sendFhemCommand("jsonlist2");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		long now = System.currentTimeMillis() / 1000l;
+		
+		if (jsonlist2 == null || jsonlist2.isEmpty()) {
+			System.err.println("No jsonlist2 data received! 'longpoll' has to be set to 'websocket' and since FHEM 5.8 'csrfToken' must be 'none'.");
+			return false;
+		}
+		
+		startWebsocket(now);
+		
+		List<Device> devices = jsonParser.parse(jsonlist2);
+		deviceMap = devices.stream().collect(Collectors.toMap(Device::getDeviceId, Device -> Device));
+		return true;
+	}
+	
+	public List<Device> getDevices() {
 		return (List<Device>) deviceMap.values();
+	}
+	
+	public boolean setDevices(List<Device> devices, Function functionValuesToSet) {
+	
+		try {
+			sendFhemCommand(commandBuilder.buildCommand(devices, functionValuesToSet));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		} catch (NullPointerException e2) {
+			// TODO: handle exception
+			e2.printStackTrace();
+			return false;
+		}	
+		
+		return true;
 	}
 	
 	/*
