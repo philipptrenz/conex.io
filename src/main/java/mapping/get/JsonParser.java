@@ -30,14 +30,11 @@ public class JsonParser {
 		
 		ArrayList<Device> deviceList = new ArrayList<>();
 		
-		
 		long startTime = System.currentTimeMillis();
 		try {			
 			JsonNode root = reader.readTree(jsonlist2);
 			ArrayNode jsonlist2Devices = (ArrayNode) root.get("Results");
 			Iterator<JsonNode> devicesIterator = jsonlist2Devices.elements();
-			
-			int index = 0;
 			
 			while (devicesIterator.hasNext()) {
 				
@@ -62,7 +59,6 @@ public class JsonParser {
 				} else {
 					//System.out.println(jsonDevice.get("Name")+" ignored \n");
 				}
-				index++;
 			}
 				
 		} catch (JsonProcessingException e) {
