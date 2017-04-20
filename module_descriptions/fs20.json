@@ -2,7 +2,7 @@
 	"information": {
 		"filename": "fs20.json",
 		"description": "Mapping instructions for the FHEM module 'FS20'",
-		"author": "Philipp Trenz",
+		"author": "Philipp Trenz, Benjamin Brausse",
 		"last_edited": "2017-04-10"
 	},
 	"device_id": {

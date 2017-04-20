@@ -1,0 +1,102 @@
+{
+	"information": {
+		"filename": "fs20.json",
+		"description": "Mapping instructions for the FHEM module 'FS20'",
+		"author": "Philipp Trenz",
+		"last_edited": "2017-04-19"
+	},
+	"device_id": {
+		"key_path": "Attributes/alias"
+	},
+	"type_id": {
+		"key_path": "Internals/TYPE"
+	},
+	"rooms": {
+		"key_path": "Attributes/room",
+		"delimiters": ","
+	},
+	"groups": {
+		"key_path": "Attributes/group",
+		"delimiters": ","
+	},
+	"functions": {
+		"get": [
+			{
+				"function_id": "onoff",
+				"class_name": "io.swagger.model.OnOff",
+				"requirements": [
+					{
+						"mode": "one_of",
+						"key_path": "Attributes/model",
+						"attributes": [
+							"LCT007"
+						]
+					}
+				],
+				"properties": {
+					"isOn": {
+						"type": "boolean",
+						"default": false,
+						"key_path": "Readings/state/Value",
+						"cases": [
+							{
+								"extract_mode": "direct",
+								"value": true,
+								"regex": [
+									"on",
+									"dim([0-9]{1,2}|100)%"
+								]
+							},
+							{
+								"extract_mode": "direct",
+								"value": false,
+								"regex": [
+									"off"
+								]
+							}
+						]
+					},
+					"timestamp": {
+						"type": "date-time",
+						"key_path": "Readings/state/Time",
+						"format": "yyyy-MM-dd HH:mm:ss"
+					}
+				}
+			},
+			{
+				"function_id": "dimmer",
+				"class_name": "io.swagger.model.Dimmer",
+				"requirements": [
+					{
+						"mode": "one_of",
+						"key_path": "Attributes/model",
+						"attributes": [
+							"LCT007"
+						]
+					}
+				],
+				"properties": {
+					"value": {
+						"type": "integer",
+						"default": 0,
+						"key_path": "Readings/sat/Value",
+						"cases": [
+							{
+								"extract_mode": "range",
+								"minimum": 0,
+								"maximum": 255,
+								"regex": "(.*)"
+							}
+						]
+					},
+					"timestamp": {
+						"type": "date-time",
+						"key_path": "Readings/sat/Time",
+						"format": "yyyy-MM-dd HH:mm:ss"
+					}
+				}
+			}
+		],
+		"set": []
+	}
+}

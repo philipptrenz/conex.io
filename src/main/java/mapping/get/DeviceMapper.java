@@ -53,9 +53,14 @@ public class DeviceMapper {
 		// map functions
 		newDevice.setFunctions(funcMapper.mapJsonToFunctions(jsonlist2Device, moduleDescription));
 		
-		if (newDevice.getDeviceId() != null) return newDevice;
-		System.out.println("device_id mapping failed");
-		return null;
+		// do not return broken devices or one without functions
+		if (newDevice.getDeviceId() == null || newDevice.getDeviceId().isEmpty() 
+				|| newDevice.getTypeId() == null || newDevice.getTypeId().isEmpty() 
+				|| newDevice.getFunctions().size() <= 0) {
+			return null;
+		}
+		
+		return newDevice;
 	}
 	
 	

@@ -13,7 +13,7 @@ public class Main {
 	
 	public static void main(String [] args){
 		
-		connector = FHEMConnector.getInstance("127.0.0.1", 8083, "5.8");
+		connector = FHEMConnector.getInstance("192.168.0.11", 8083, "5.8");
 		
 		//new JsonParser().parse(FHEMConnector.getJsonlist2MockupAsStringFromFile());
 		

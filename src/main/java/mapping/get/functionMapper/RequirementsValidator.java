@@ -75,8 +75,7 @@ public class RequirementsValidator {
 			
 			
 		} catch (NoValidKeyPathException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return false;
 		}
 		return true;
 	}	
@@ -101,10 +100,9 @@ public class RequirementsValidator {
 			
 			
 		} catch (NoValidKeyPathException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return false;
 		}
-		return false;
+		
 	}	
 	
 	
