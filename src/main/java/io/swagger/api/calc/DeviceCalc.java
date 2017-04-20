@@ -32,12 +32,13 @@ public class DeviceCalc {
 				!filter.getGroupIds().isEmpty() || !filter.getRoomIds().isEmpty()) {
 			for (int i= 0; i < geraete.size(); i++) {
         			Device d = geraete.get(i);
-        			if(isDeviceMatchingFiltering(d, filter)) {
+        			if(!isDeviceMatchingFiltering(d, filter)) {
         				geraete.remove(i);
         				i--;
         			}
         		}
         	}
+		System.out.println("Geräte sind gefiltert ! " + geraete.size());
         ausgabe = geraete;
 		return ausgabe;
 	}

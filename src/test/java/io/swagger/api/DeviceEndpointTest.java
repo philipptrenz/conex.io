@@ -1,46 +1,28 @@
 package io.swagger.api;
 
-import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.mock.http.MockHttpOutputMessage;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.web.context.WebApplicationContext;
 
 import io.swagger.Swagger2SpringBoot;
 import io.swagger.api.calc.DeviceCalc;
 import io.swagger.model.Device;
 import io.swagger.model.Devices;
 import io.swagger.model.Filter;
-import io.swagger.model.Function;
 /**
  * @author Timo Schwan
  */
@@ -48,62 +30,55 @@ import io.swagger.model.Function;
 @ContextConfiguration(classes = Swagger2SpringBoot.class)
 @WebAppConfiguration
 public class DeviceEndpointTest {
-
-
-    private MediaType contentType = MediaType.APPLICATION_JSON;
-
-    private MockMvc mockMvc;
-
-    private HttpMessageConverter mappingJackson2HttpMessageConverter;
-
-    private Device device;
-
-    @Autowired
-    private WebApplicationContext webApplicationContext;
     
-    @Autowired
-    private TestRestTemplate restTemplate;
+    //@Autowired
+    private TestRestTemplate restTemplate = new TestRestTemplate();
 
-    @Autowired
-    void setConverters(HttpMessageConverter<?>[] converters) {
-
-        this.mappingJackson2HttpMessageConverter = Arrays.asList(converters).stream()
-            .filter(hmc -> hmc instanceof MappingJackson2HttpMessageConverter)
-            .findAny()
-            .orElse(null);
-
-        assertNotNull("the JSON message converter must not be null",
-                this.mappingJackson2HttpMessageConverter);
-    }
-
-    @Before
-    public void setup() throws Exception {
-        this.mockMvc = webAppContextSetup(webApplicationContext).build();
-    }
-
-    /**
-     * Kein passendes Gerät gefunden -> Gibt alle Geräte zurück
-     * @throws Exception
-     */
+    
     @Test
-    public void noMatchFound() throws Exception {
-    	Filter f = new Filter();
-    	f.setDeviceIds(Arrays.asList("", ""));
-    	f.setRoomIds(Arrays.asList("", ""));
+    public void devicesEndpointNotPermittedHttpMethod() throws Exception {
+    	List <String> searchRooms = Arrays.asList("EG.Wohnzimmer");
+    	List <String> searchFunctions = Arrays.asList("onoff");
     	
-        MvcResult result =mockMvc.perform(post("/devices")
-                			.content(this.json(f))
-                			.contentType(contentType))
-                			.andExpect(status().isNotFound())
-                			.andReturn();
-        result.getResponse().getContentAsString();
+    	Filter f = new Filter();
+    	
+    	f.setRoomIds(searchRooms);
+    	f.setFunctionIds(searchFunctions);
         
-        Devices devices = this.restTemplate.getForObject("localhost:8080/v0/devices", Devices.class);
-        for(Device d : devices.getDevices()) {
-        	//if(filter.getDeviceIDs.contains(d.getDeviceId())) {
-        }
+        HttpEntity<Filter> request = new HttpEntity<Filter>(f);
+        ResponseEntity<Devices> response = restTemplate
+        		.exchange("http://localhost:8080/v0/devices", HttpMethod.GET, request, Devices.class);
+        
+        assertThat(response.getStatusCode(), is(HttpStatus.METHOD_NOT_ALLOWED));
+        
+        ResponseEntity<Devices> responsePut = restTemplate
+        		.exchange("http://localhost:8080/v0/devices", HttpMethod.PUT, request, Devices.class);
+        
+        assertThat(responsePut.getStatusCode(), is(HttpStatus.METHOD_NOT_ALLOWED));
+        
+        ResponseEntity<Devices> responseDelete = restTemplate
+        		.exchange("http://localhost:8080/v0/devices", HttpMethod.DELETE, request, Devices.class);
+        
+        assertThat(responseDelete.getStatusCode(), is(HttpStatus.METHOD_NOT_ALLOWED));
+        
+        ResponseEntity<Devices> responseHead = restTemplate
+        		.exchange("http://localhost:8080/v0/devices", HttpMethod.HEAD, request, Devices.class);
+        
+        assertThat(responseHead.getStatusCode(), is(HttpStatus.METHOD_NOT_ALLOWED));
     }
-
+    
+    @Test
+    public void devicesEndpointNonJsonRequest() throws Exception {
+        
+        HttpEntity <String> request = new HttpEntity<String>("");
+        ResponseEntity<Devices> response = restTemplate
+        		.exchange("http://localhost:8080/v0/devices", HttpMethod.POST, request, Devices.class);
+        
+        assertThat(response.getStatusCode(), is(HttpStatus.UNSUPPORTED_MEDIA_TYPE));
+    }
+    
+    
+    
     /**
      * Gibt ein Gerät anhand aller Filterattribute zurück
      * Status [Complete]
@@ -111,10 +86,10 @@ public class DeviceEndpointTest {
      */
     @Test
     public void getDeviceByAllFilters() throws Exception {
-    	List <String> searchDevices = Arrays.asList("testdevice_0");
-    	List <String> searchFunctions = Arrays.asList("testfunction_0");
-    	List <String> searchGroups = Arrays.asList("testgroup_0");
-    	List <String> searchRooms = Arrays.asList("testroom_0");
+    	List <String> searchDevices = Arrays.asList("");
+    	List <String> searchFunctions = Arrays.asList("onoff");
+    	List <String> searchGroups = Arrays.asList("");
+    	List <String> searchRooms = Arrays.asList("");
     	
     	Filter f = new Filter();
     	
@@ -122,11 +97,12 @@ public class DeviceEndpointTest {
     	f.setFunctionIds(searchFunctions);
     	f.setGroupIds(searchGroups);
     	f.setRoomIds(searchRooms);
+    	System.out.println(f.toString());
         
-        //TODO Auch ein Header lässt sich im HttpEntity mit einbinden
-        HttpEntity<Filter> request = new HttpEntity<>(new Filter());
+        HttpEntity<Filter> request = new HttpEntity<Filter>(f);
         ResponseEntity<Devices> response = restTemplate
-        		.exchange("localhost:8080/v0/devices", HttpMethod.POST, request, Devices.class);
+        		.exchange("http://localhost:8080/v0/devices", HttpMethod.POST, request, Devices.class);
+        System.out.println(response);
         
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         
@@ -135,38 +111,105 @@ public class DeviceEndpointTest {
         assertTrue(DeviceCalc.isDeviceMatchingFiltering(d, f));
         }
     }
-
-	@Test
-    public void getDevicesByDevice() throws Exception {
-    	List <String> searchDevice = Arrays.asList("");
+    
+    @Test
+    public void getDeviceByDeviceFilter() throws Exception {
+    	List <String> searchDevices = Arrays.asList("wz_rauchmelder");
     	
     	Filter f = new Filter();
     	
-    	f.setDeviceIds(searchDevice);
-    	
-    	
-        mockMvc.perform(post("/devices")
-        		.content(this.json(f))
-        		.contentType(contentType))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(contentType))
-                
-                //Defined for only 1 Device -> Iterator ?
-                //hasItems testing...
-                .andExpect(jsonPath("$.device[1].device_Ids", hasItems(searchDevice)));
+    	f.setDeviceIds(searchDevices);
+        
+        HttpEntity<Filter> request = new HttpEntity<Filter>(f);
+        ResponseEntity<Devices> response = restTemplate
+        		.exchange("http://localhost:8080/v0/devices", HttpMethod.POST, request, Devices.class);
+        
+        assertThat(response.getStatusCode(), is(HttpStatus.OK));
+        
+        Devices geraete = response.getBody();
+        for (Device d : geraete.getDevices()) {
+        assertTrue(DeviceCalc.isDeviceMatchingFiltering(d, f));
+        }
     }
-
+    
     @Test
-    public void readDevices() throws Exception {
-        mockMvc.perform(get("/devices"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(contentType));
+    public void getDeviceByFunctionFilter() throws Exception {
+    	List <String> searchFunctions = Arrays.asList("onoff");
+    	
+    	Filter f = new Filter();
+    	
+    	f.setFunctionIds(searchFunctions);
+        
+        HttpEntity<Filter> request = new HttpEntity<Filter>(f);
+        ResponseEntity<Devices> response = restTemplate
+        		.exchange("http://localhost:8080/v0/devices", HttpMethod.POST, request, Devices.class);
+        
+        assertThat(response.getStatusCode(), is(HttpStatus.OK));
+        
+        Devices geraete = response.getBody();
+        for (Device d : geraete.getDevices()) {
+        assertTrue(DeviceCalc.isDeviceMatchingFiltering(d, f));
+        }
     }
-
-    protected String json(Object o) throws IOException {
-        MockHttpOutputMessage mockHttpOutputMessage = new MockHttpOutputMessage();
-        this.mappingJackson2HttpMessageConverter.write(
-                o, MediaType.APPLICATION_JSON, mockHttpOutputMessage);
-        return mockHttpOutputMessage.getBodyAsString();
+    
+    @Test
+    public void getDeviceByGroupFilter() throws Exception {
+    	List <String> searchGroups = Arrays.asList("Schalter", "Handsender");
+    	
+    	Filter f = new Filter();
+    	
+    	f.setGroupIds(searchGroups);
+        
+        HttpEntity<Filter> request = new HttpEntity<Filter>(f);
+        ResponseEntity<Devices> response = restTemplate
+        		.exchange("http://localhost:8080/v0/devices", HttpMethod.POST, request, Devices.class);
+        
+        assertThat(response.getStatusCode(), is(HttpStatus.OK));
+        
+        Devices geraete = response.getBody();
+        for (Device d : geraete.getDevices()) {
+        assertTrue(DeviceCalc.isDeviceMatchingFiltering(d, f));
+        }
+    }
+    
+    @Test
+    public void getDeviceByRoomFilter() throws Exception {
+    	List <String> searchRooms = Arrays.asList("EG.Wohnzimmer");
+    	
+    	Filter f = new Filter();
+    	
+    	f.setRoomIds(searchRooms);
+        
+        HttpEntity<Filter> request = new HttpEntity<Filter>(f);
+        ResponseEntity<Devices> response = restTemplate
+        		.exchange("http://localhost:8080/v0/devices", HttpMethod.POST, request, Devices.class);
+        
+        assertThat(response.getStatusCode(), is(HttpStatus.OK));
+        
+        Devices geraete = response.getBody();
+        for (Device d : geraete.getDevices()) {
+        assertTrue(DeviceCalc.isDeviceMatchingFiltering(d, f));
+        }
+    }
+    @Test
+    public void getDeviceByMultipleFilters() throws Exception {
+    	List <String> searchRooms = Arrays.asList("EG.Wohnzimmer");
+    	List <String> searchFunctions = Arrays.asList("onoff");
+    	
+    	Filter f = new Filter();
+    	
+    	f.setRoomIds(searchRooms);
+    	f.setFunctionIds(searchFunctions);
+        
+        HttpEntity<Filter> request = new HttpEntity<Filter>(f);
+        ResponseEntity<Devices> response = restTemplate
+        		.exchange("http://localhost:8080/v0/devices", HttpMethod.POST, request, Devices.class);
+        
+        assertThat(response.getStatusCode(), is(HttpStatus.OK));
+        
+        Devices geraete = response.getBody();
+        for (Device d : geraete.getDevices()) {
+        assertTrue(DeviceCalc.isDeviceMatchingFiltering(d, f));
+        }
     }
 }
