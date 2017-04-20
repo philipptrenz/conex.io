@@ -55,9 +55,9 @@ public class WebsocketParser {
 					handleFHEMGlobalEvent(updateMessage, connector);
 					continue;
 					
-				} else if (deviceMap.containsKey(updateMessage.deviceId)) {
+				} else if (deviceMap.containsKey(updateMessage.deviceId.toLowerCase())) {
 					
-					Device device = deviceMap.get(updateMessage.deviceId);
+					Device device = deviceMap.get(updateMessage.deviceId.toLowerCase());
 					if (isParsable(updateMessage)) {
 						String typeId = device.getTypeId();
 						JsonNode moduleDescription = loader.getModuleDescription(typeId);
@@ -149,7 +149,6 @@ public class WebsocketParser {
 				}
 			}
 			if (isOkay) deviceUpdateMessages.add(updateMessage);
-			System.out.println(updateMessage);
 		}
 		return deviceUpdateMessages;
 	}

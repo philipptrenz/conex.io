@@ -37,21 +37,20 @@
 					"isOn": {
 						"type": "boolean",
 						"default": false,
-						"key_path": "Readings/state/Value",
+						"key_path": "Readings/onoff/Value",
 						"cases": [
 							{
 								"extract_mode": "direct",
 								"value": true,
 								"regex": [
-									"on",
-									"dim([0-9]{1,2}|100)%"
+									"1"
 								]
 							},
 							{
 								"extract_mode": "direct",
 								"value": false,
 								"regex": [
-									"off"
+									"0"
 								]
 							}
 						]
