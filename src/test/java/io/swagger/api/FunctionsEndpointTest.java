@@ -19,26 +19,24 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import io.swagger.Swagger2SpringBoot;
-import io.swagger.api.calc.DeviceCalc;
-import io.swagger.model.Device;
-import io.swagger.model.Devices;
 import io.swagger.model.Filter;
+import io.swagger.model.Ids;
 /**
  * @author Timo Schwan
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = Swagger2SpringBoot.class)
 @WebAppConfiguration
-public class DeviceEndpointTest {
+public class FunctionsEndpointTest {
     
     //@Autowired
     private TestRestTemplate restTemplate = new TestRestTemplate();
     
-    private String url = "localhost:8080/v0/devices";
+    private String url = "http://localhost:8080/v0/functions";
 
     
     @Test
-    public void devicesEndpointNotPermittedHttpMethod() throws Exception {
+    public void functionsEndpointNotPermittedHttpMethod() throws Exception {
     	List <String> searchRooms = Arrays.asList("EG.Wohnzimmer");
     	List <String> searchFunctions = Arrays.asList("onoff");
     	
@@ -48,33 +46,38 @@ public class DeviceEndpointTest {
     	f.setFunctionIds(searchFunctions);
         
         HttpEntity<Filter> request = new HttpEntity<Filter>(f);
-        ResponseEntity<Devices> response = restTemplate
-        		.exchange(url, HttpMethod.GET, request, Devices.class);
+        ResponseEntity<Ids> response = restTemplate
+        		.exchange(url, HttpMethod.GET, request, Ids.class);
         
         assertThat(response.getStatusCode(), is(HttpStatus.METHOD_NOT_ALLOWED));
         
-        ResponseEntity<Devices> responsePut = restTemplate
-        		.exchange(url, HttpMethod.PUT, request, Devices.class);
+        ResponseEntity<Ids> responsePut = restTemplate
+        		.exchange(url, HttpMethod.PUT, request, Ids.class);
         
         assertThat(responsePut.getStatusCode(), is(HttpStatus.METHOD_NOT_ALLOWED));
         
-        ResponseEntity<Devices> responseDelete = restTemplate
-        		.exchange(url, HttpMethod.DELETE, request, Devices.class);
+        ResponseEntity<Ids> responsePatch = restTemplate
+        		.exchange(url, HttpMethod.PATCH, request, Ids.class);
+        
+        assertThat(responsePatch.getStatusCode(), is(HttpStatus.METHOD_NOT_ALLOWED));
+        
+        ResponseEntity<Ids> responseDelete = restTemplate
+        		.exchange(url, HttpMethod.DELETE, request, Ids.class);
         
         assertThat(responseDelete.getStatusCode(), is(HttpStatus.METHOD_NOT_ALLOWED));
         
-        ResponseEntity<Devices> responseHead = restTemplate
-        		.exchange(url, HttpMethod.HEAD, request, Devices.class);
+        ResponseEntity<Ids> responseHead = restTemplate
+        		.exchange(url, HttpMethod.HEAD, request, Ids.class);
         
         assertThat(responseHead.getStatusCode(), is(HttpStatus.METHOD_NOT_ALLOWED));
     }
     
     @Test
-    public void devicesEndpointNonJsonRequest() throws Exception {
+    public void functionsEndpointNonJsonRequest() throws Exception {
         
         HttpEntity <String> request = new HttpEntity<String>("");
-        ResponseEntity<Devices> response = restTemplate
-        		.exchange(url, HttpMethod.POST, request, Devices.class);
+        ResponseEntity<Ids> response = restTemplate
+        		.exchange(url, HttpMethod.POST, request, Ids.class);
         
         assertThat(response.getStatusCode(), is(HttpStatus.UNSUPPORTED_MEDIA_TYPE));
     }
@@ -87,11 +90,11 @@ public class DeviceEndpointTest {
      * @throws Exception
      */
     @Test
-    public void getDeviceByAllFilters() throws Exception {
-    	List <String> searchDevices = Arrays.asList("");
+    public void getFunctionsByAllFilters() throws Exception {
+    	List <String> searchDevices = Arrays.asList("dg.jz.deckenleuchte");
     	List <String> searchFunctions = Arrays.asList("onoff");
-    	List <String> searchGroups = Arrays.asList("");
-    	List <String> searchRooms = Arrays.asList("");
+    	List <String> searchGroups = Arrays.asList("Schalter");
+    	List <String> searchRooms = Arrays.asList("DG.Jolina");
     	
     	Filter f = new Filter();
     	
@@ -101,79 +104,78 @@ public class DeviceEndpointTest {
     	f.setRoomIds(searchRooms);
         
         HttpEntity<Filter> request = new HttpEntity<Filter>(f);
-        ResponseEntity<Devices> response = restTemplate
-        		.exchange(url, HttpMethod.POST, request, Devices.class);
+        ResponseEntity<Ids> response = restTemplate
+        		.exchange(url, HttpMethod.POST, request, Ids.class);
+        
         
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         
-        Devices geraete = response.getBody();
-        for (Device d : geraete.getDevices()) {
-        assertTrue(DeviceCalc.isDeviceMatchingFiltering(d, f));
-        }
+        Ids functionIds = response.getBody();
+        
+        assertTrue(functionIds.getIds().contains("onoff"));
     }
     
     @Test
-    public void getDeviceByDeviceFilter() throws Exception {
-    	List <String> searchDevices = Arrays.asList("wz_rauchmelder");
+    public void getFunctionsByDeviceFilter() throws Exception {
+    	List <String> searchDevices = Arrays.asList("dg.jz.deckenleuchte");
     	
     	Filter f = new Filter();
     	
     	f.setDeviceIds(searchDevices);
         
         HttpEntity<Filter> request = new HttpEntity<Filter>(f);
-        ResponseEntity<Devices> response = restTemplate
-        		.exchange(url, HttpMethod.POST, request, Devices.class);
+        ResponseEntity<Ids> response = restTemplate
+        		.exchange(url, HttpMethod.POST, request, Ids.class);
         
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         
-        Devices geraete = response.getBody();
-        for (Device d : geraete.getDevices()) {
-        assertTrue(DeviceCalc.isDeviceMatchingFiltering(d, f));
-        }
+        Ids functionIds = response.getBody();
+        
+        assertTrue(functionIds.getIds().contains("onoff"));
     }
     
     @Test
-    public void getDeviceByFunctionFilter() throws Exception {
-    	List <String> searchFunctions = Arrays.asList("onoff");
+    public void getFunctionsByFunctionFilter() throws Exception {
+    	List <String> searchFunctions = Arrays.asList("onoff", "dimmer");
     	
     	Filter f = new Filter();
     	
     	f.setFunctionIds(searchFunctions);
         
         HttpEntity<Filter> request = new HttpEntity<Filter>(f);
-        ResponseEntity<Devices> response = restTemplate
-        		.exchange(url, HttpMethod.POST, request, Devices.class);
+        ResponseEntity<Ids> response = restTemplate
+        		.exchange(url, HttpMethod.POST, request, Ids.class);
         
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         
-        Devices geraete = response.getBody();
-        for (Device d : geraete.getDevices()) {
-        assertTrue(DeviceCalc.isDeviceMatchingFiltering(d, f));
-        }
+        Ids functionIds = response.getBody();
+        
+        assertTrue(functionIds.getIds().contains("onoff"));
+        assertTrue(functionIds.getIds().contains("dimmer"));
     }
     
     @Test
-    public void getDeviceByGroupFilter() throws Exception {
-    	List <String> searchGroups = Arrays.asList("Schalter", "Handsender");
+    public void getFunctionsByGroupFilter() throws Exception {
+    	List <String> searchGroups = Arrays.asList("Handsender");
     	
     	Filter f = new Filter();
     	
     	f.setGroupIds(searchGroups);
         
         HttpEntity<Filter> request = new HttpEntity<Filter>(f);
-        ResponseEntity<Devices> response = restTemplate
-        		.exchange(url, HttpMethod.POST, request, Devices.class);
+        ResponseEntity<Ids> response = restTemplate
+        		.exchange(url, HttpMethod.POST, request, Ids.class);
         
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         
-        Devices geraete = response.getBody();
-        for (Device d : geraete.getDevices()) {
-        assertTrue(DeviceCalc.isDeviceMatchingFiltering(d, f));
-        }
+        Ids functionIds = response.getBody();
+        
+        assertTrue(functionIds.getIds().contains("onoff"));
+        assertTrue(functionIds.getIds().contains("dimmer"));
     }
     
     @Test
-    public void getDeviceByRoomFilter() throws Exception {
+    public void getFunctionsByRoomFilter() throws Exception {
     	List <String> searchRooms = Arrays.asList("EG.Wohnzimmer");
     	
     	Filter f = new Filter();
@@ -181,18 +183,17 @@ public class DeviceEndpointTest {
     	f.setRoomIds(searchRooms);
         
         HttpEntity<Filter> request = new HttpEntity<Filter>(f);
-        ResponseEntity<Devices> response = restTemplate
-        		.exchange(url, HttpMethod.POST, request, Devices.class);
+        ResponseEntity<Ids> response = restTemplate
+        		.exchange(url, HttpMethod.POST, request, Ids.class);
         
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         
-        Devices geraete = response.getBody();
-        for (Device d : geraete.getDevices()) {
-        assertTrue(DeviceCalc.isDeviceMatchingFiltering(d, f));
-        }
+        Ids functionIds = response.getBody();
+        
+        assertTrue(functionIds.getIds().contains("onoff"));
     }
     @Test
-    public void getDeviceByMultipleFilters() throws Exception {
+    public void getFunctionsByMultipleFilters() throws Exception {
     	List <String> searchRooms = Arrays.asList("EG.Wohnzimmer");
     	List <String> searchFunctions = Arrays.asList("onoff");
     	
@@ -202,14 +203,14 @@ public class DeviceEndpointTest {
     	f.setFunctionIds(searchFunctions);
         
         HttpEntity<Filter> request = new HttpEntity<Filter>(f);
-        ResponseEntity<Devices> response = restTemplate
-        		.exchange(url, HttpMethod.POST, request, Devices.class);
+        ResponseEntity<Ids> response = restTemplate
+        		.exchange(url, HttpMethod.POST, request, Ids.class);
         
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         
-        Devices geraete = response.getBody();
-        for (Device d : geraete.getDevices()) {
-        assertTrue(DeviceCalc.isDeviceMatchingFiltering(d, f));
-        }
+        Ids functionIds = response.getBody();
+        
+        assertTrue(functionIds.getIds().contains("onoff"));
+        assertTrue(functionIds.getIds().contains("dimmer"));
     }
 }
