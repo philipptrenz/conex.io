@@ -190,7 +190,7 @@ public class GroupsEndpointTest {
         
         Ids functionIds = response.getBody();
         
-        assertTrue(functionIds.getIds().contains("onoff"));
+        assertTrue(functionIds.getIds().contains("Schalter"));
     }
     @Test
     public void getGroupsByMultipleFilters() throws Exception {
