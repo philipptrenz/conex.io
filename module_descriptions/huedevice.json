@@ -6,7 +6,7 @@
 		"last_edited": "2017-04-19"
 	},
 	"device_id": {
-		"key_path": "Attributes/alias"
+		"key_path": "Name"
 	},
 	"type_id": {
 		"key_path": "Internals/TYPE"

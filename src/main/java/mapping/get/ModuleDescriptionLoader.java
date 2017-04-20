@@ -45,9 +45,9 @@ public class ModuleDescriptionLoader {
 			return reader.readTree(moduleDescription);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.err.println("Loading module description '"+deviceType+"' failed: \n"+e.getMessage());
+			return null;
 		}
-		return null;
 	}
 	
 	public JsonNode getModuleDescription(String deviceType) {

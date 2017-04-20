@@ -1,6 +1,7 @@
 package mapping.get;
 
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -23,7 +24,7 @@ public class WebsocketParser {
 		this.deviceMapper = new DeviceMapper(loader);
 	}
 	
-	public boolean update(String websocketMessage, Map<String, Device> deviceMap, FHEMConnector connector) {
+	public void update(String websocketMessage, Map<String, Device> deviceMap, FHEMConnector connector) {
 		
 		//test
 		/*
@@ -39,97 +40,118 @@ public class WebsocketParser {
 		// test end
 		*/  
 		
-		WebsocketDeviceUpdateMessage updateMessage = parseWebsocketMessage(websocketMessage);
-		if (updateMessage != null && updateMessage.deviceId != null) {
-			
-			if (updateMessage.deviceId.startsWith("#FHEMWEB")) {
+		List<WebsocketDeviceUpdateMessage> updateMessageList = parseWebsocketMessage(websocketMessage);
+		
+		for (WebsocketDeviceUpdateMessage updateMessage : updateMessageList) {
+			if (updateMessage != null && updateMessage.deviceId != null) {
 				
-				// just a FHEMWEB device update, ignore
-				return false;
-				
-			} else if (updateMessage.deviceId.equals("global")) {
-				
-				handleFHEMGlobalEvent(updateMessage, connector);
-				return false;
-				
-			} else {
-				
-				Device device = deviceMap.get(updateMessage.deviceId);
-				if (isParsable(updateMessage)) {
-					JsonNode moduleDescription = loader.getModuleDescription(device.getTypeId());
+				if (updateMessage.deviceId.startsWith("#FHEMWEB")) {
 					
-					if (moduleDescription != null) {
+					// just a FHEMWEB device update, ignore
+					continue;
+					
+				} else if (updateMessage.deviceId.equals("global")) {
+					
+					handleFHEMGlobalEvent(updateMessage, connector);
+					continue;
+					
+				} else if (deviceMap.containsKey(updateMessage.deviceId)) {
+					
+					Device device = deviceMap.get(updateMessage.deviceId);
+					if (isParsable(updateMessage)) {
+						String typeId = device.getTypeId();
+						JsonNode moduleDescription = loader.getModuleDescription(typeId);
 						
-						if (updateMessage.reading.toLowerCase().equals("room")) {
+						if (moduleDescription != null) {
 							
-							device.setRoomIds(deviceMapper.mapRoomIds(updateMessage.value, moduleDescription));
-							
-						} else if (updateMessage.reading.toLowerCase().equals("group")) {
-							
-							device.setGroupIds(deviceMapper.mapGroupIds(updateMessage.value, moduleDescription));
-							
-						} else {
+							if (updateMessage.reading.toLowerCase().equals("room")) {
+								
+								device.setRoomIds(deviceMapper.mapRoomIds(updateMessage.value, moduleDescription));
+								
+							} else if (updateMessage.reading.toLowerCase().equals("group")) {
+								
+								device.setGroupIds(deviceMapper.mapGroupIds(updateMessage.value, moduleDescription));
+								
+							} else {
 
-							if (moduleDescription != null) {
-								mapper.mapWebsocketValuesToFunction(device, updateMessage, moduleDescription);
+								if (moduleDescription != null) {
+									mapper.mapWebsocketValuesToFunction(device, updateMessage, moduleDescription);
+								}
+								
 							}
 							
+							System.out.println("UPDATE: "+device+"\n");
 						}
-						
-						System.out.println("updated device:\n"+device);
 					}
+					
+				} else {
+					continue;
 				}
+			} else {
+				continue;
 			}
 		}
-		return false;
 	}
-	
-	private WebsocketDeviceUpdateMessage parseWebsocketMessage(String message) {
-				
+
+	private List<WebsocketDeviceUpdateMessage> parseWebsocketMessage(String message) {
+		
+		List<WebsocketDeviceUpdateMessage> deviceUpdateMessages = new ArrayList<>();
+		
 		/*
 		 * Example:
 		 * 
-		 * ["testlampe","on","<div id=\u0022testlampe\u0022  title=\u0022on\u0022 class=\u0022col2\u0022><a href=\u0022/fhem?cmd.testlampe=set testlampe off\u0022><img class=' FS20_on' src=\u0022/fhem/images/default/FS20.on.png\u0022 alt=\u0022on\u0022 title=\u0022on\u0022></a></div>"]
+		 * ["testlampe","on","<div id=\u0022testlampe\u0022 ... /></div>"]
 		 * ["testlampe-state","on","on"]
 		 * ["testlampe-state-ts","2017-04-13 09:15:28","2017-04-13 09:15:28"]
+		 * ...
 		 * 
-		 * Regex:
+		 * Regex for each line:
 		 * 
-		 * ^\["(.*)","(.*)","(.*)"\]\n\["(.*)","(.*)","(.*)"\]\n\["(.*)","(.*)","(.*)"\]\n*$
+		 * ^\["(.*)","(.*)","(.*)"\]$
 		 */
 		
-		String regex = "^\\[\"(.*)\",\"(.*)\",\"(.*)\"\\](\\n\\[\"(.*)\",\"(.*)\",\"(.*)\"\\](\\n\\[\"(.*)\",\"(.*)\",\"(.*)\"\\])?)?\\n*$";
+		final String deviceId;
+		String[] semiJsonArrays = message.split("\\n");
 		
-		Pattern pattern = Pattern.compile(regex);
-		Matcher matcher = pattern.matcher(message);
-		WebsocketDeviceUpdateMessage deviceUpdateMessage = null;
+		Pattern pattern = Pattern.compile("\\[\"(.*)\",\"(.*)\",\"(.*)\"\\]");
 		
-		if (matcher.matches()) {
-			
-			/*
-			 * Parse in format:
-			 * 
-			 * [ <deviceId>, - , - ]
-			 * [ <reading>, <value> , - ]
-			 * [ - , <timestamp> , - ]
-			 */
-			deviceUpdateMessage = new WebsocketDeviceUpdateMessage();
-			
-			try {
-				deviceUpdateMessage.deviceId = matcher.group(1) != null ? matcher.group(1) : null;
-				
-				deviceUpdateMessage.reading = matcher.group(5) != null ? matcher.group(5) : null;
-				if (deviceUpdateMessage.reading != null && deviceUpdateMessage.deviceId != null) deviceUpdateMessage.reading = deviceUpdateMessage.reading.replace(deviceUpdateMessage.deviceId+"-", "");
-				
-				deviceUpdateMessage.value = matcher.group(6) != null ? matcher.group(6) : null;
-				
-				deviceUpdateMessage.timestamp = matcher.group(10) != null ? matcher.group(10) : null;
-			}catch (NullPointerException e) {
-				// TODO: handle exception
-				e.printStackTrace();
-			}
+		Matcher matcher = pattern.matcher(semiJsonArrays[0]);
+		if(matcher.find()) {
+			deviceId = matcher.group(1);
+		} else {
+			return deviceUpdateMessages;
 		}
-		return deviceUpdateMessage;
+		
+		for (int i = 1; i < semiJsonArrays.length; i++) {
+			
+			WebsocketDeviceUpdateMessage updateMessage = new WebsocketDeviceUpdateMessage(deviceId);
+			boolean isOkay = false;
+			String m1 = semiJsonArrays[i];
+			String reading = "";
+			
+			matcher = pattern.matcher(m1);
+			if (matcher.find()) {
+				reading = matcher.group(1).replace(deviceId+"-", "");
+				updateMessage.reading = reading;
+				updateMessage.value = matcher.group(2);
+				// matcher.group(3)); // ignore
+				isOkay = true;
+			}
+			
+			if ((i+1) < semiJsonArrays.length) {
+				String m2 = semiJsonArrays[i+1];
+				matcher = pattern.matcher(m2);
+				if (matcher.find()) {
+					if (matcher.group(1).equals(deviceId+"-"+reading+"-ts")) {
+						updateMessage.timestamp = matcher.group(2);
+						i++;	// step over to the string after this
+					}
+				}
+			}
+			if (isOkay) deviceUpdateMessages.add(updateMessage);
+			System.out.println(updateMessage);
+		}
+		return deviceUpdateMessages;
 	}
 	
 	private boolean isParsable(WebsocketDeviceUpdateMessage message) {

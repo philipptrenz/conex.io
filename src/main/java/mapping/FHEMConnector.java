@@ -74,7 +74,7 @@ public class FHEMConnector {
 
 				@Override
 				public void onOpen(ServerHandshake handshakedata) {
-					System.out.println("new connection opened");
+					 System.out.println("new connection opened");
 					// TODO
 				}
 
