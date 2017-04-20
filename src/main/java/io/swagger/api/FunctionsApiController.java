@@ -31,7 +31,7 @@ public class FunctionsApiController implements FunctionsApi {
     public ResponseEntity<Ids> functionsPost(@ApiParam(value = "The user specified filter" ,required=true ) @RequestBody Filter filter) {
         DeviceCalc calc = new DeviceCalc(filter);
         Ids id = new Ids();
-        id.setIds(calc.getFuntionFiltering());
+        id.setIds(calc.getFuntionsByDevicesFiltered());
         return new ResponseEntity<Ids>(id, HttpStatus.OK);
     }
 

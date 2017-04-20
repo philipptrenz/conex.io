@@ -30,7 +30,7 @@ public class GroupsApiController implements GroupsApi {
     public ResponseEntity<Ids> groupsPost(@ApiParam(value = "The user specified filter" ,required=true ) @RequestBody Filter filter) {
         DeviceCalc calc = new DeviceCalc(filter);
         Ids id = new Ids();
-        id.setIds(calc.getGroupFiltering());
+        id.setIds(calc.getGroupsByDevicesFiltered());
         return new ResponseEntity<Ids>(id, HttpStatus.OK);
     }
 
