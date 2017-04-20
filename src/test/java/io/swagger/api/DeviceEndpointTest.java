@@ -33,6 +33,8 @@ public class DeviceEndpointTest {
     
     //@Autowired
     private TestRestTemplate restTemplate = new TestRestTemplate();
+    
+    private String url = "localhost:8080/v0/devices";
 
     
     @Test
@@ -47,22 +49,22 @@ public class DeviceEndpointTest {
         
         HttpEntity<Filter> request = new HttpEntity<Filter>(f);
         ResponseEntity<Devices> response = restTemplate
-        		.exchange("http://localhost:8080/v0/devices", HttpMethod.GET, request, Devices.class);
+        		.exchange(url, HttpMethod.GET, request, Devices.class);
         
         assertThat(response.getStatusCode(), is(HttpStatus.METHOD_NOT_ALLOWED));
         
         ResponseEntity<Devices> responsePut = restTemplate
-        		.exchange("http://localhost:8080/v0/devices", HttpMethod.PUT, request, Devices.class);
+        		.exchange(url, HttpMethod.PUT, request, Devices.class);
         
         assertThat(responsePut.getStatusCode(), is(HttpStatus.METHOD_NOT_ALLOWED));
         
         ResponseEntity<Devices> responseDelete = restTemplate
-        		.exchange("http://localhost:8080/v0/devices", HttpMethod.DELETE, request, Devices.class);
+        		.exchange(url, HttpMethod.DELETE, request, Devices.class);
         
         assertThat(responseDelete.getStatusCode(), is(HttpStatus.METHOD_NOT_ALLOWED));
         
         ResponseEntity<Devices> responseHead = restTemplate
-        		.exchange("http://localhost:8080/v0/devices", HttpMethod.HEAD, request, Devices.class);
+        		.exchange(url, HttpMethod.HEAD, request, Devices.class);
         
         assertThat(responseHead.getStatusCode(), is(HttpStatus.METHOD_NOT_ALLOWED));
     }
@@ -72,7 +74,7 @@ public class DeviceEndpointTest {
         
         HttpEntity <String> request = new HttpEntity<String>("");
         ResponseEntity<Devices> response = restTemplate
-        		.exchange("http://localhost:8080/v0/devices", HttpMethod.POST, request, Devices.class);
+        		.exchange(url, HttpMethod.POST, request, Devices.class);
         
         assertThat(response.getStatusCode(), is(HttpStatus.UNSUPPORTED_MEDIA_TYPE));
     }
@@ -101,7 +103,7 @@ public class DeviceEndpointTest {
         
         HttpEntity<Filter> request = new HttpEntity<Filter>(f);
         ResponseEntity<Devices> response = restTemplate
-        		.exchange("http://localhost:8080/v0/devices", HttpMethod.POST, request, Devices.class);
+        		.exchange(url, HttpMethod.POST, request, Devices.class);
         System.out.println(response);
         
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
@@ -122,7 +124,7 @@ public class DeviceEndpointTest {
         
         HttpEntity<Filter> request = new HttpEntity<Filter>(f);
         ResponseEntity<Devices> response = restTemplate
-        		.exchange("http://localhost:8080/v0/devices", HttpMethod.POST, request, Devices.class);
+        		.exchange(url, HttpMethod.POST, request, Devices.class);
         
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         
@@ -142,7 +144,7 @@ public class DeviceEndpointTest {
         
         HttpEntity<Filter> request = new HttpEntity<Filter>(f);
         ResponseEntity<Devices> response = restTemplate
-        		.exchange("http://localhost:8080/v0/devices", HttpMethod.POST, request, Devices.class);
+        		.exchange(url, HttpMethod.POST, request, Devices.class);
         
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         
@@ -162,7 +164,7 @@ public class DeviceEndpointTest {
         
         HttpEntity<Filter> request = new HttpEntity<Filter>(f);
         ResponseEntity<Devices> response = restTemplate
-        		.exchange("http://localhost:8080/v0/devices", HttpMethod.POST, request, Devices.class);
+        		.exchange(url, HttpMethod.POST, request, Devices.class);
         
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         
@@ -182,7 +184,7 @@ public class DeviceEndpointTest {
         
         HttpEntity<Filter> request = new HttpEntity<Filter>(f);
         ResponseEntity<Devices> response = restTemplate
-        		.exchange("http://localhost:8080/v0/devices", HttpMethod.POST, request, Devices.class);
+        		.exchange(url, HttpMethod.POST, request, Devices.class);
         
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         
@@ -203,7 +205,7 @@ public class DeviceEndpointTest {
         
         HttpEntity<Filter> request = new HttpEntity<Filter>(f);
         ResponseEntity<Devices> response = restTemplate
-        		.exchange("http://localhost:8080/v0/devices", HttpMethod.POST, request, Devices.class);
+        		.exchange(url, HttpMethod.POST, request, Devices.class);
         
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         
