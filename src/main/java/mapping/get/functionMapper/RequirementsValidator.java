@@ -57,7 +57,6 @@ public class RequirementsValidator {
 			String jsonlist2InputValue = MappingHelper.navigateJsonKeyPath(jsonlist2Device, path).asText();
 			
 			if (jsonlist2InputValue.isEmpty()) {
-				System.out.println("Function can't be validated, needed value at key path '"+path+"' is missing");
 				return false;
 			}
 			
@@ -86,7 +85,6 @@ public class RequirementsValidator {
 			String jsonlist2InputValue = MappingHelper.navigateJsonKeyPath(jsonlist2Device, path).asText();
 			
 			if (jsonlist2InputValue.isEmpty()) {
-				System.out.println("Function can't be validated, needed value at key path '"+path+"' is missing");
 				return false;
 			}
 			

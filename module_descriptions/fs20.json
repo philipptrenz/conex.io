@@ -151,100 +151,86 @@
 								"parameter": "off"
 							},
 							{
-								"inject_mode": "range",
-								"minimum": 1,
-								"maximum": 6,
-								"parameter": "dim06%"
-							},
-							{
-								"inject_mode": "range",
-								"minimum": 7,
-								"maximum": 12,
-								"parameter": "dim12%"
-							},
-							{
-								"inject_mode": "range",
-								"minimum": 13,
-								"maximum": 18,
-								"parameter": "dim18%"
-							},
-							{
-								"inject_mode": "range",
-								"minimum": 19,
-								"maximum": 25,
-								"parameter": "dim25%"
-							},
-							{
-								"inject_mode": "range",
-								"minimum": 26,
-								"maximum": 31,
-								"parameter": "dim31%"
-							},
-							{
-								"inject_mode": "range",
-								"minimum": 32,
-								"maximum": 37,
-								"parameter": "dim37%"
-							},
-							{
-								"inject_mode": "range",
-								"minimum": 38,
-								"maximum": 43,
-								"parameter": "dim43%"
-							},
-							{
-								"inject_mode": "range",
-								"minimum": 44,
-								"maximum": 50,
-								"parameter": "dim50%"
-							},
-							{
-								"inject_mode": "range",
-								"minimum": 51,
-								"maximum": 56,
-								"parameter": "dim56%"
-							},
-							{
-								"inject_mode": "range",
-								"minimum": 57,
-								"maximum": 62,
-								"parameter": "dim62%"
-							},
-							{
-								"inject_mode": "range",
-								"minimum": 63,
-								"maximum": 68,
-								"parameter": "dim68%"
-							},
-							{
-								"inject_mode": "range",
-								"minimum": 69,
-								"maximum": 75,
-								"parameter": "dim75%"
-							},
-							{
-								"inject_mode": "range",
-								"minimum": 76,
-								"maximum": 81,
-								"parameter": "dim81%"
-							},
-							{
-								"inject_mode": "range",
-								"minimum": 82,
-								"maximum": 87,
-								"parameter": "dim87%"
-							},
-							{
-								"inject_mode": "range",
-								"minimum": 88,
-								"maximum": 93,
-								"parameter": "dim93%"
-							},
-							{
-								"inject_mode": "range",
-								"minimum": 94,
+								"inject_mode": "from_to",
+								"minimum": 0,
 								"maximum": 100,
-								"parameter": "dim100%"
+								"mapping": [
+									{
+										"from": 1,
+										"to": 6,
+										"parameter": "dim06%"
+									},
+									{
+										"from": 7,
+										"to": 12,
+										"parameter": "dim12%"
+									},
+									{
+										"from": 13,
+										"to": 18,
+										"parameter": "dim18%"
+									},
+									{
+										"from": 19,
+										"to": 25,
+										"parameter": "dim25%"
+									},
+									{
+										"from": 26,
+										"to": 31,
+										"parameter": "dim31%"
+									},
+									{
+										"from": 32,
+										"to": 43,
+										"parameter": "dim43%"
+									},
+									{
+										"from": 44,
+										"to": 50,
+										"parameter": "dim50%"
+									},
+									{
+										"from": 51,
+										"to": 56,
+										"parameter": "dim56%"
+									},
+									{
+										"from": 57,
+										"to": 62,
+										"parameter": "dim62%"
+									},
+									{
+										"from": 63,
+										"to": 68,
+										"parameter": "dim68%"
+									},
+									{
+										"from": 69,
+										"to": 75,
+										"parameter": "dim75%"
+									},
+									{
+										"from": 76,
+										"to": 81,
+										"parameter": "dim81%"
+									},
+									{
+										"from": 82,
+										"to": 87,
+										"parameter": "dim87%"
+									},
+									{
+										"from": 88,
+										"to": 93,
+										"parameter": "dim93%"
+									},
+									{
+										"from": 94,
+										"to": 100,
+										"parameter": "dim100%"
+									}
+								]
 							}
 						]
 					}

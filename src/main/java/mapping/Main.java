@@ -64,8 +64,6 @@ public class Main {
 			f3.setFunctionId("testfunction_"+(k+2));
 			device.addFunctionsItem(f3);
 			
-			
-			
 			list.add(device);
 			
 			j++;
