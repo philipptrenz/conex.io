@@ -42,6 +42,30 @@ public class DeviceCalc {
         ausgabe = geraete;
 		return ausgabe;
 	}
+	
+	public List<Device> getDeviceListFilteringWithPatcherFunction(Function f) {
+		if(!filter.getFunctionIds().contains(f.getFunctionId())) {
+			filter.addFunctionIdsItem(f.getFunctionId());
+		}
+		
+		List <Device> list = getDeviceListFiltered();
+		if(!list.isEmpty()) {
+			for (int i = 0; i < list.size(); i++) {
+				List <Function> functionList = list.get(i).getFunctions();
+				boolean check = true;
+					for (Function listenFunction: functionList) {
+						if(listenFunction.getFunctionId().contains(f.getFunctionId())) {
+							check = false;	
+					}
+				}
+					if(check) {
+						list.remove(i);
+						i--;
+					}
+			}
+		}
+		return list;
+	}
 	/**
 	 * Filtering function for endpoint /functions
 	 * @return list of String Ids

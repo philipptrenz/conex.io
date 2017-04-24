@@ -20,13 +20,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class DevicesApiController implements DevicesApi {
 
     public ResponseEntity<Void> devicesPatch(@ApiParam(value = "Filter object with function values" ,required=true ) @RequestBody Patcher patcher) {
-        
-    	// TODO: add function_id from patcher to filter
     	
     	DeviceCalc calc = new DeviceCalc(patcher.getFilter());
         Devices list = new Devices();
-        list.setDevices(calc.getDeviceListFiltered());
-        mapping.Main.setDevices(list.getDevices(), patcher.getFunction());
+        if(patcher.getFilter() != null)
+        list.setDevices(calc.getDeviceListFilteringWithPatcherFunction(patcher.getFunction()));
+        //TODO mapping.Main.setDevices(list.getDevices(), patcher.getFunction());
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
