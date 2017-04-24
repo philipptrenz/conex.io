@@ -23,6 +23,8 @@ import io.swagger.api.calc.DeviceCalc;
 import io.swagger.model.Device;
 import io.swagger.model.Devices;
 import io.swagger.model.Filter;
+import io.swagger.model.Function;
+import io.swagger.model.Patcher;
 /**
  * @author Timo Schwan
  */
@@ -34,7 +36,7 @@ public class DeviceEndpointTest {
     //@Autowired
     private TestRestTemplate restTemplate = new TestRestTemplate();
     
-    private String url = "localhost:8080/v0/devices";
+    private final String url = "http://localhost:8080/v0/devices";
 
     
     @Test
@@ -70,7 +72,7 @@ public class DeviceEndpointTest {
     }
     
     @Test
-    public void devicesEndpointNonJsonRequest() throws Exception {
+    public void devicesPostEndpointNonJsonRequest() throws Exception {
         
         HttpEntity <String> request = new HttpEntity<String>("");
         ResponseEntity<Devices> response = restTemplate
@@ -87,7 +89,7 @@ public class DeviceEndpointTest {
      * @throws Exception
      */
     @Test
-    public void getDeviceByAllFilters() throws Exception {
+    public void postDevicesByAllFilters() throws Exception {
     	List <String> searchDevices = Arrays.asList("");
     	List <String> searchFunctions = Arrays.asList("onoff");
     	List <String> searchGroups = Arrays.asList("");
@@ -113,7 +115,7 @@ public class DeviceEndpointTest {
     }
     
     @Test
-    public void getDeviceByDeviceFilter() throws Exception {
+    public void postDevicesByDeviceFilter() throws Exception {
     	List <String> searchDevices = Arrays.asList("wz_rauchmelder");
     	
     	Filter f = new Filter();
@@ -133,7 +135,7 @@ public class DeviceEndpointTest {
     }
     
     @Test
-    public void getDeviceByFunctionFilter() throws Exception {
+    public void postDevicesByFunctionFilter() throws Exception {
     	List <String> searchFunctions = Arrays.asList("onoff");
     	
     	Filter f = new Filter();
@@ -153,7 +155,7 @@ public class DeviceEndpointTest {
     }
     
     @Test
-    public void getDeviceByGroupFilter() throws Exception {
+    public void postDevicesByGroupFilter() throws Exception {
     	List <String> searchGroups = Arrays.asList("Schalter", "Handsender");
     	
     	Filter f = new Filter();
@@ -173,7 +175,7 @@ public class DeviceEndpointTest {
     }
     
     @Test
-    public void getDeviceByRoomFilter() throws Exception {
+    public void postDevicesByRoomFilter() throws Exception {
     	List <String> searchRooms = Arrays.asList("EG.Wohnzimmer");
     	
     	Filter f = new Filter();
@@ -192,7 +194,7 @@ public class DeviceEndpointTest {
         }
     }
     @Test
-    public void getDeviceByMultipleFilters() throws Exception {
+    public void postDevicesByMultipleFilters() throws Exception {
     	List <String> searchRooms = Arrays.asList("EG.Wohnzimmer");
     	List <String> searchFunctions = Arrays.asList("onoff");
     	
@@ -211,5 +213,46 @@ public class DeviceEndpointTest {
         for (Device d : geraete.getDevices()) {
         assertTrue(DeviceCalc.isDeviceMatchingFiltering(d, f));
         }
+    }
+    @Test
+    public void patchDevicesByFunctionOnly() throws Exception {
+    	Function f = new Function();
+    	f.setFunctionId("onoff");
+    	
+    	Patcher patcher = new Patcher();
+    	patcher.setFunction(f);
+        
+        HttpEntity<Patcher> request = new HttpEntity<Patcher>(patcher);
+        ResponseEntity<Void> response = restTemplate
+        		.exchange(url, HttpMethod.PATCH, request, Void.class);
+        
+        assertThat(response.getStatusCode(), is(HttpStatus.OK));
+    }
+    @Test
+    public void patchDevicesByAllFitlers() throws Exception {
+    	Function f = new Function();
+    	f.setFunctionId("onoff");
+    	
+    	List <String> searchDevices = Arrays.asList("dg.jz.deckenleuchte");
+    	List <String> searchFunctions = Arrays.asList("onoff");
+    	List <String> searchGroups = Arrays.asList("Schalter");
+    	List <String> searchRooms = Arrays.asList("DG.Jolina");
+    	
+    	Filter filter = new Filter();
+    	
+    	filter.setDeviceIds(searchDevices);
+    	filter.setFunctionIds(searchFunctions);
+    	filter.setGroupIds(searchGroups);
+    	filter.setRoomIds(searchRooms);
+    	
+    	Patcher patcher = new Patcher();
+    	patcher.setFunction(f);
+    	patcher.setFilter(filter);
+        
+        HttpEntity<Patcher> request = new HttpEntity<Patcher>(patcher);
+        ResponseEntity<Void> response = restTemplate
+        		.exchange(url, HttpMethod.PATCH, request, Void.class);
+        
+        assertThat(response.getStatusCode(), is(HttpStatus.OK));
     }
 }
