@@ -3,6 +3,8 @@ package mapping;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tomcat.util.http.FastHttpDateFormat;
+
 import io.swagger.model.Device;
 import io.swagger.model.Function;
 import mapping.get.JsonParser;
@@ -11,24 +13,22 @@ public class Main {
 	
 	private static FHEMConnector connector;
 	
-	public static void main(String [] args){
-		
+	public Main() {
 		connector = FHEMConnector.getInstance("192.168.0.11", 8083, "5.8");
-		
-		//new JsonParser().parse(FHEMConnector.getJsonlist2MockupAsStringFromFile());
-		
+	}
+	
+	public static void main(String [] args){
+		new Main();
 	}
 	
 	public static List<Device> getDevices() {
 		
 		return new JsonParser().parse(FHEMConnector.getJsonlist2MockupAsStringFromFile());
-	
+		//return connector.getDevices();
 	}
 	
 	public static void setDevices(List<Device> deviceList, Function toSet) {
-		
 		connector.setDevices(deviceList, toSet);
-		
 	}
 	
 	/* ----------------------------------------------------------------------------------------- */

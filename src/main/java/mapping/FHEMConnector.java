@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -164,13 +165,14 @@ public class FHEMConnector {
 	}
 	
 	public List<Device> getDevices() {
-		return (List<Device>) deviceMap.values();
+		return new ArrayList<Device>(deviceMap.values());
 	}
 	
 	public boolean setDevices(List<Device> devices, Function functionValuesToSet) {
 	
 		try {
-			sendFhemCommand(commandBuilder.buildCommand(devices, functionValuesToSet));
+			String  command = commandBuilder.buildCommand(devices, functionValuesToSet);
+			sendFhemCommand(command);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
