@@ -37,8 +37,8 @@ public class RoomsEndpointTest {
     
     @Test
     public void roomsEndpointNotPermittedHttpMethod() throws Exception {
-    	List <String> searchRooms = Arrays.asList("EG.Wohnzimmer");
-    	List <String> searchFunctions = Arrays.asList("onoff");
+    	List <String> searchRooms = Arrays.asList("testroom_10");
+    	List <String> searchFunctions = Arrays.asList("testfunction_1");
     	
     	Filter f = new Filter();
     	
@@ -91,10 +91,10 @@ public class RoomsEndpointTest {
      */
     @Test
     public void getRoomsByAllFilters() throws Exception {
-    	List <String> searchDevices = Arrays.asList("dg.jz.deckenleuchte");
-    	List <String> searchFunctions = Arrays.asList("onoff");
-    	List <String> searchGroups = Arrays.asList("Schalter");
-    	List <String> searchRooms = Arrays.asList("DG.Jolina");
+    	List <String> searchDevices = Arrays.asList("testdevice_21");
+    	List <String> searchFunctions = Arrays.asList("testfunction_1");
+    	List <String> searchGroups = Arrays.asList("testgroup_11");
+    	List <String> searchRooms = Arrays.asList("testroom_12");
     	
     	Filter f = new Filter();
     	
@@ -112,12 +112,12 @@ public class RoomsEndpointTest {
         
         Ids roomIds = response.getBody();
         
-        assertTrue(roomIds.getIds().contains("DG.Jolina"));
+        assertTrue(roomIds.getIds().contains("testroom_11"));
     }
     
     @Test
     public void getRoomsByDeviceFilter() throws Exception {
-    	List <String> searchDevices = Arrays.asList("dg.jz.deckenleuchte");
+    	List <String> searchDevices = Arrays.asList("testdevice_21");
     	
     	Filter f = new Filter();
     	
@@ -131,12 +131,12 @@ public class RoomsEndpointTest {
         
         Ids roomIds = response.getBody();
         
-        assertTrue(roomIds.getIds().contains("DG.Jolina"));
+        assertTrue(roomIds.getIds().contains("testroom_12"));
     }
     
     @Test
     public void getRoomsByFunctionFilter() throws Exception {
-    	List <String> searchFunctions = Arrays.asList("onoff", "dimmer");
+    	List <String> searchFunctions = Arrays.asList("testfunction_0", "testfunction_1");
     	
     	Filter f = new Filter();
     	
@@ -150,14 +150,14 @@ public class RoomsEndpointTest {
         
         Ids roomIds = response.getBody();
         
-        assertTrue(roomIds.getIds().contains("DG.Jolina"));
-        assertTrue(roomIds.getIds().contains("UG.Arbeitszimmer"));
-        assertTrue(roomIds.getIds().contains("_LED"));
+        assertTrue(roomIds.getIds().contains("testroom_10"));
+        assertTrue(roomIds.getIds().contains("testroom_11"));
+        assertTrue(roomIds.getIds().contains("testroom_12"));
     }
     
     @Test
     public void getRoomsByGroupFilter() throws Exception {
-    	List <String> searchGroups = Arrays.asList("Handsender");
+    	List <String> searchGroups = Arrays.asList("testgroup_12");
     	
     	Filter f = new Filter();
     	
@@ -171,12 +171,12 @@ public class RoomsEndpointTest {
         
         Ids roomIds = response.getBody();
         
-        assertTrue(roomIds.getIds().contains("_Licht"));
+        assertTrue(roomIds.getIds().contains("testroom_10"));
     }
     
     @Test
     public void getRoomsByRoomFilter() throws Exception {
-    	List <String> searchRooms = Arrays.asList("EG.Wohnzimmer");
+    	List <String> searchRooms = Arrays.asList("testroom_11");
     	
     	Filter f = new Filter();
     	
@@ -190,12 +190,12 @@ public class RoomsEndpointTest {
         
         Ids roomIds = response.getBody();
         
-        assertTrue(roomIds.getIds().contains("EG.Wohnzimmer"));
+        assertTrue(roomIds.getIds().contains("testroom_11"));
     }
     @Test
     public void getRoomsByMultipleFilters() throws Exception {
-    	List <String> searchRooms = Arrays.asList("EG.Wohnzimmer");
-    	List <String> searchFunctions = Arrays.asList("onoff");
+    	List <String> searchRooms = Arrays.asList("testroom_10");
+    	List <String> searchFunctions = Arrays.asList("testfunction_1");
     	
     	Filter f = new Filter();
     	
@@ -210,8 +210,8 @@ public class RoomsEndpointTest {
         
         Ids roomIds = response.getBody();
         
-        assertTrue(roomIds.getIds().contains("EG.Wohnzimmer"));
-        assertTrue(roomIds.getIds().contains("_LED"));
-        assertTrue(roomIds.getIds().contains("_Licht"));
+        assertTrue(roomIds.getIds().contains("testroom_10"));
+        assertTrue(roomIds.getIds().contains("testroom_11"));
+        assertTrue(roomIds.getIds().contains("testroom_12"));
     }
 }

@@ -41,8 +41,8 @@ public class DeviceEndpointTest {
     
     @Test
     public void devicesEndpointNotPermittedHttpMethod() throws Exception {
-    	List <String> searchRooms = Arrays.asList("EG.Wohnzimmer");
-    	List <String> searchFunctions = Arrays.asList("onoff");
+    	List <String> searchRooms = Arrays.asList("testroom_0");
+    	List <String> searchFunctions = Arrays.asList("testfunction_0");
     	
     	Filter f = new Filter();
     	
@@ -90,10 +90,10 @@ public class DeviceEndpointTest {
      */
     @Test
     public void postDevicesByAllFilters() throws Exception {
-    	List <String> searchDevices = Arrays.asList("");
-    	List <String> searchFunctions = Arrays.asList("onoff");
-    	List <String> searchGroups = Arrays.asList("");
-    	List <String> searchRooms = Arrays.asList("");
+    	List <String> searchDevices = Arrays.asList("testdevice_21");
+    	List <String> searchFunctions = Arrays.asList("testfunction_1");
+    	List <String> searchGroups = Arrays.asList("testgroup_11");
+    	List <String> searchRooms = Arrays.asList("testroom_10");
     	
     	Filter f = new Filter();
     	
@@ -116,7 +116,7 @@ public class DeviceEndpointTest {
     
     @Test
     public void postDevicesByDeviceFilter() throws Exception {
-    	List <String> searchDevices = Arrays.asList("wz_rauchmelder");
+    	List <String> searchDevices = Arrays.asList("testdevice_0");
     	
     	Filter f = new Filter();
     	
@@ -136,7 +136,7 @@ public class DeviceEndpointTest {
     
     @Test
     public void postDevicesByFunctionFilter() throws Exception {
-    	List <String> searchFunctions = Arrays.asList("onoff");
+    	List <String> searchFunctions = Arrays.asList("testfunction_0");
     	
     	Filter f = new Filter();
     	
@@ -156,7 +156,7 @@ public class DeviceEndpointTest {
     
     @Test
     public void postDevicesByGroupFilter() throws Exception {
-    	List <String> searchGroups = Arrays.asList("Schalter", "Handsender");
+    	List <String> searchGroups = Arrays.asList("testgroup_11", "testgroup_12");
     	
     	Filter f = new Filter();
     	
@@ -176,7 +176,7 @@ public class DeviceEndpointTest {
     
     @Test
     public void postDevicesByRoomFilter() throws Exception {
-    	List <String> searchRooms = Arrays.asList("EG.Wohnzimmer");
+    	List <String> searchRooms = Arrays.asList("testroom_10", "testroom_12");
     	
     	Filter f = new Filter();
     	
@@ -195,8 +195,8 @@ public class DeviceEndpointTest {
     }
     @Test
     public void postDevicesByMultipleFilters() throws Exception {
-    	List <String> searchRooms = Arrays.asList("EG.Wohnzimmer");
-    	List <String> searchFunctions = Arrays.asList("onoff");
+    	List <String> searchRooms = Arrays.asList("testroom_10");
+    	List <String> searchFunctions = Arrays.asList("testfunction_1");
     	
     	Filter f = new Filter();
     	
@@ -217,7 +217,7 @@ public class DeviceEndpointTest {
     @Test
     public void patchDevicesByFunctionOnly() throws Exception {
     	Function f = new Function();
-    	f.setFunctionId("onoff");
+    	f.setFunctionId("testfunction_0");
     	
     	Patcher patcher = new Patcher();
     	patcher.setFunction(f);
@@ -233,10 +233,10 @@ public class DeviceEndpointTest {
     	Function f = new Function();
     	f.setFunctionId("onoff");
     	
-    	List <String> searchDevices = Arrays.asList("dg.jz.deckenleuchte");
-    	List <String> searchFunctions = Arrays.asList("onoff");
-    	List <String> searchGroups = Arrays.asList("Schalter");
-    	List <String> searchRooms = Arrays.asList("DG.Jolina");
+    	List <String> searchDevices = Arrays.asList("testdevice_21");
+    	List <String> searchFunctions = Arrays.asList("testfunction_0");
+    	List <String> searchGroups = Arrays.asList("testgroup_11");
+    	List <String> searchRooms = Arrays.asList("testroom_12");
     	
     	Filter filter = new Filter();
     	

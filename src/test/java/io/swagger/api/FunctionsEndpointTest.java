@@ -37,8 +37,8 @@ public class FunctionsEndpointTest {
     
     @Test
     public void functionsEndpointNotPermittedHttpMethod() throws Exception {
-    	List <String> searchRooms = Arrays.asList("EG.Wohnzimmer");
-    	List <String> searchFunctions = Arrays.asList("onoff");
+    	List <String> searchRooms = Arrays.asList("testroom_10");
+    	List <String> searchFunctions = Arrays.asList("testfunction_0");
     	
     	Filter f = new Filter();
     	
@@ -91,10 +91,10 @@ public class FunctionsEndpointTest {
      */
     @Test
     public void getFunctionsByAllFilters() throws Exception {
-    	List <String> searchDevices = Arrays.asList("dg.jz.deckenleuchte");
-    	List <String> searchFunctions = Arrays.asList("onoff");
-    	List <String> searchGroups = Arrays.asList("Schalter");
-    	List <String> searchRooms = Arrays.asList("DG.Jolina");
+    	List <String> searchDevices = Arrays.asList("testdevice_21");
+    	List <String> searchFunctions = Arrays.asList("testfunction_0");
+    	List <String> searchGroups = Arrays.asList("testgroup_10");
+    	List <String> searchRooms = Arrays.asList("testroom_10");
     	
     	Filter f = new Filter();
     	
@@ -112,12 +112,12 @@ public class FunctionsEndpointTest {
         
         Ids functionIds = response.getBody();
         
-        assertTrue(functionIds.getIds().contains("onoff"));
+        assertTrue(functionIds.getIds().contains("testfunction_1"));
     }
     
     @Test
     public void getFunctionsByDeviceFilter() throws Exception {
-    	List <String> searchDevices = Arrays.asList("dg.jz.deckenleuchte");
+    	List <String> searchDevices = Arrays.asList("testdevice_21");
     	
     	Filter f = new Filter();
     	
@@ -131,12 +131,12 @@ public class FunctionsEndpointTest {
         
         Ids functionIds = response.getBody();
         
-        assertTrue(functionIds.getIds().contains("onoff"));
+        assertTrue(functionIds.getIds().contains("testfunction_0"));
     }
     
     @Test
     public void getFunctionsByFunctionFilter() throws Exception {
-    	List <String> searchFunctions = Arrays.asList("onoff", "dimmer");
+    	List <String> searchFunctions = Arrays.asList("testfunction_0", "testfunction_1");
     	
     	Filter f = new Filter();
     	
@@ -150,13 +150,13 @@ public class FunctionsEndpointTest {
         
         Ids functionIds = response.getBody();
         
-        assertTrue(functionIds.getIds().contains("onoff"));
-        assertTrue(functionIds.getIds().contains("dimmer"));
+        assertTrue(functionIds.getIds().contains("testfunction_0"));
+        assertTrue(functionIds.getIds().contains("testfunction_1"));
     }
     
     @Test
     public void getFunctionsByGroupFilter() throws Exception {
-    	List <String> searchGroups = Arrays.asList("Handsender");
+    	List <String> searchGroups = Arrays.asList("testgroup_11");
     	
     	Filter f = new Filter();
     	
@@ -170,13 +170,13 @@ public class FunctionsEndpointTest {
         
         Ids functionIds = response.getBody();
         
-        assertTrue(functionIds.getIds().contains("onoff"));
-        assertTrue(functionIds.getIds().contains("dimmer"));
+        assertTrue(functionIds.getIds().contains("testfunction_0"));
+        assertTrue(functionIds.getIds().contains("testfunction_1"));
     }
     
     @Test
     public void getFunctionsByRoomFilter() throws Exception {
-    	List <String> searchRooms = Arrays.asList("EG.Wohnzimmer");
+    	List <String> searchRooms = Arrays.asList("testroom_10");
     	
     	Filter f = new Filter();
     	
@@ -190,12 +190,12 @@ public class FunctionsEndpointTest {
         
         Ids functionIds = response.getBody();
         
-        assertTrue(functionIds.getIds().contains("onoff"));
+        assertTrue(functionIds.getIds().contains("testfunction_1"));
     }
     @Test
     public void getFunctionsByMultipleFilters() throws Exception {
-    	List <String> searchRooms = Arrays.asList("EG.Wohnzimmer");
-    	List <String> searchFunctions = Arrays.asList("onoff");
+    	List <String> searchRooms = Arrays.asList("testroom_11");
+    	List <String> searchFunctions = Arrays.asList("testfunction_0");
     	
     	Filter f = new Filter();
     	
@@ -210,7 +210,7 @@ public class FunctionsEndpointTest {
         
         Ids functionIds = response.getBody();
         
-        assertTrue(functionIds.getIds().contains("onoff"));
-        assertTrue(functionIds.getIds().contains("dimmer"));
+        assertTrue(functionIds.getIds().contains("testfunction_0"));
+        assertTrue(functionIds.getIds().contains("testfunction_1"));
     }
 }

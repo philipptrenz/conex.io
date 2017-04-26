@@ -25,7 +25,7 @@ public class DeviceCalc {
 		else {
 			this.filter = new Filter();
 		}
-        this.geraete = mapping.Main.getDevices();
+        this.geraete = mapping.Main.getDevicesMockup();
 	}
 	/**
 	 * Filtering for all Devices and endpoint /devices. Iterates through all Filter-functions - if required.
@@ -43,7 +43,7 @@ public class DeviceCalc {
         			}
         		}
         	}
-		System.out.println("Geräte sind gefiltert ! " + geraete.size());
+		System.out.println("Verbleibende Geräte: " + geraete.size());
         ausgabe = geraete;
 		return ausgabe;
 	}
