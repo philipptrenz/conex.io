@@ -49,7 +49,7 @@ public class DeviceCalc {
 	}
 	
 	public List<Device> getDeviceListFilteringWithPatcherFunction(Function f) {
-		if(f != null || f.getFunctionId() != null) {
+		if(f == null || f.getFunctionId() == null) {
 			f = new Function();
 			f.setFunctionId("null");
 		}
