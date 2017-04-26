@@ -2,6 +2,8 @@ package io.swagger.api;
 
 import io.swagger.model.Devices;
 import io.swagger.model.Filter;
+import io.swagger.model.Function;
+import io.swagger.model.OnOff;
 import io.swagger.model.Patcher;
 
 import io.swagger.annotations.*;
@@ -20,11 +22,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class DevicesApiController implements DevicesApi {
 
     public ResponseEntity<Void> devicesPatch(@ApiParam(value = "Filter object with function values" ,required=true ) @RequestBody Patcher patcher) {
-    	
     	DeviceCalc calc = new DeviceCalc(patcher.getFilter());
         Devices list = new Devices();
-        //Kommentar
         list.setDevices(calc.getDeviceListFilteringWithPatcherFunction(patcher.getFunction()));
+        System.out.println(list.getDevices());
         mapping.Main.setDevices(list.getDevices(), patcher.getFunction());
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
