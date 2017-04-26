@@ -25,7 +25,7 @@ public class DeviceCalc {
 		else {
 			this.filter = new Filter();
 		}
-        this.geraete = mapping.Main.getDevicesMockup();
+        this.geraete = mapping.Main.getDevices();
 	}
 	/**
 	 * Filtering for all Devices and endpoint /devices. Iterates through all Filter-functions - if required.
