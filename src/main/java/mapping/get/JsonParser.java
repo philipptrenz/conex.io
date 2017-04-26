@@ -47,7 +47,7 @@ public class JsonParser {
 							//System.out.println("device added");
 							deviceList.add(device);
 							
-							System.out.println(device+"\n");
+							//System.out.println(device+"\n");
 						}
 						
 					} catch (Exception e) {
