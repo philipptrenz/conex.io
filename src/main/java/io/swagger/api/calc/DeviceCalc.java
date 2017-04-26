@@ -49,6 +49,10 @@ public class DeviceCalc {
 	}
 	
 	public List<Device> getDeviceListFilteringWithPatcherFunction(Function f) {
+		if(f != null || f.getFunctionId() != null) {
+			f = new Function();
+			f.setFunctionId("null");
+		}
 		if(!filter.getFunctionIds().contains(f.getFunctionId())) {
 			filter.addFunctionIdsItem(f.getFunctionId());
 		}
@@ -67,8 +71,8 @@ public class DeviceCalc {
 						list.remove(i);
 						i--;
 					}
+				}
 			}
-		}
 		return list;
 	}
 	/**
