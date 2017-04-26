@@ -43,12 +43,16 @@ public class DeviceCalc {
         			}
         		}
         	}
-		System.out.println("Geräte sind gefiltert ! " + geraete.size());
+		System.out.println("Verbleibende Geräte: " + geraete.size());
         ausgabe = geraete;
 		return ausgabe;
 	}
 	
 	public List<Device> getDeviceListFilteringWithPatcherFunction(Function f) {
+		if(f == null || f.getFunctionId() == null) {
+			f = new Function();
+			f.setFunctionId("null");
+		}
 		if(!filter.getFunctionIds().contains(f.getFunctionId())) {
 			filter.addFunctionIdsItem(f.getFunctionId());
 		}
@@ -67,8 +71,8 @@ public class DeviceCalc {
 						list.remove(i);
 						i--;
 					}
+				}
 			}
-		}
 		return list;
 	}
 	/**

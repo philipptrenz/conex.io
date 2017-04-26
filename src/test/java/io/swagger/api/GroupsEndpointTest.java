@@ -37,8 +37,8 @@ public class GroupsEndpointTest {
     
     @Test
     public void groupsEndpointNotPermittedHttpMethod() throws Exception {
-    	List <String> searchRooms = Arrays.asList("EG.Wohnzimmer");
-    	List <String> searchFunctions = Arrays.asList("onoff");
+    	List <String> searchRooms = Arrays.asList("testroom_11");
+    	List <String> searchFunctions = Arrays.asList("testfunction_0");
     	
     	Filter f = new Filter();
     	
@@ -91,10 +91,10 @@ public class GroupsEndpointTest {
      */
     @Test
     public void getGroupsByAllFilters() throws Exception {
-    	List <String> searchDevices = Arrays.asList("dg.jz.deckenleuchte");
-    	List <String> searchFunctions = Arrays.asList("onoff");
-    	List <String> searchGroups = Arrays.asList("Schalter");
-    	List <String> searchRooms = Arrays.asList("DG.Jolina");
+    	List <String> searchDevices = Arrays.asList("testdevice_21");
+    	List <String> searchFunctions = Arrays.asList("testfunction_0");
+    	List <String> searchGroups = Arrays.asList("testgroup_11");
+    	List <String> searchRooms = Arrays.asList("testroom_11");
     	
     	Filter f = new Filter();
     	
@@ -112,12 +112,12 @@ public class GroupsEndpointTest {
         
         Ids groupIds = response.getBody();
         
-        assertTrue(groupIds.getIds().contains("Schalter"));
+        assertTrue(groupIds.getIds().contains("testgroup_10"));
     }
     
     @Test
     public void getGroupsByDeviceFilter() throws Exception {
-    	List <String> searchDevices = Arrays.asList("dg.jz.deckenleuchte");
+    	List <String> searchDevices = Arrays.asList("testdevice_21");
     	
     	Filter f = new Filter();
     	
@@ -131,12 +131,12 @@ public class GroupsEndpointTest {
         
         Ids groupIds = response.getBody();
         
-        assertTrue(groupIds.getIds().contains("Schalter"));
+        assertTrue(groupIds.getIds().contains("testgroup_12"));
     }
     
     @Test
     public void getGroupsByFunctionFilter() throws Exception {
-    	List <String> searchFunctions = Arrays.asList("onoff", "dimmer");
+    	List <String> searchFunctions = Arrays.asList("testfunction_0", "testfunction_1");
     	
     	Filter f = new Filter();
     	
@@ -150,14 +150,14 @@ public class GroupsEndpointTest {
         
         Ids groupIds = response.getBody();
         
-        assertTrue(groupIds.getIds().contains("Schalter"));
-        assertTrue(groupIds.getIds().contains("Steckdosen"));
-        assertTrue(groupIds.getIds().contains("Handsender"));
+        assertTrue(groupIds.getIds().contains("testgroup_10"));
+        assertTrue(groupIds.getIds().contains("testgroup_11"));
+        assertTrue(groupIds.getIds().contains("testgroup_12"));
     }
     
     @Test
     public void getGroupsByGroupFilter() throws Exception {
-    	List <String> searchGroups = Arrays.asList("Handsender");
+    	List <String> searchGroups = Arrays.asList("testgroup_11");
     	
     	Filter f = new Filter();
     	
@@ -171,12 +171,12 @@ public class GroupsEndpointTest {
         
         Ids groupIds = response.getBody();
         
-        assertTrue(groupIds.getIds().contains("Handsender"));
+        assertTrue(groupIds.getIds().contains("testgroup_11"));
     }
     
     @Test
     public void getGroupsByRoomFilter() throws Exception {
-    	List <String> searchRooms = Arrays.asList("EG.Wohnzimmer");
+    	List <String> searchRooms = Arrays.asList("testroom_11");
     	
     	Filter f = new Filter();
     	
@@ -190,12 +190,12 @@ public class GroupsEndpointTest {
         
         Ids functionIds = response.getBody();
         
-        assertTrue(functionIds.getIds().contains("Schalter"));
+        assertTrue(functionIds.getIds().contains("testgroup_12"));
     }
     @Test
     public void getGroupsByMultipleFilters() throws Exception {
-    	List <String> searchRooms = Arrays.asList("EG.Wohnzimmer");
-    	List <String> searchFunctions = Arrays.asList("onoff");
+    	List <String> searchRooms = Arrays.asList("testroom_12");
+    	List <String> searchFunctions = Arrays.asList("testfunction_1");
     	
     	Filter f = new Filter();
     	
@@ -210,8 +210,8 @@ public class GroupsEndpointTest {
         
         Ids groupIds = response.getBody();
         
-        assertTrue(groupIds.getIds().contains("Schalter"));
-        assertTrue(groupIds.getIds().contains("Steckdosen"));
-        assertTrue(groupIds.getIds().contains("Handsender"));
+        assertTrue(groupIds.getIds().contains("testgroup_10"));
+        assertTrue(groupIds.getIds().contains("testgroup_11"));
+        assertTrue(groupIds.getIds().contains("testgroup_12"));
     }
 }
