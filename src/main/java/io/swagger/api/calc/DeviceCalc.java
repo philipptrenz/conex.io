@@ -19,7 +19,12 @@ public class DeviceCalc {
 	 * @param filter Filter-Object
 	 */
 	public DeviceCalc(Filter filter) {
-        this.filter = filter;
+		if(filter != null) {
+	        this.filter = filter;
+		}
+		else {
+			this.filter = new Filter();
+		}
         this.geraete = mapping.Main.getDevices();
 	}
 	/**

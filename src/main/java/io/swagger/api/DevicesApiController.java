@@ -23,10 +23,8 @@ public class DevicesApiController implements DevicesApi {
     	
     	DeviceCalc calc = new DeviceCalc(patcher.getFilter());
         Devices list = new Devices();
-        if(patcher.getFilter() != null) {
-        	list.setDevices(calc.getDeviceListFilteringWithPatcherFunction(patcher.getFunction()));
-        	mapping.Main.setDevices(list.getDevices(), patcher.getFunction());
-        }
+        list.setDevices(calc.getDeviceListFilteringWithPatcherFunction(patcher.getFunction()));
+        mapping.Main.setDevices(list.getDevices(), patcher.getFunction());
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
