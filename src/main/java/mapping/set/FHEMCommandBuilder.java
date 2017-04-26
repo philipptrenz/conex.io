@@ -40,27 +40,32 @@ public class FHEMCommandBuilder {
 		 * concatenate all commands via ";" (?)
 		 */
 		
-		System.out.println(functionValuesToSet);
-		Map<String, String> deviceIdsByTypeIdMap = concatDeviceIdsByTypeId(devices, functionValuesToSet.getClass());
+		if (functionValuesToSet != null) {
+			Map<String, String> deviceIdsByTypeIdMap = concatDeviceIdsByTypeId(devices, functionValuesToSet.getClass());
+			
+			Iterator it = deviceIdsByTypeIdMap.entrySet().iterator();
+		    while (it.hasNext()) {
+		        Map.Entry pair = (Map.Entry) it.next();
+		        
+		        String typeId = (String) pair.getKey();
+		        String concatenatedDeviceIds = (String) pair.getValue();
+		        
+		        System.out.println(typeId+": "+concatenatedDeviceIds);
+		        
+		        // TODO: Extract value to set
+		        
+		        
+		        
+		        
+		        it.remove(); // avoids a ConcurrentModificationException
+		    }
+			
+			return "";
+		} else {
+			System.out.println("Function to set is null");
+			return "";
+		}
 		
-		Iterator it = deviceIdsByTypeIdMap.entrySet().iterator();
-	    while (it.hasNext()) {
-	        Map.Entry pair = (Map.Entry) it.next();
-	        
-	        String typeId = (String) pair.getKey();
-	        String concatenatedDeviceIds = (String) pair.getValue();
-	        
-	        System.out.println(typeId+": "+concatenatedDeviceIds);
-	        
-	        // TODO: Extract value to set
-	        
-	        
-	        
-	        
-	        it.remove(); // avoids a ConcurrentModificationException
-	    }
-		
-		return "";
 	}
 	
 	private Map<String, String> concatDeviceIdsByTypeId(List<Device> deviceList, Class<?> functionToSetClass){
