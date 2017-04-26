@@ -3,6 +3,7 @@ package io.swagger.api;
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.*;
@@ -10,6 +11,7 @@ import org.junit.*;
 import io.swagger.api.calc.DeviceCalc;
 import io.swagger.model.Device;
 import io.swagger.model.Filter;
+import io.swagger.model.Function;
 
 public class DeviceCalculatorTest {
 	
@@ -34,7 +36,20 @@ public class DeviceCalculatorTest {
     	DeviceCalc dc = new DeviceCalc(f);
     	List <Device> list = dc.getDeviceListFiltered();
     	for(Device d : list) {
-    		
+    		if((f.getDeviceIds().contains(d.getDeviceId())) && 
+    				(Collections.disjoint(f.getGroupIds(), d.getGroupIds())) && 
+    				(Collections.disjoint(f.getRoomIds(), d.getRoomIds()))) {
+    			boolean functionCheck = false;
+    			for (Function function : d.getFunctions()) {
+    				if(f.getFunctionIds().contains(function.getFunctionId())) {
+    					functionCheck = true;
+    				}
+    			}
+    			assertTrue(functionCheck);
+    		}
+    		else {
+    			assertTrue(false);
+    		}
     	}
 	}
 	@Test
