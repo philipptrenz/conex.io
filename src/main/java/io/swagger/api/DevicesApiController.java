@@ -29,7 +29,6 @@ public class DevicesApiController implements DevicesApi {
     	DeviceCalc calc = new DeviceCalc(patcher.getFilter(), connector.getDevices());
         Devices list = new Devices();
         list.setDevices(calc.getDeviceListFilteringWithPatcherFunction(patcher.getFunction()));
-        System.out.println(list.getDevices());
         connector.setDevices(list.getDevices(), patcher.getFunction());
         return new ResponseEntity<Void>(HttpStatus.OK);
     }

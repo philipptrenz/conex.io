@@ -50,7 +50,7 @@ public class FHEMCommandBuilder {
 		        String typeId = (String) pair.getKey();
 		        String concatenatedDeviceIds = (String) pair.getValue();
 		        
-		        System.out.println(typeId+": "+concatenatedDeviceIds);
+		        //System.out.println(typeId+": "+concatenatedDeviceIds);
 		        
 		        // TODO: Extract value to set
 		        
@@ -62,7 +62,6 @@ public class FHEMCommandBuilder {
 			
 			return "";
 		} else {
-			System.out.println("Function to set is null");
 			return "";
 		}
 		
@@ -75,10 +74,7 @@ public class FHEMCommandBuilder {
 			for (Function function : device.getFunctions()) {
 				if (function.getClass().equals(functionToSetClass)){
 					containsFunction = true;
-					System.out.println("yey, has function");
 					break;
-				} else {
-					System.out.println("nope, not right function");
 				}
 			}
 			if (containsFunction) {

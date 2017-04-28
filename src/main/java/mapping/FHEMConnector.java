@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import io.swagger.model.Device;
@@ -34,9 +33,6 @@ import mapping.set.FHEMCommandBuilder;
 
 @Component
 public class FHEMConnector implements InitializingBean, AutomationServerConnector {
-	
-	@Autowired
-	private Environment env;
 	
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
@@ -107,7 +103,7 @@ public class FHEMConnector implements InitializingBean, AutomationServerConnecto
 
 				@Override
 				public void onError(Exception ex) {
-					ex.printStackTrace();
+					log.error("Error at websocket connection to FHEM: "+ex.getMessage());
 					// TODO
 				}
 			};
@@ -199,7 +195,7 @@ public class FHEMConnector implements InitializingBean, AutomationServerConnecto
 	/*
 	 * Just for testing purposes
 	 */
-	public static String getJsonlist2MockupAsStringFromFile() {
+	public String getJsonlist2MockupAsStringFromFile() {
 		byte[] encoded;
 		try {
 			String file;
