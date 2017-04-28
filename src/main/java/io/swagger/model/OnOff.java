@@ -7,12 +7,12 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.model.Function;
 import org.joda.time.DateTime;
-import javax.validation.constraints.*;
+
 /**
- * Generic On-Off Switch
+ * Generic On-Off switch
  */
-@ApiModel(description = "Generic On-Off Switch")
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-12T11:08:27.892Z")
+@ApiModel(description = "Generic On-Off switch")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-04-28T08:38:34.207Z")
 
 public class OnOff extends Function  {
   @JsonProperty("isOn")

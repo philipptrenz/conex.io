@@ -1,6 +1,10 @@
 package io.swagger.model;
 
 import java.util.Objects;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
@@ -8,12 +12,12 @@ import io.swagger.annotations.ApiModelProperty;
 import io.swagger.model.Function;
 import java.math.BigDecimal;
 import org.joda.time.DateTime;
-import javax.validation.constraints.*;
+
 /**
- * Generic Temperature Sensor
+ * Generic temperature sensor
  */
-@ApiModel(description = "Generic Temperature Sensor")
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-12T11:08:27.892Z")
+@ApiModel(description = "Generic temperature sensor")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-04-28T08:38:34.207Z")
 
 public class Temperature extends Function  {
   @JsonProperty("value")
@@ -28,14 +32,14 @@ public class Temperature extends Function  {
   }
 
    /**
-   * Get value
+   * Temperature value in Kelvin
    * minimum: 0
-   * maximum: 512
+   * maximum: 511
    * @return value
   **/
-  @ApiModelProperty(value = "")
-  @DecimalMin("0")
-  @DecimalMax("512")
+  @ApiModelProperty(value = "Temperature value in Kelvin")
+  @Min(0)
+  @Max(511)
   public BigDecimal getValue() {
     return value;
   }

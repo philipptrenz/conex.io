@@ -7,12 +7,15 @@ import java.util.regex.Pattern;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.Null;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
+import aQute.lib.osgi.Annotation;
 import io.swagger.RFC3339DateFormat;
 import mapping.MappingHelper;
+import mapping.exceptions.NeededAnnotationOnModelNotAvailableException;
 import mapping.exceptions.NoValidKeyPathException;
 
 /**
@@ -179,8 +182,10 @@ public class ValueExtractor {
 					setMethod = m;
 					
 					if (type.equals("min")) {
+						if (setMethod.getAnnotation(Min.class) == null) throw new NeededAnnotationOnModelNotAvailableException(function.getClass());
 						return (int) setMethod.getAnnotation(Min.class).value();
 					} else if (type.equals("max")) {
+						if (setMethod.getAnnotation(Max.class) == null) throw new NeededAnnotationOnModelNotAvailableException(function.getClass());
 						return (int) setMethod.getAnnotation(Max.class).value();
 					} else {
 						System.out.println("Function 'getConstraintValueFromFunctionClassAnnotation' has no case for type '"+type+"'");

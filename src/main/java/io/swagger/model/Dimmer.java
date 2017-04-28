@@ -1,18 +1,22 @@
 package io.swagger.model;
 
 import java.util.Objects;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.model.Function;
 import org.joda.time.DateTime;
-import javax.validation.constraints.*;
+
 /**
- * Generic Slider Switch
+ * Generic slider switch
  */
-@ApiModel(description = "Generic Slider Switch")
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-12T11:08:27.892Z")
+@ApiModel(description = "Generic slider switch")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-04-28T08:38:34.207Z")
 
 public class Dimmer extends Function  {
   @JsonProperty("value")
@@ -29,12 +33,12 @@ public class Dimmer extends Function  {
    /**
    * Get value
    * minimum: 0
-   * maximum: 512
+   * maximum: 255
    * @return value
   **/
   @ApiModelProperty(value = "")
   @Min(0)
-  @Max(512)
+  @Max(255)
   public Integer getValue() {
     return value;
   }
