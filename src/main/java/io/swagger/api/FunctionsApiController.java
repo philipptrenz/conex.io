@@ -4,10 +4,11 @@ import io.swagger.model.Devices;
 import io.swagger.model.Error;
 import io.swagger.model.Filter;
 import io.swagger.model.Ids;
-
+import mapping.AutomationServerConnector;
 import io.swagger.annotations.*;
 import io.swagger.api.calc.DeviceCalc;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -26,10 +27,11 @@ import javax.validation.constraints.*;
 @Controller
 public class FunctionsApiController implements FunctionsApi {
 
-
+	@Autowired
+	private AutomationServerConnector connector;
 
     public ResponseEntity<Ids> functionsPost(@ApiParam(value = "The user specified filter" ,required=true ) @RequestBody Filter filter) {
-        DeviceCalc calc = new DeviceCalc(filter);
+        DeviceCalc calc = new DeviceCalc(filter, connector.getDevices());
         Ids id = new Ids();
         id.setIds(calc.getFuntionsByDevicesFiltered());
         return new ResponseEntity<Ids>(id, HttpStatus.OK);

@@ -18,6 +18,13 @@ import java.net.URLEncoder;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 
 import io.swagger.model.Device;
 import io.swagger.model.Function;
@@ -25,13 +32,16 @@ import mapping.get.JsonParser;
 import mapping.get.WebsocketParser;
 import mapping.set.FHEMCommandBuilder;
 
-public class FHEMConnector {
+@Component
+public class FHEMConnector implements InitializingBean, AutomationServerConnector {
 	
-	private static FHEMConnector instance = null;
+	@Autowired
+	private Environment env;
 	
-	private String ipAddress;
-	private int port;
-	private float fhemVersion;
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	
+	private final String url;
+	private final int port;
 	
 	private WebSocketClient websocket;
 	private WebsocketParser websocketParser;
@@ -41,13 +51,13 @@ public class FHEMConnector {
 	
 	private Map <String, Device> deviceMap = new HashMap<>();
 	
-	private FHEMConnector(String ipAddress, int port, String fhemVersion) {
+	@Autowired
+	public FHEMConnector(@Value("${fhem.url}") String fhemUrl, @Value("${fhem.port}") int fhemPort) {
 		
-		this.ipAddress = ipAddress;
-		this.port = port;
-		this.fhemVersion = Float.parseFloat(fhemVersion);
+		this.url = fhemUrl;
+		this.port = fhemPort;
 		
-		// TODO: add fhem version validation (websockets for >= 5.8)
+		log.info("Accessing FHEM via "+fhemUrl+":"+fhemPort);
 		
 		this.websocketParser = new WebsocketParser();
 		
@@ -59,6 +69,11 @@ public class FHEMConnector {
 		reload();		
 	}
 	
+	@Override
+	public void afterPropertiesSet() throws Exception {
+	
+	}	
+	
 	private void startWebsocket(long now) {
 		
 		String since = null;
@@ -69,19 +84,19 @@ public class FHEMConnector {
 		String query = "?XHR=1&inform=type=status;addglobal=1;filter="+filter+";since="+since+";fmt=JSON;&timestamp="+nowString;
 		
 		try {
-			URI uri = new URI("ws://"+ipAddress+":"+port+"/fhem.pl"+query);
+			URI uri = new URI("ws://"+url+":"+port+"/fhem.pl"+query);
 			
 			websocket = new WebSocketClient(uri) {
 
 				@Override
 				public void onOpen(ServerHandshake handshakedata) {
-					 System.out.println("new connection opened");
+					 log.info("Opened new websocket connection to FHEM");
 					// TODO
 				}
 
 				@Override
 				public void onClose(int code, String reason, boolean remote) {
-					System.out.println("closed with exit code " + code + " additional info: " + reason);
+					log.error("closed with exit code " + code + " additional info: " + reason);
 					// TODO
 				}
 
@@ -110,8 +125,8 @@ public class FHEMConnector {
 	private String sendFhemCommand(String command) throws IOException {
 		
 		String commandEnc = URLEncoder.encode(command, "UTF-8");
-		String url = "http://"+ipAddress+":"+port+"/fhem?cmd="+commandEnc+"&XHR=1";
-		URL obj = new URL(url);
+		String fullUrl = "http://"+url+":"+port+"/fhem?cmd="+commandEnc+"&XHR=1";
+		URL obj = new URL(fullUrl);
 		
 		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 		con.setRequestMethod("GET");
@@ -131,12 +146,7 @@ public class FHEMConnector {
 	
 	// --------------------------------------------------------------------------------- //
 	
-	public static FHEMConnector getInstance(String ipAddress, int port, String fhemVersion) {
-		if(instance == null) {
-	         instance = new FHEMConnector(ipAddress, port, fhemVersion);
-	      }
-	      return instance;
-	}
+
 	
 	public boolean reload() {
 		
@@ -208,5 +218,5 @@ public class FHEMConnector {
 				return "";
 			}
 		}
-	}	
+	}
 }

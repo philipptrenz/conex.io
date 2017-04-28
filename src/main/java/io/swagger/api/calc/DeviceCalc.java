@@ -4,12 +4,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.swagger.model.Device;
 import io.swagger.model.Filter;
 import io.swagger.model.Function;
 
 public class DeviceCalc {
-
+	
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	
 	private Filter filter;
 	private List<Device> geraete;
 	
@@ -18,14 +23,14 @@ public class DeviceCalc {
 	 * Set's the Filter-Object and get the Devices from Mapping layer
 	 * @param filter Filter-Object
 	 */
-	public DeviceCalc(Filter filter) {
+	public DeviceCalc(Filter filter, List<Device> geraete) {
 		if(filter != null) {
 	        this.filter = filter;
 		}
 		else {
 			this.filter = new Filter();
 		}
-        this.geraete = mapping.Main.getDevices();
+        this.geraete = geraete;
 	}
 	/**
 	 * Filtering for all Devices and endpoint /devices. Iterates through all Filter-functions - if required.
@@ -43,7 +48,7 @@ public class DeviceCalc {
         			}
         		}
         	}
-		System.out.println("Verbleibende Geräte: " + geraete.size());
+		log.info("Filtered "+geraete.size()+" devices");
         ausgabe = geraete;
 		return ausgabe;
 	}

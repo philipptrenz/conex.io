@@ -6,11 +6,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
+import mapping.FHEMConnector;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
 @EnableSwagger2
-@ComponentScan(basePackages = "io.swagger")
+@ComponentScan(basePackages = {"io.swagger", "mapping"})
 public class Swagger2SpringBoot implements CommandLineRunner {
 
 	@Override
@@ -21,7 +22,6 @@ public class Swagger2SpringBoot implements CommandLineRunner {
 	}
 
 	public static void main(String[] args) throws Exception {
-		new mapping.Main();
 		new SpringApplication(Swagger2SpringBoot.class).run(args);
 	}
 
