@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -23,6 +24,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.stereotype.Component;
 
 import io.swagger.model.Device;
@@ -32,7 +35,7 @@ import mapping.get.WebsocketParser;
 import mapping.set.FHEMCommandBuilder;
 
 @Component
-public class FHEMConnector implements AutomationServerConnector {
+public class FHEMConnector implements AutomationServerConnector, ApplicationListener<ContextClosedEvent> {
 	
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
@@ -45,7 +48,8 @@ public class FHEMConnector implements AutomationServerConnector {
 	private JsonParser jsonParser;
 	private FHEMCommandBuilder commandBuilder;
 	
-	private Map <String, Device> deviceMap = new HashMap<>();
+	// Using Hashtable rather than HashMap because Hashtable is threadsafe, HashMap is not!
+	private Map <String, Device> deviceMap = new Hashtable<>();
 	
 	@Autowired
 	public FHEMConnector(@Value("${fhem.url}") String fhemUrl, @Value("${fhem.port}") int fhemPort) {
@@ -133,6 +137,18 @@ public class FHEMConnector implements AutomationServerConnector {
 		}
 		in.close();
 		return response.toString();
+	}
+	/*
+	 * (non-Javadoc)
+	 * @see org.springframework.context.ApplicationListener#onApplicationEvent(org.springframework.context.ApplicationEvent)
+	 * 
+	 * Closes connections before Bean gets destroyed
+	 * 
+	 */
+	@Override
+	public void onApplicationEvent(ContextClosedEvent arg0) {
+		log.info("Closing websocket connection to FHEM because software is shutting down");
+		closeWebsocket();
 	}
 	
 	// --------------------------------------------------------------------------------- //

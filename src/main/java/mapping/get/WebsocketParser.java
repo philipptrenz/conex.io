@@ -6,6 +6,9 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 import io.swagger.model.Device;
@@ -13,6 +16,8 @@ import mapping.FHEMConnector;
 import mapping.get.functionMapper.FunctionMapper;
 
 public class WebsocketParser {
+	
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	private ModuleDescriptionLoader loader;
 	private FunctionMapper mapper;
@@ -25,20 +30,6 @@ public class WebsocketParser {
 	}
 	
 	public void update(String websocketMessage, Map<String, Device> deviceMap, FHEMConnector connector) {
-		
-		//test
-		/*
-		String test = "[\"testlampe\",\"on\",\"<div id=\\u0022testlampe\\u0022  title=\\u0022on\\u0022 class=\\u0022col2\\u0022><a href=\\u0022/fhem?cmd.testlampe=set testlampe off&room=testroom\\u0022><img class=' FS20_on' src=\\u0022/fhem/images/default/FS20.on.png\\u0022 alt=\\u0022on\\u0022 title=\\u0022on\\u0022></a></div>\"]\n[\"testlampe-state\",\"on\",\"on\"]\n[\"testlampe-state-ts\",\"2017-04-13 10:58:22\",\"2017-04-13 10:58:22\"]\n";
-		
-		System.out.println(test);
-		if (parseWebsocketMessage(test) != null) {
-			System.err.println("test works!");
-		} else {
-			System.err.println("test failed!");
-		}
-		
-		// test end
-		*/  
 		
 		List<WebsocketDeviceUpdateMessage> updateMessageList = parseWebsocketMessage(websocketMessage);
 		
@@ -79,8 +70,7 @@ public class WebsocketParser {
 								}
 								
 							}
-							
-							System.out.println("UPDATE: "+device+"\n");
+							log.info("Updated device with device_id '"+device.getDeviceId()+"' from FHEM via websocket");
 						}
 					}
 					
