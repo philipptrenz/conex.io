@@ -32,7 +32,7 @@ import mapping.get.WebsocketParser;
 import mapping.set.FHEMCommandBuilder;
 
 @Component
-public class FHEMConnector implements InitializingBean, AutomationServerConnector {
+public class FHEMConnector implements AutomationServerConnector {
 	
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
@@ -63,12 +63,7 @@ public class FHEMConnector implements InitializingBean, AutomationServerConnecto
 		// TODO: Validate ipAddress and port
 		
 		reload();		
-	}
-	
-	@Override
-	public void afterPropertiesSet() throws Exception {
-	
-	}	
+	} 
 	
 	private void startWebsocket(long now) {
 		
@@ -167,6 +162,8 @@ public class FHEMConnector implements InitializingBean, AutomationServerConnecto
 		
 		List<Device> devices = jsonParser.parse(jsonlist2);
 		deviceMap = devices.stream().collect(Collectors.toMap(Device::getDeviceId, Device -> Device));
+		
+		log.info("Retrieved "+deviceMap.size()+" devices from FHEM via jsonlist2");
 		return true;
 	}
 	
