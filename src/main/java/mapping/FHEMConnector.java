@@ -7,16 +7,22 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Base64;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.net.Authenticator;
 import java.net.HttpURLConnection;
+import java.net.PasswordAuthentication;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
 
+import org.apache.http.auth.UsernamePasswordCredentials;
 import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.drafts.Draft_17;
 import org.java_websocket.handshake.ServerHandshake;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +31,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.stereotype.Component;
+
+import com.google.common.base.FinalizableSoftReference;
 
 import io.swagger.HomeAutomationServerConnector;
 import io.swagger.model.Device;
@@ -41,6 +49,9 @@ public class FHEMConnector implements HomeAutomationServerConnector, Application
 	private final String url;
 	private final int port;
 	
+	private final String authUsername;
+	private final String authPassword;
+	
 	private WebSocketClient websocket;
 	private WebsocketParser websocketParser;
 	
@@ -51,10 +62,17 @@ public class FHEMConnector implements HomeAutomationServerConnector, Application
 	private Map <String, Device> deviceMap = new Hashtable<>();
 	
 	@Autowired
-	public FHEMConnector(@Value("${fhem.url}") String fhemUrl, @Value("${fhem.port}") int fhemPort) {
+	public FHEMConnector(
+			@Value("${fhem.url}") String fhemUrl, 
+			@Value("${fhem.port}") int fhemPort, 
+			@Value("${fhem.username}") String authUsername,
+			@Value("${fhem.password}") String authPassword) {
 		
 		this.url = fhemUrl;
 		this.port = fhemPort;
+		this.authUsername = authUsername;
+		this.authPassword = authPassword;
+	
 		
 		log.info("Accessing FHEM via "+fhemUrl+":"+fhemPort);
 		
@@ -77,10 +95,19 @@ public class FHEMConnector implements HomeAutomationServerConnector, Application
 		
 		String query = "?XHR=1&inform=type=status;addglobal=1;filter="+filter+";since="+since+";fmt=JSON;&timestamp="+nowString;
 		
+		int connectionTimeout = 1000;
+		
+		Map<String, String> httpHeader = new HashMap<>();
+		
+		if (useCredentials()) {
+			String encoded = Base64.getEncoder().encodeToString((authUsername + ':' + authPassword).getBytes(StandardCharsets.UTF_8));
+			httpHeader.put("Authorization", "Basic "+encoded);
+		}
+		
 		try {
 			URI uri = new URI("ws://"+url+":"+port+"/fhem.pl"+query);
 			
-			websocket = new WebSocketClient(uri) {
+			websocket = new WebSocketClient(uri, new Draft_17(), httpHeader, connectionTimeout) {
 
 				@Override
 				public void onOpen(ServerHandshake handshakedata) {
@@ -116,27 +143,56 @@ public class FHEMConnector implements HomeAutomationServerConnector, Application
 		websocket = null;
 	}
 	
-	private String sendFhemCommand(String command) throws IOException {
-		
-		String commandEnc = URLEncoder.encode(command, "UTF-8");
-		String fullUrl = "http://"+url+":"+port+"/fhem?cmd="+commandEnc+"&XHR=1";
-		URL obj = new URL(fullUrl);
-		
-		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-		con.setRequestMethod("GET");
-		
-		int responseCode = con.getResponseCode();
-		
-		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-		String inputLine;
-		StringBuffer response = new StringBuffer();
+	private String sendFhemCommand(String command) {
+		int responseCode = 0;
+		try {
+			String commandEnc = URLEncoder.encode(command, "UTF-8");
+			String fullUrl = "http://"+url+":"+port+"/fhem?cmd="+commandEnc+"&XHR=1";
+			URL obj = new URL(fullUrl);
+			
+			if (useCredentials()) {
+				Authenticator.setDefault (new Authenticator() {
+				    protected PasswordAuthentication getPasswordAuthentication() {
+				        return new PasswordAuthentication (authUsername, authPassword.toCharArray());
+				    }
+				});
+			}
+			
+			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+			con.setRequestMethod("GET");
+			
+			responseCode = con.getResponseCode();
+			
+			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+			String inputLine;
+			StringBuffer response = new StringBuffer();
 
-		while ((inputLine = in.readLine()) != null) {
-			response.append(inputLine);
+			while ((inputLine = in.readLine()) != null) {
+				response.append(inputLine);
+			}
+			in.close();
+			return response.toString();
+		} catch (IOException e) {
+			switch(responseCode) {
+			case 400:
+				log.error("FHEM connection returned 401: Bad Request");
+				break;
+			case 401:
+				log.error("FHEM connection returned 401: Unauthorized");
+				break;
+			default:
+				log.error("Unknown FHEM connectionn error", e);
+			}
+			return null;
 		}
-		in.close();
-		return response.toString();
+		
 	}
+	
+	private boolean useCredentials() {
+		if (authUsername!=null && !authUsername.isEmpty() && authPassword!=null && !authPassword.isEmpty()) return true;
+		return false;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * @see org.springframework.context.ApplicationListener#onApplicationEvent(org.springframework.context.ApplicationEvent)
@@ -158,13 +214,7 @@ public class FHEMConnector implements HomeAutomationServerConnector, Application
 		
 		closeWebsocket();
 		
-		String jsonlist2 = null;
-		try {
-			jsonlist2 = sendFhemCommand("jsonlist2");
-		} catch (IOException e) {
-			log.error("Error while getting jsonlist2 result from FHEM", e);
-		}
-		
+		String jsonlist2 = sendFhemCommand("jsonlist2");
 		long now = System.currentTimeMillis() / 1000l;
 		
 		if (jsonlist2 == null || jsonlist2.isEmpty()) {
@@ -186,21 +236,15 @@ public class FHEMConnector implements HomeAutomationServerConnector, Application
 	}
 	
 	public boolean setDevices(List<Device> devices, Function functionValuesToSet) {
-	
 		try {
 			String  command = commandBuilder.buildCommand(devices, functionValuesToSet);
 			sendFhemCommand(command);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			log.error("FHEM connection failed", e);
-			return false;
+			return true;
 		} catch (NullPointerException e2) {
 			// TODO: handle exception
 			log.error("CommandBuilder returned null", e2);
 			return false;
 		}	
-		
-		return true;
 	}
 	
 	/*
