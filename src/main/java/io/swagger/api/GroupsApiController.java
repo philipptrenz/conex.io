@@ -3,7 +3,7 @@ package io.swagger.api;
 import io.swagger.model.Error;
 import io.swagger.model.Filter;
 import io.swagger.model.Ids;
-import mapping.AutomationServerConnector;
+import io.swagger.HomeAutomationServerConnector;
 import io.swagger.annotations.*;
 import io.swagger.api.calc.DeviceCalc;
 
@@ -27,7 +27,7 @@ import javax.validation.constraints.*;
 public class GroupsApiController implements GroupsApi {
 
 	@Autowired
-	private AutomationServerConnector connector;
+	private HomeAutomationServerConnector connector;
 
     public ResponseEntity<Ids> groupsPost(@ApiParam(value = "The user specified filter" ,required=true ) @RequestBody Filter filter) {
         DeviceCalc calc = new DeviceCalc(filter, connector.getDevices());

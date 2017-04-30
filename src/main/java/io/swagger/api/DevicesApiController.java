@@ -5,7 +5,7 @@ import io.swagger.model.Filter;
 import io.swagger.model.Function;
 import io.swagger.model.OnOff;
 import io.swagger.model.Patcher;
-import mapping.AutomationServerConnector;
+import io.swagger.HomeAutomationServerConnector;
 import io.swagger.annotations.*;
 import io.swagger.api.calc.DeviceCalc;
 
@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class DevicesApiController implements DevicesApi {
 
 	@Autowired
-	private AutomationServerConnector connector;
+	private HomeAutomationServerConnector connector;
 	
     public ResponseEntity<Void> devicesPatch(@ApiParam(value = "Filter object with function values" ,required=true ) @RequestBody Patcher patcher) {
     	DeviceCalc calc = new DeviceCalc(patcher.getFilter(), connector.getDevices());

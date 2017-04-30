@@ -7,7 +7,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -21,13 +20,13 @@ import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.stereotype.Component;
 
+import io.swagger.HomeAutomationServerConnector;
 import io.swagger.model.Device;
 import io.swagger.model.Function;
 import mapping.get.JsonParser;
@@ -35,7 +34,7 @@ import mapping.get.WebsocketParser;
 import mapping.set.FHEMCommandBuilder;
 
 @Component
-public class FHEMConnector implements AutomationServerConnector, ApplicationListener<ContextClosedEvent> {
+public class FHEMConnector implements HomeAutomationServerConnector, ApplicationListener<ContextClosedEvent> {
 	
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
@@ -102,13 +101,13 @@ public class FHEMConnector implements AutomationServerConnector, ApplicationList
 
 				@Override
 				public void onError(Exception ex) {
-					log.error("Error at websocket connection to FHEM: "+ex.getMessage());
+					log.error("Error at websocket connection to FHEM", ex);
 					// TODO
 				}
 			};
 			websocket.connect();
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("Something went wrong with the websocket", e);
 		}
 	}
 	
@@ -163,14 +162,13 @@ public class FHEMConnector implements AutomationServerConnector, ApplicationList
 		try {
 			jsonlist2 = sendFhemCommand("jsonlist2");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("Error while getting jsonlist2 result from FHEM", e);
 		}
 		
 		long now = System.currentTimeMillis() / 1000l;
 		
 		if (jsonlist2 == null || jsonlist2.isEmpty()) {
-			System.err.println("No jsonlist2 data received! 'longpoll' has to be set to 'websocket' and since FHEM 5.8 'csrfToken' must be 'none'.");
+			log.error("No jsonlist2 data received! 'longpoll' has to be set to 'websocket' and since FHEM 5.8 'csrfToken' must be 'none'.");
 			return false;
 		}
 		
@@ -194,11 +192,11 @@ public class FHEMConnector implements AutomationServerConnector, ApplicationList
 			sendFhemCommand(command);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("FHEM connection failed", e);
 			return false;
 		} catch (NullPointerException e2) {
 			// TODO: handle exception
-			e2.printStackTrace();
+			log.error("CommandBuilder returned null", e2);
 			return false;
 		}	
 		
@@ -222,8 +220,7 @@ public class FHEMConnector implements AutomationServerConnector, ApplicationList
 				encoded = Files.readAllBytes(Paths.get("testdata/jsonlist2_20170324.json"));
 				return new String(encoded, StandardCharsets.UTF_8);
 			} catch (IOException e2) {
-				// TODO Auto-generated catch block
-				e2.printStackTrace();
+				log.error("Reading testdata from file failed", e2);
 				return "";
 			}
 		}
