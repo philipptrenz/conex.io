@@ -181,7 +181,7 @@ public class FHEMConnector implements HomeAutomationServerConnector, Application
 				log.error("FHEM connection returned 401: Unauthorized");
 				break;
 			default:
-				log.error("Unknown FHEM connectionn error", e);
+				log.error("Unknown FHEM connection error", e);
 			}
 			return null;
 		}

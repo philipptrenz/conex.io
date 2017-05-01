@@ -1,15 +1,13 @@
 package mapping.set;
-
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrlPattern;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import ch.qos.logback.core.joran.action.IADataForComplexProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.swagger.model.Device;
 import io.swagger.model.Function;
 import mapping.FHEMConnector;
@@ -17,6 +15,7 @@ import mapping.FHEMConnector;
 public class FHEMCommandBuilder {
 
 	private FHEMConnector connector;
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	public FHEMCommandBuilder(FHEMConnector connector) {
 		
@@ -43,6 +42,8 @@ public class FHEMCommandBuilder {
 		if (functionValuesToSet != null) {
 			Map<String, String> deviceIdsByTypeIdMap = concatDeviceIdsByTypeId(devices, functionValuesToSet.getClass());
 			
+			
+			
 			Iterator it = deviceIdsByTypeIdMap.entrySet().iterator();
 		    while (it.hasNext()) {
 		        Map.Entry pair = (Map.Entry) it.next();
@@ -50,7 +51,7 @@ public class FHEMCommandBuilder {
 		        String typeId = (String) pair.getKey();
 		        String concatenatedDeviceIds = (String) pair.getValue();
 		        
-		        //System.out.println(typeId+": "+concatenatedDeviceIds);
+		        log.info("Setting "+functionValuesToSet.getClass().getSimpleName()+" for "+concatenatedDeviceIds.replace(",", ", ")+" (type_id: "+typeId+")");
 		        
 		        // TODO: Extract value to set
 		        
@@ -64,33 +65,34 @@ public class FHEMCommandBuilder {
 		} else {
 			return "";
 		}
-		
 	}
 	
-	private Map<String, String> concatDeviceIdsByTypeId(List<Device> deviceList, Class<?> functionToSetClass){
+	private Map<String, String> concatDeviceIdsByTypeId(List<Device> deviceList, Class<?> functionClass){
 		Map<String, String> deviceIdsByTypeIdMap = new HashMap<>();
 		for (Device device : deviceList) {
 			boolean containsFunction = false;
 			for (Function function : device.getFunctions()) {
-				if (function.getClass().equals(functionToSetClass)){
+				if (function.getClass().equals(functionClass)){
 					containsFunction = true;
 					break;
 				}
 			}
 			if (containsFunction) {
 				String typeId = device.getTypeId();
-				if (!deviceIdsByTypeIdMap.containsKey(typeId)) {
-					// instantiate
-					deviceIdsByTypeIdMap.put(typeId, "");
+				
+				String concatString = "";
+				if (deviceIdsByTypeIdMap.containsKey(typeId)) {
+					concatString = deviceIdsByTypeIdMap.get(typeId);
 				}
-				if (!deviceIdsByTypeIdMap.get(typeId).isEmpty()) {
+				
+				if (!concatString.isEmpty()) {
 					// separate by ","
-					deviceIdsByTypeIdMap.get(typeId).concat(",");
+					concatString += ",";
 				}
-				deviceIdsByTypeIdMap.get(typeId).concat(device.getDeviceId());
+				concatString += device.getDeviceId();
+				deviceIdsByTypeIdMap.put(typeId, concatString);
 			}
 		}
 		return deviceIdsByTypeIdMap;
 	}
-	
 }
