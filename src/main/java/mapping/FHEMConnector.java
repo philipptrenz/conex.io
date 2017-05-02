@@ -122,7 +122,7 @@ public class FHEMConnector implements HomeAutomationServerConnector, Application
 					if (!reason.isEmpty()) {
 						msg += ", additional info: "+reason;
 					}
-					log.error(msg);
+					log.warn(msg);
 					// TODO
 				}
 
