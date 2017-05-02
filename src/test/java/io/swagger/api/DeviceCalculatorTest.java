@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.junit.*;
 
-import io.swagger.api.calc.DeviceCalc;
+import io.swagger.api.calc.DeviceCalcTestCase;
 import io.swagger.model.Device;
 import io.swagger.model.Filter;
 import io.swagger.model.Function;
@@ -33,7 +33,7 @@ public class DeviceCalculatorTest {
     	f.setGroupIds(searchGroups);
     	f.setRoomIds(searchRooms);
     	
-    	DeviceCalc dc = new DeviceCalc(f);
+    	DeviceCalcTestCase dc = new DeviceCalcTestCase(f);
     	List <Device> list = dc.getDeviceListFiltered();
     	for(Device d : list) {
     		if((f.getDeviceIds().contains(d.getDeviceId())) && 
@@ -60,7 +60,7 @@ public class DeviceCalculatorTest {
     	
     	f.setDeviceIds(searchDevices);
     	
-    	DeviceCalc dc = new DeviceCalc(f);
+    	DeviceCalcTestCase dc = new DeviceCalcTestCase(f);
     	List <Device> list = dc.getDeviceListFiltered();
     	for(Device d : list) {
     		assertTrue(f.getDeviceIds().contains(d.getDeviceId()));
@@ -74,7 +74,7 @@ public class DeviceCalculatorTest {
     	
     	f.setFunctionIds(searchFunctions);
     	
-    	DeviceCalc dc = new DeviceCalc(f);
+    	DeviceCalcTestCase dc = new DeviceCalcTestCase(f);
     	List <Device> list = dc.getDeviceListFiltered();
     	for(Device d : list) {
     			boolean functionCheck = false;
@@ -94,7 +94,7 @@ public class DeviceCalculatorTest {
     	
     	f.setGroupIds(searchGroups);
     	
-    	DeviceCalc dc = new DeviceCalc(f);
+    	DeviceCalcTestCase dc = new DeviceCalcTestCase(f);
     	List <Device> list = dc.getDeviceListFiltered();
     	for(Device d : list) {
     		assertTrue(!Collections.disjoint(f.getGroupIds(), d.getGroupIds()));
@@ -108,7 +108,7 @@ public class DeviceCalculatorTest {
     	
     	f.setGroupIds(searchRooms);
     	
-    	DeviceCalc dc = new DeviceCalc(f);
+    	DeviceCalcTestCase dc = new DeviceCalcTestCase(f);
     	List <Device> list = dc.getDeviceListFiltered();
     	for(Device d : list) {
     		assertTrue(!Collections.disjoint(f.getRoomIds(), d.getRoomIds()));
@@ -124,7 +124,7 @@ public class DeviceCalculatorTest {
     	f.setGroupIds(searchGroups);
     	f.setRoomIds(searchRooms);
     	
-    	DeviceCalc dc = new DeviceCalc(f);
+    	DeviceCalcTestCase dc = new DeviceCalcTestCase(f);
     	List <Device> list = dc.getDeviceListFiltered();
     	for(Device d : list) {
     		assertTrue(!Collections.disjoint(f.getRoomIds(), d.getRoomIds()) && !Collections.disjoint(f.getGroupIds(), d.getGroupIds()));
@@ -132,10 +132,10 @@ public class DeviceCalculatorTest {
 	}
 	@Test
 	public void getAllDevicesByNoneFiltering() {
-		DeviceCalc dc = new DeviceCalc(new Filter());
+		DeviceCalcTestCase dc = new DeviceCalcTestCase(new Filter());
 		List <Device> list = dc.getDeviceListFiltered();
 		
-		assertTrue(list.size() == mapping.Main.getDevicesMockup().size());
+		assertTrue(list.size() == io.swagger.api.calc.DeviceMockup.getDevicesMockup().size());
 	}
 	@Test
 	public void getNoDevices() {
@@ -145,7 +145,7 @@ public class DeviceCalculatorTest {
     	
     	f.setDeviceIds(searchDevices);
     	
-    	DeviceCalc dc = new DeviceCalc(f);
+    	DeviceCalcTestCase dc = new DeviceCalcTestCase(f);
     	List <Device> list = dc.getDeviceListFiltered();
     	assertTrue(list.isEmpty());
 	}
@@ -168,7 +168,7 @@ public class DeviceCalculatorTest {
     	f.setGroupIds(searchGroups);
     	f.setRoomIds(searchRooms);
     	
-    	DeviceCalc dc = new DeviceCalc(f);
+    	DeviceCalcTestCase dc = new DeviceCalcTestCase(f);
     	List <String> list = dc.getFuntionsByDevicesFiltered();
     	assertTrue(!Collections.disjoint(list, searchFunctions));
 	}
@@ -180,7 +180,7 @@ public class DeviceCalculatorTest {
     	
     	f.setDeviceIds(searchDevices);
     	
-    	DeviceCalc dc = new DeviceCalc(f);
+    	DeviceCalcTestCase dc = new DeviceCalcTestCase(f);
     	List <String> list = dc.getFuntionsByDevicesFiltered();
     	
     	assertTrue(list.contains("testfunction_0"));
@@ -194,7 +194,7 @@ public class DeviceCalculatorTest {
     	
     	f.setFunctionIds(searchFunctions);
     	
-    	DeviceCalc dc = new DeviceCalc(f);
+    	DeviceCalcTestCase dc = new DeviceCalcTestCase(f);
     	List <String> list = dc.getFuntionsByDevicesFiltered();
     	
     	assertTrue(!Collections.disjoint(searchFunctions, list));
@@ -207,7 +207,7 @@ public class DeviceCalculatorTest {
     	
     	f.setGroupIds(searchGroups);
     	
-    	DeviceCalc dc = new DeviceCalc(f);
+    	DeviceCalcTestCase dc = new DeviceCalcTestCase(f);
     	List <String> list = dc.getFuntionsByDevicesFiltered();
     	
     	assertTrue(list.contains("testfunction_0"));
@@ -221,7 +221,7 @@ public class DeviceCalculatorTest {
     	
     	f.setRoomIds(searchRooms);
     	
-    	DeviceCalc dc = new DeviceCalc(f);
+    	DeviceCalcTestCase dc = new DeviceCalcTestCase(f);
     	List <String> list = dc.getFuntionsByDevicesFiltered();
     	
     	assertTrue(list.contains("testfunction_0"));
@@ -237,7 +237,7 @@ public class DeviceCalculatorTest {
     	f.setGroupIds(searchGroups);
     	f.setRoomIds(searchRooms);
     	
-    	DeviceCalc dc = new DeviceCalc(f);
+    	DeviceCalcTestCase dc = new DeviceCalcTestCase(f);
     	List <String> list = dc.getFuntionsByDevicesFiltered();
     	
     	assertTrue(list.contains("testfunction_0"));
@@ -245,7 +245,7 @@ public class DeviceCalculatorTest {
 	}
 	@Test
 	public void getAllFunctionsByNoneFiltering() {
-    	DeviceCalc dc = new DeviceCalc(new Filter());
+    	DeviceCalcTestCase dc = new DeviceCalcTestCase(new Filter());
     	List <String> list = dc.getFuntionsByDevicesFiltered();
     	
     	assertTrue(list.contains("testfunction_0"));
@@ -260,7 +260,7 @@ public class DeviceCalculatorTest {
     	
     	f.setDeviceIds(searchDevices);
     	
-    	DeviceCalc dc = new DeviceCalc(f);
+    	DeviceCalcTestCase dc = new DeviceCalcTestCase(f);
     	List <String> list = dc.getFuntionsByDevicesFiltered();
     	assertTrue(list.isEmpty());
 	}
@@ -283,7 +283,7 @@ public class DeviceCalculatorTest {
     	f.setGroupIds(searchGroups);
     	f.setRoomIds(searchRooms);
     	
-    	DeviceCalc dc = new DeviceCalc(f);
+    	DeviceCalcTestCase dc = new DeviceCalcTestCase(f);
     	List <String> list = dc.getGroupsByDevicesFiltered();
     	assertTrue(!Collections.disjoint(list, searchGroups));
 	}
@@ -295,7 +295,7 @@ public class DeviceCalculatorTest {
     	
     	f.setDeviceIds(searchDevices);
     	
-    	DeviceCalc dc = new DeviceCalc(f);
+    	DeviceCalcTestCase dc = new DeviceCalcTestCase(f);
     	List <String> list = dc.getGroupsByDevicesFiltered();
     	
     	assertTrue(list.contains("testgroup_0"));
@@ -309,7 +309,7 @@ public class DeviceCalculatorTest {
     	
     	f.setFunctionIds(searchFunctions);
     	
-    	DeviceCalc dc = new DeviceCalc(f);
+    	DeviceCalcTestCase dc = new DeviceCalcTestCase(f);
     	List <String> list = dc.getGroupsByDevicesFiltered();
     	
     	assertTrue(list.contains("testgroup_0"));
@@ -322,7 +322,7 @@ public class DeviceCalculatorTest {
     	
     	f.setGroupIds(searchGroups);
     	
-    	DeviceCalc dc = new DeviceCalc(f);
+    	DeviceCalcTestCase dc = new DeviceCalcTestCase(f);
     	List <String> list = dc.getGroupsByDevicesFiltered();
     	
     	assertTrue(!Collections.disjoint(searchGroups, list));
@@ -335,7 +335,7 @@ public class DeviceCalculatorTest {
     	
     	f.setRoomIds(searchRooms);
     	
-    	DeviceCalc dc = new DeviceCalc(f);
+    	DeviceCalcTestCase dc = new DeviceCalcTestCase(f);
     	List <String> list = dc.getGroupsByDevicesFiltered();
     	
     	assertTrue(list.contains("testgroup_0"));
@@ -351,14 +351,14 @@ public class DeviceCalculatorTest {
     	f.setGroupIds(searchGroups);
     	f.setRoomIds(searchRooms);
     	
-    	DeviceCalc dc = new DeviceCalc(f);
+    	DeviceCalcTestCase dc = new DeviceCalcTestCase(f);
     	List <String> list = dc.getGroupsByDevicesFiltered();
     	
     	assertTrue(!Collections.disjoint(searchGroups, list));
 	}
 	@Test
 	public void getAllGroupsByNoneFiltering() {
-    	DeviceCalc dc = new DeviceCalc(new Filter());
+    	DeviceCalcTestCase dc = new DeviceCalcTestCase(new Filter());
     	List <String> list = dc.getGroupsByDevicesFiltered();
     	
     	assertTrue(list.contains("testgroup_0"));
@@ -373,7 +373,7 @@ public class DeviceCalculatorTest {
     	
     	f.setDeviceIds(searchDevices);
     	
-    	DeviceCalc dc = new DeviceCalc(f);
+    	DeviceCalcTestCase dc = new DeviceCalcTestCase(f);
     	List <String> list = dc.getGroupsByDevicesFiltered();
     	assertTrue(list.isEmpty());
 	}
@@ -396,7 +396,7 @@ public class DeviceCalculatorTest {
     	f.setGroupIds(searchGroups);
     	f.setRoomIds(searchRooms);
     	
-    	DeviceCalc dc = new DeviceCalc(f);
+    	DeviceCalcTestCase dc = new DeviceCalcTestCase(f);
     	List <String> list = dc.getRoomsByDevicesFiltered();
     	assertTrue(!Collections.disjoint(list, searchRooms));
 	}
@@ -408,7 +408,7 @@ public class DeviceCalculatorTest {
     	
     	f.setDeviceIds(searchDevices);
     	
-    	DeviceCalc dc = new DeviceCalc(f);
+    	DeviceCalcTestCase dc = new DeviceCalcTestCase(f);
     	List <String> list = dc.getRoomsByDevicesFiltered();
     	
     	assertTrue(list.contains("testroom_0"));
@@ -422,7 +422,7 @@ public class DeviceCalculatorTest {
     	
     	f.setFunctionIds(searchFunctions);
     	
-    	DeviceCalc dc = new DeviceCalc(f);
+    	DeviceCalcTestCase dc = new DeviceCalcTestCase(f);
     	List <String> list = dc.getRoomsByDevicesFiltered();
     	
     	assertTrue(list.contains("testroom_0"));
@@ -435,7 +435,7 @@ public class DeviceCalculatorTest {
     	
     	f.setGroupIds(searchGroups);
     	
-    	DeviceCalc dc = new DeviceCalc(f);
+    	DeviceCalcTestCase dc = new DeviceCalcTestCase(f);
     	List <String> list = dc.getRoomsByDevicesFiltered();
     	
     	assertTrue(list.contains("testroom_0"));
@@ -449,7 +449,7 @@ public class DeviceCalculatorTest {
     	
     	f.setRoomIds(searchRooms);
     	
-    	DeviceCalc dc = new DeviceCalc(f);
+    	DeviceCalcTestCase dc = new DeviceCalcTestCase(f);
     	List <String> list = dc.getRoomsByDevicesFiltered();
     	
     	assertTrue(!Collections.disjoint(searchRooms, list));
@@ -464,14 +464,14 @@ public class DeviceCalculatorTest {
     	f.setGroupIds(searchGroups);
     	f.setRoomIds(searchRooms);
     	
-    	DeviceCalc dc = new DeviceCalc(f);
+    	DeviceCalcTestCase dc = new DeviceCalcTestCase(f);
     	List <String> list = dc.getRoomsByDevicesFiltered();
     	
     	assertTrue(!Collections.disjoint(searchRooms, list));
 	}
 	@Test
 	public void getAllRoomsByNoneFiltering() {
-    	DeviceCalc dc = new DeviceCalc(new Filter());
+    	DeviceCalcTestCase dc = new DeviceCalcTestCase(new Filter());
     	List <String> list = dc.getRoomsByDevicesFiltered();
     	
     	assertTrue(list.contains("testroom_0"));
@@ -486,7 +486,7 @@ public class DeviceCalculatorTest {
     	
     	f.setDeviceIds(searchDevices);
     	
-    	DeviceCalc dc = new DeviceCalc(f);
+    	DeviceCalcTestCase dc = new DeviceCalcTestCase(f);
     	List <String> list = dc.getRoomsByDevicesFiltered();
     	assertTrue(list.isEmpty());
 	}
