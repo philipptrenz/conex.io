@@ -123,6 +123,7 @@
 				"properties": {
 					"isOn": {
 						"type": "boolean",
+						"command_type":"set",
 						"cases": [
 							{
 								"inject_mode": "direct",
@@ -144,6 +145,7 @@
 				"properties": {
 					"isOn": {
 						"type": "integer",
+						"command_type":"set",
 						"cases": [
 							{
 								"inject_mode": "from_to",
