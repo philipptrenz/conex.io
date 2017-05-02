@@ -124,6 +124,7 @@
 					"isOn": {
 						"type": "boolean",
 						"command_type":"set",
+						"reading":"",
 						"cases": [
 							{
 								"inject_mode": "direct",
@@ -143,9 +144,10 @@
 				"function_id": "dimmer",
 				"class_name": "io.swagger.model.Dimmer",
 				"properties": {
-					"isOn": {
+					"value": {
 						"type": "integer",
 						"command_type":"set",
+						"reading": "",
 						"cases": [
 							{
 								"inject_mode": "from_to",

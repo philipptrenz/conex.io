@@ -103,6 +103,50 @@
 				}
 			}
 		],
-		"set": []
+		"set": [
+			{
+				"function_id": "onoff",
+				"class_name": "io.swagger.model.OnOff",
+				"properties": {
+					"isOn": {
+						"type": "boolean",
+						"command_type":"set",
+						"reading":"",
+						"cases": [
+							{
+								"inject_mode": "direct",
+								"value": true,
+								"parameter": "on"
+							},
+							{
+								"inject_mode": "direct",
+								"value": false,
+								"parameter": "off"
+							}
+						]
+					}
+				}
+			},
+			{
+				"function_id": "dimmer",
+				"class_name": "io.swagger.model.Dimmer",
+				"properties": {
+					"value": {
+						"type": "integer",
+						"command_type":"set",
+						"reading":"pct",
+						"cases": [
+							{
+								"inject_mode": "range",
+								"minimum": 0,
+								"maximum": 100,
+								"prefix": "",
+								"suffix": ""
+							}
+						]
+					}
+				}
+			}
+		]
 	}
 }
