@@ -30,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextClosedEvent;
+import org.springframework.http.StreamingHttpOutputMessage;
 import org.springframework.stereotype.Component;
 
 import com.google.common.base.FinalizableSoftReference;
@@ -117,7 +118,11 @@ public class FHEMConnector implements HomeAutomationServerConnector, Application
 
 				@Override
 				public void onClose(int code, String reason, boolean remote) {
-					log.error("closed with exit code " + code + " additional info: " + reason);
+					String msg = "Closed websocket with exit code " + code;
+					if (!reason.isEmpty()) {
+						msg += ", additional info: "+reason;
+					}
+					log.error(msg);
 					// TODO
 				}
 
@@ -150,7 +155,7 @@ public class FHEMConnector implements HomeAutomationServerConnector, Application
 			return "";
 		}
 		
-		log.info("Sending command to FHEM: "+command);
+		log.info("Sending command to FHEM: '"+command+"'");
 		
 		int responseCode = 0;
 		try {
