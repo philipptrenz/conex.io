@@ -9,6 +9,8 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Null;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
@@ -33,7 +35,6 @@ public class ValueExtractor {
 	 * @param property the property
 	 * @return the string
 	 */
-	
 	
 	public String extractValue(JsonNode jsonlist2Device, JsonNode property, String propertyName, Object function) {		
 		
@@ -127,7 +128,7 @@ public class ValueExtractor {
 				} else if (mappingCase.has("constraint")) {
 					
 					String type = mappingCase.get("constraint").asText();
-					int constValue = getConstraintValueFromFunctionClassAnnotation(type, propertyName, function);
+					int constValue = MappingHelper.getConstraintValueFromFunctionClassAnnotation(type, propertyName, function);
 					
 					return Integer.toString(constValue);	
 					
@@ -144,8 +145,8 @@ public class ValueExtractor {
 		try {
 			double minimumSourceValue = mappingCase.get("minimum").asDouble();
 			double maximumSourceValue = mappingCase.get("maximum").asDouble();
-			int minimumDestinationValue = getConstraintValueFromFunctionClassAnnotation("min", propertyName, function);
-			int maximumDestinationValue = getConstraintValueFromFunctionClassAnnotation("max", propertyName, function);
+			int minimumDestinationValue = MappingHelper.getConstraintValueFromFunctionClassAnnotation("min", propertyName, function);
+			int maximumDestinationValue = MappingHelper.getConstraintValueFromFunctionClassAnnotation("max", propertyName, function);
 			
 			String regex = mappingCase.get("regex").asText();
 			Pattern pattern = Pattern.compile(regex);
@@ -168,35 +169,6 @@ public class ValueExtractor {
 			return null;
 		}
 		
-	}
-	
-	private int getConstraintValueFromFunctionClassAnnotation(String type, String propertyName, Object function) {
-		try {
-			Method[] methods = function.getClass().getMethods();
-			Method setMethod = null;
-			for (Method m : methods) {
-				
-				if (propertyName == null) System.out.println("ups");
-				
-				if (m.getName().toLowerCase().contains("get"+propertyName.toLowerCase())) {
-					setMethod = m;
-					
-					if (type.equals("min")) {
-						if (setMethod.getAnnotation(Min.class) == null) throw new NeededAnnotationOnModelNotAvailableException(function.getClass());
-						return (int) setMethod.getAnnotation(Min.class).value();
-					} else if (type.equals("max")) {
-						if (setMethod.getAnnotation(Max.class) == null) throw new NeededAnnotationOnModelNotAvailableException(function.getClass());
-						return (int) setMethod.getAnnotation(Max.class).value();
-					} else {
-						System.out.println("Function 'getConstraintValueFromFunctionClassAnnotation' has no case for type '"+type+"'");
-					}
-				}
-			}
-		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
-		}
-		return 0;
 	}
 
 }

@@ -79,7 +79,7 @@ public class FHEMConnector implements HomeAutomationServerConnector, Application
 		this.websocketParser = new WebsocketParser();
 		
 		this.jsonParser = new JsonParser();
-		this.commandBuilder = new FHEMCommandBuilder(this);
+		this.commandBuilder = new FHEMCommandBuilder();
 		
 		// TODO: Validate ipAddress and port
 		
@@ -144,6 +144,14 @@ public class FHEMConnector implements HomeAutomationServerConnector, Application
 	}
 	
 	private String sendFhemCommand(String command) {
+		
+		if (command == null || command.isEmpty()) {
+			log.warn("Command to get sent to FHEM is null, ignoring");
+			return "";
+		}
+		
+		log.info("Sending command to FHEM: "+command);
+		
 		int responseCode = 0;
 		try {
 			String commandEnc = URLEncoder.encode(command, "UTF-8");

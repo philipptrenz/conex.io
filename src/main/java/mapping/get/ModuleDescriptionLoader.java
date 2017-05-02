@@ -34,6 +34,17 @@ public class ModuleDescriptionLoader {
 	}
 	
 	/*
+	 * This function checks if a FHEM module description exists
+	 */
+	public boolean moduleDescriptionExists(String deviceType) {
+		File f = new File(folderName+"/"+deviceType.toLowerCase()+".json");
+		if(f.exists() && !f.isDirectory()) { 
+		    return true;
+		}
+		return false;
+	}
+	
+	/*
 	 * This function returns the correct module description for the device from the TYPE-property of jsonlist2
 	 */
 	public JsonNode getModuleDescription(JsonNode jsonlist2Device) {
