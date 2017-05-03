@@ -71,7 +71,7 @@ public class DeviceMapper {
 		try {
 			String keyPath = mappingDescription.get("key_path").asText();
 			JsonNode type = MappingHelper.navigateJsonKeyPath(jsonlist2Device, keyPath);
-			id = type.asText().toLowerCase();
+			id = type.asText();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
