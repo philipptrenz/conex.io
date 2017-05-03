@@ -35,9 +35,10 @@
 						"delimiters": " "
 					}
 				],
-				"properties": {
-					"isOn": {
-						"type": "boolean",
+				"properties": [
+					{
+						"value_name": "isOn",
+						"value_type": "boolean",
 						"default": false,
 						"key_path": "Readings/state/Value",
 						"cases": [
@@ -58,12 +59,13 @@
 							}
 						]
 					},
-					"timestamp": {
-						"type": "date-time",
+					{
+						"value_name": "timestamp",
+						"value_type": "date-time",
 						"key_path": "Readings/state/Time",
 						"format": "yyyy-MM-dd HH:mm:ss"
 					}
-				}
+				]
 			},
 			{
 				"function_id": "dimmer",
@@ -80,9 +82,10 @@
 						"delimiters": " "
 					}
 				],
-				"properties": {
-					"value": {
-						"type": "integer",
+				"properties": [
+					{
+						"value_name":"value",
+						"value_type": "integer",
 						"default": 0,
 						"key_path": "Readings/state/Value",
 						"cases": [
@@ -108,12 +111,13 @@
 							}
 						]
 					},
-					"timestamp": {
-						"type": "date-time",
+					{
+						"value_name": "timestamp",
+						"value_type": "date-time",
 						"key_path": "Readings/state/Time",
 						"format": "yyyy-MM-dd HH:mm:ss"
 					}
-				}
+				]
 			}
 		],
 		"set": [

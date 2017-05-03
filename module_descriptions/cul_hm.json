@@ -34,9 +34,10 @@
 						]
 					}
 				],
-				"properties": {
-					"isOn": {
-						"type": "boolean",
+				"properties": [
+					{
+						"value_name":"isOn",
+						"value_type": "boolean",
 						"default": false,
 						"key_path": "Readings/state/Value",
 						"cases": [
@@ -56,12 +57,13 @@
 							}
 						]
 					},
-					"timestamp": {
-						"type": "date-time",
+					{
+						"value_name": "timestamp",
+						"value_type": "date-time",
 						"key_path": "Readings/state/Time",
 						"format": "yyyy-MM-dd HH:mm:ss"
 					}
-				}
+				]
 			}
 		],
 		"set": [

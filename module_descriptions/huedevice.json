@@ -37,9 +37,10 @@
 						]
 					}
 				],
-				"properties": {
-					"isOn": {
-						"type": "boolean",
+				"properties": [
+					{
+						"value_name":"isOn",
+						"value_type": "boolean",
 						"default": false,
 						"key_path": "Readings/onoff/Value",
 						"cases": [
@@ -59,12 +60,13 @@
 							}
 						]
 					},
-					"timestamp": {
-						"type": "date-time",
+					{
+						"value_name": "timestamp",
+						"value_type": "date-time",
 						"key_path": "Readings/state/Time",
 						"format": "yyyy-MM-dd HH:mm:ss"
 					}
-				}
+				]
 			},
 			{
 				"function_id": "dimmer",
@@ -81,9 +83,10 @@
 						]
 					}
 				],
-				"properties": {
-					"value": {
-						"type": "integer",
+				"properties": [
+					{
+						"value_name": "value",
+						"value_type": "integer",
 						"default": 0,
 						"key_path": "Readings/sat/Value",
 						"cases": [
@@ -95,21 +98,23 @@
 							}
 						]
 					},
-					"timestamp": {
-						"type": "date-time",
+					{
+						"value_name": "timestamp",
+						"value_type": "date-time",
 						"key_path": "Readings/sat/Time",
 						"format": "yyyy-MM-dd HH:mm:ss"
 					}
-				}
+				]
 			}
 		],
 		"set": [
 			{
 				"function_id": "onoff",
 				"class_name": "io.swagger.model.OnOff",
-				"properties": {
-					"isOn": {
-						"type": "boolean",
+				"properties": [
+					{
+						"value_name": "isOn",
+						"value_type": "boolean",
 						"command_type":"set",
 						"reading":"",
 						"cases": [
@@ -125,7 +130,7 @@
 							}
 						]
 					}
-				}
+				]
 			},
 			{
 				"function_id": "dimmer",
