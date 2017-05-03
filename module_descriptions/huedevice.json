@@ -135,9 +135,10 @@
 			{
 				"function_id": "dimmer",
 				"class_name": "io.swagger.model.Dimmer",
-				"properties": {
-					"value": {
-						"type": "integer",
+				"properties": [
+					{
+						"value_name": "value",
+						"value_type": "integer",
 						"command_type":"set",
 						"reading":"pct",
 						"cases": [
@@ -150,7 +151,7 @@
 							}
 						]
 					}
-				}
+				]
 			}
 		]
 	}
