@@ -144,7 +144,7 @@
 					"type": "string"
 				}
 			},
-			"required": ["function_id", "class_name",]
+			"required": ["function_id", "class_name"]
 		}
 	},
 
