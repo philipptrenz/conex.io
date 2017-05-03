@@ -180,6 +180,9 @@
             "$ref": "#/definitions/value.boolean"
           },
           {
+            "$ref": "#/definitions/value.integer"
+          },
+          {
             "$ref": "#/definitions/value.timestamp"
           }
         ]
@@ -234,50 +237,6 @@
         "delimiters"
       ]
     },
-    "value.boolean": {
-      "type": "object",
-      "properties": {
-        "value_name": {
-          "type": "string"
-        },
-        "value_type": {
-          "type": "string",
-          "enum": [
-            "boolean"
-          ]
-        }
-      },
-      "required": [
-        "value_name",
-        "value_type"
-      ]
-    },
-    "value.timestamp": {
-      "type": "object",
-      "properties": {
-        "value_name": {
-          "type": "string"
-        },
-        "value_type": {
-          "type": "string",
-          "enum": [
-            "date-time"
-          ]
-        },
-        "key_path": {
-          "$ref": "#/definitions/key_path"
-        },
-        "format": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "value_name",
-        "value_type",
-        "key_path",
-        "format"
-      ]
-    },
     "mode.contains_all": {
       "type": "object",
       "properties": {
@@ -305,6 +264,175 @@
         "key_path",
         "attributes",
         "delimiters"
+      ]
+    },
+    "value.boolean": {
+      "type": "object",
+      "properties": {
+        "value_name": {
+          "type": "string"
+        },
+        "value_type": {
+          "type": "string",
+          "enum": [
+            "boolean"
+          ]
+        },
+        "default": {
+          "type": "boolean"
+        },
+        "key_path": {
+          "$ref": "#/definitions/key_path"
+        },
+        "cases": {
+          "$ref": "#/definitions/cases"
+        }
+      }
+    },
+       "value.integer": {
+      "type": "object",
+      "properties": {
+        "value_name": {
+          "type": "string"
+        },
+        "value_type": {
+          "type": "string",
+          "enum": [
+            "integer"
+          ]
+        },
+        "default": {
+          "type": "integer"
+        },
+        "key_path": {
+          "$ref": "#/definitions/key_path"
+        },
+        "cases": {
+          "$ref": "#/definitions/cases"
+        }
+      }
+    },
+    "value.timestamp": {
+      "type": "object",
+      "properties": {
+        "value_name": {
+          "type": "string"
+        },
+        "value_type": {
+          "type": "string",
+          "enum": [
+            "date-time"
+          ]
+        },
+        "key_path": {
+          "$ref": "#/definitions/key_path"
+        },
+        "format": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "value_name",
+        "value_type",
+        "key_path",
+        "format"
+      ]
+    },
+    "cases": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "$ref": "#/definitions/extract_mode.direct"
+          },
+          {
+            "$ref": "#/definitions/extract_mode.range"
+          },
+          {
+            "$ref": "#/definitions/extract_mode.with_constraint"
+          }
+        ]
+      },
+      "additionalProperties": false
+    },
+    "extract_mode.direct": {
+      "type": "object",
+      "properties": {
+        "extract_mode": {
+          "type": "string",
+          "enum": [
+            "direct"
+          ]
+        },
+        "value": {
+          "type": "string"
+        },
+        "regex": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "extract_mode",
+        "value",
+        "regex"
+      ]
+    },
+    "extract_mode.with_constraint": {
+      "type": "object",
+      "properties": {
+        "extract_mode": {
+          "type": "string",
+          "enum": [
+            "with_constraint"
+          ]
+        },
+        "constraint": {
+          "type": "string",
+          "enum": [
+            "min",
+            "max"
+          ]
+        },
+        "regex": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "extract_mode",
+        "constraint",
+        "regex"
+      ]
+    },
+    "extract_mode.range": {
+      "type": "object",
+      "properties": {
+        "extract_mode": {
+          "type": "string",
+          "enum": [
+            "range"
+          ]
+        },
+        "minimum": {
+          "type": "integer"
+        },
+        "maximum": {
+          "type": "integer"
+        },
+        "regex": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "extract_mode",
+        "minimum",
+        "maximum",
+        "regex"
       ]
     }
   }
