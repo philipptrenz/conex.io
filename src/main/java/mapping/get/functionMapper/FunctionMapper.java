@@ -72,12 +72,19 @@ public class FunctionMapper {
 				// 2. Insert values from jsonlist2 to prototype
 				
 				// iterate over all properties to get the values mapped
+				/*
 				Iterator<Map.Entry<String, JsonNode>> fields;
 				fields = funcDescription.get("properties").fields();
 				while (fields.hasNext()) {
 					Map.Entry<String, JsonNode> entry = fields.next();
 					String key = entry.getKey();
 					JsonNode property = entry.getValue();
+					String value = extractor.extractValue(json, property, key, function);
+					proto.put(key, value);
+				}
+				*/
+				for(JsonNode property : funcDescription.get("properties")) {
+					String key = property.get("value_name").asText();
 					String value = extractor.extractValue(json, property, key, function);
 					proto.put(key, value);
 				}
@@ -128,7 +135,8 @@ public class FunctionMapper {
 					// yey, this Function looks correct						
 					boolean valueMapped = false;
 					boolean timestampMapped = false;
-											
+					
+					/*
 					Iterator<Map.Entry<String, JsonNode>> properties;
 					properties = funcDescription.get("properties").fields();
 					
@@ -137,6 +145,43 @@ public class FunctionMapper {
 						String key = entry.getKey();
 						JsonNode prop = entry.getValue();
 						
+						String keyPath = prop.get("key_path").asText().toLowerCase();
+						
+						// if reading is defined in this Function
+						if (keyPath.startsWith("readings/"+message.reading.toLowerCase())) {
+
+							String value = null;
+							if (keyPath.equals("readings/"+message.reading.toLowerCase()+"/value")) {								
+								value = extractor.extractValue(message.value, prop, key, f);
+								valueMapped = true;
+							} else if (keyPath.equals("readings/"+message.reading.toLowerCase()+"/time")) {
+								value = extractor.extractValue(message.timestamp, prop, key, f);
+								timestampMapped = true;
+							} else {
+								value = null;
+							}
+							
+							if (value != null && !value.isEmpty()) {
+								ObjectNode proto = mapper.valueToTree(updatedList.get(functionsList.indexOf(f)));
+								
+								proto.put(key, value);
+								Function updatedFunction;
+								try {
+									updatedFunction = (Function) mapper.treeToValue(proto, clazz);
+									
+									// replace in device
+									updatedList.set(functionsList.indexOf(f), updatedFunction);
+									
+									updated = true;
+								} catch (JsonProcessingException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+							}
+						}
+					}*/
+					for (JsonNode prop : funcDescription.get("properties")) {
+						String key = prop.get("value_name").asText();
 						String keyPath = prop.get("key_path").asText().toLowerCase();
 						
 						// if reading is defined in this Function

@@ -124,9 +124,10 @@
 			{
 				"function_id": "onoff",
 				"class_name": "io.swagger.model.OnOff",
-				"properties": {
-					"isOn": {
-						"type": "boolean",
+				"properties": [
+					{
+						"value_name": "isOn",
+						"value_type": "boolean",
 						"command_type":"set",
 						"reading":"",
 						"cases": [
@@ -142,14 +143,15 @@
 							}
 						]
 					}
-				}
+				]
 			},
 			{
 				"function_id": "dimmer",
 				"class_name": "io.swagger.model.Dimmer",
-				"properties": {
-					"value": {
-						"type": "integer",
+				"properties": [
+					{
+						"value_name": "value",
+						"value_type": "integer",
 						"command_type":"set",
 						"reading": "",
 						"cases": [
@@ -242,7 +244,7 @@
 							}
 						]
 					}
-				}
+				]
 			}
 		]
 	}

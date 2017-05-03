@@ -16,7 +16,7 @@ public class FunctionValueToFHEMValueMapper {
 
 	public String mapFunctionValueToFHEMValue(String propertyName, String deviceValue, JsonNode valueDescription, Function function) {
 		
-		String valueType = valueDescription.get("type").asText();
+		String valueType = valueDescription.get("value_type").asText();
 		JsonNode cases = valueDescription.get("cases");
 		String mappedValue = null;
 		
@@ -86,7 +86,7 @@ public class FunctionValueToFHEMValueMapper {
 
 	    } else {
 	    	try {
-				throw new Exception("from_to mapping for type "+mappingCase.get("type")+" not yet implemented!");
+				throw new Exception("from_to mapping for type "+mappingCase.get("value_type")+" not yet implemented!");
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

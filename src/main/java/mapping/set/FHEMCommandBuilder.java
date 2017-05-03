@@ -99,36 +99,44 @@ public class FHEMCommandBuilder {
 			
 			if (key.equals("function_id")) continue;
 			if (entry.getValue().isNull()) continue;
-						
-			if (descriptionProperties.has(key)) {
 				
-				JsonNode valueDescription = descriptionProperties.get(key);
-				
-				String command = "";
-				
-				command += valueDescription.get("command_type").asText()+" ";
-				
-				command += concatenatedDeviceIds+" ";
-				
-				if (valueDescription.has("reading")) {
-					String reading = valueDescription.get("reading").asText();
-					if (!reading.isEmpty()) {
-						command += valueDescription.get("reading").asText()+" ";
-					}
+			JsonNode valueDescription = getValueDescription(key, descriptionProperties);
+			
+			if (valueDescription == null) continue;
+			
+			String command = "";
+			
+			command += valueDescription.get("command_type").asText()+" ";
+			
+			command += concatenatedDeviceIds+" ";
+			
+			if (valueDescription.has("reading")) {
+				String reading = valueDescription.get("reading").asText();
+				if (!reading.isEmpty()) {
+					command += valueDescription.get("reading").asText()+" ";
 				}
-				
-				String fhemValue = functionToFHEMValueMapper.mapFunctionValueToFHEMValue(key, value, valueDescription, function);
-				
-				if(fhemValue == null) continue;
-				command += fhemValue;
-				
-				commands.add(command);
+			}
+			
+			String fhemValue = functionToFHEMValueMapper.mapFunctionValueToFHEMValue(key, value, valueDescription, function);
+			
+			if(fhemValue == null) continue;
+			command += fhemValue;
+			
+			commands.add(command);
+		}
+
+		return commands;
+	}
+	
+	private JsonNode getValueDescription(String valueName, JsonNode descriptionProperties) {
+		for (JsonNode property : descriptionProperties) {
+			if (property.get("value_name").asText().equals(valueName)) {
+				return property;
 			} else {
 				continue;
 			}
 		}
-
-		return commands;
+		return null;
 	}
 	
 	private JsonNode getFunctionDescriptionForSet(Function function, String deviceType) {
