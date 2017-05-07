@@ -38,8 +38,10 @@ public class DeviceCalc {
 	 */
 	public List<Device> getDeviceListFiltered() {
 		List <Device> ausgabe;
-		if(!filter.getDeviceIds().isEmpty() || !filter.getFunctionIds().isEmpty() ||
-				!filter.getGroupIds().isEmpty() || !filter.getRoomIds().isEmpty()) {
+		
+		
+		
+		if(!filterIsEmpty(filter)) {
 			for (int i= 0; i < geraete.size(); i++) {
         			Device d = geraete.get(i);
         			if(!isDeviceMatchingFiltering(d, filter)) {
@@ -58,6 +60,11 @@ public class DeviceCalc {
 			f = new Function();
 			f.setFunctionId("null");
 		}
+		
+		if(filter.getFunctionIds() == null) {
+			filter.setFunctionIds(new ArrayList<>());
+		}
+		
 		if(!filter.getFunctionIds().contains(f.getFunctionId())) {
 			filter.addFunctionIdsItem(f.getFunctionId());
 		}
@@ -134,12 +141,12 @@ public class DeviceCalc {
 	 * @return true if the device matches all required filter attributes. Otherwise return false
 	 */
 	public static boolean isDeviceMatchingFiltering(Device device, Filter filter) {
-		if(!filter.getDeviceIds().isEmpty()) {
+		if(filter.getDeviceIds() != null && !filter.getDeviceIds().isEmpty()) {
 			if(!filter.getDeviceIds().contains(device.getDeviceId())) {
 				return false;
 			}
 		}
-		if(!filter.getFunctionIds().isEmpty()) {
+		if(filter.getFunctionIds() != null && !filter.getFunctionIds().isEmpty()) {
 			boolean matchingFunctions = false;
     		for(Function func : device.getFunctions()) {
     			if (filter.getFunctionIds().contains(func.getFunctionId())) {
@@ -150,16 +157,26 @@ public class DeviceCalc {
     			return false;
     		}
     		}
-		if(!filter.getRoomIds().isEmpty()) {
+		if(filter.getRoomIds() != null && !filter.getRoomIds().isEmpty()) {
 			if(Collections.disjoint(filter.getRoomIds(), device.getRoomIds())) {
 				return false;
 			}
 		}
-		if(!filter.getGroupIds().isEmpty()) {
+		if(filter.getGroupIds() != null && !filter.getGroupIds().isEmpty()) {
 			if(Collections.disjoint(filter.getGroupIds(), device.getGroupIds())) {
 				return false;
 			}
 		}
 		return true;
+	}
+	
+	private boolean filterIsEmpty(Filter filter)  {
+		
+		boolean devicesAreEmpty = (filter.getDeviceIds() == null || filter.getDeviceIds().isEmpty());
+		boolean functionsAreEmpty = (filter.getFunctionIds() == null || filter.getFunctionIds().isEmpty());
+		boolean roomsAreEmpty = (filter.getRoomIds() == null || filter.getRoomIds().isEmpty());
+		boolean groupsAreEmpty = (filter.getGroupIds() == null || filter.getGroupIds().isEmpty());
+		
+		return devicesAreEmpty && functionsAreEmpty && roomsAreEmpty && groupsAreEmpty;
 	}
 }
