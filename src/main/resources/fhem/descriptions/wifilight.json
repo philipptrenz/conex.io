@@ -1,0 +1,97 @@
+{
+	"information": {
+		"filename": "wifilight.json",
+		"description": "Mapping instructions for the FHEM WifiLight module",
+		"author": "Philipp Trenz",
+		"last_edited": "2017-05-07"
+	},
+	"device_id":{
+		"key_path": "Name"
+	},
+	"type_id":{
+		"key_path": "Internals/TYPE"
+	},
+	"rooms": {
+		"key_path": "Attributes/room",
+		"delimiters": ","
+	},
+	"groups": {
+		"key_path": "Attributes/group",
+		"delimiters": ","
+	},
+	"functions": {
+		"get": [
+			{
+				"function_id": "onoff",
+				"class_name": "io.swagger.model.OnOff",
+				"requirements": [
+					{
+						"mode": "contains_all",
+						"key_path": "PossibleSets",
+						"attributes": [
+							"on",
+							"off"
+						],
+						"delimiters": " "
+					}
+				],
+				"properties": [
+					{
+						"value_name":"isOn",
+						"value_type": "boolean",
+						"default": false,
+						"key_path": "Readings/state/Value",
+						"cases": [
+							{
+								"extract_mode": "direct",
+								"value": true,
+								"regex": [
+									"on"
+								]
+							},
+							{
+								"extract_mode": "direct",
+								"value": false,
+								"regex": [
+									"off"
+								]
+							}
+						]
+					},
+					{
+						"value_name": "timestamp",
+						"value_type": "date-time",
+						"key_path": "Readings/state/Time",
+						"format": "yyyy-MM-dd HH:mm:ss"
+					}
+				]
+			}
+		],
+		"set": [
+			{
+				"function_id": "onoff",
+				"class_name": "io.swagger.model.OnOff",
+				"properties": [
+					{
+						"value_name": "isOn",
+						"value_type": "boolean",
+						"command_type":"set",
+						"reading":"",
+						"cases": [
+							{
+								"inject_mode": "direct",
+								"value": true,
+								"parameter": "on"
+							},
+							{
+								"inject_mode": "direct",
+								"value": false,
+								"parameter": "off"
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+}
