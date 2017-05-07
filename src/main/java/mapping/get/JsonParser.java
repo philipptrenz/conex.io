@@ -21,7 +21,7 @@ public class JsonParser {
 	public JsonParser() {
 		
 		this.reader = new ObjectMapper().reader();
-		this.loader = new ModuleDescriptionLoader("module_descriptions");
+		this.loader = new ModuleDescriptionLoader();
 		this.mapper = new DeviceMapper(loader);
 
 	}

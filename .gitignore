@@ -1,5 +1,3 @@
-*sensitive.json
-
 *.class
 
 # Mobile Tools for Java (J2ME)
@@ -102,3 +100,6 @@ local.properties
 .cache-main
 .scala_dependencies
 .worksheet
+
+jsonlist2_cooltux_sensitive.json
+jsonlist2_p.a.trick_sensitive.json

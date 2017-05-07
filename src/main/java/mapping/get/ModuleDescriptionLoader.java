@@ -6,6 +6,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
@@ -14,10 +18,14 @@ public class ModuleDescriptionLoader {
 	
 	private String folderName;
 	private ObjectReader reader;
+	private ClassLoader classLoader;
 	
-	public ModuleDescriptionLoader(String folderName){
-		this.folderName = folderName;
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	
+	public ModuleDescriptionLoader(){
+		this.folderName = "fhem/descriptions";
 		this.reader = new ObjectMapper().reader();
+		this.classLoader = getClass().getClassLoader();
 	}
 	
 	/*
@@ -25,23 +33,24 @@ public class ModuleDescriptionLoader {
 	 */
 	public boolean moduleDescriptionExists(JsonNode device) {
 		String deviceType = device.get("Internals").get("TYPE").asText();
-		
-		File f = new File(folderName+"/"+deviceType.toLowerCase()+".json");
-		if(f.exists() && !f.isDirectory()) { 
-		    return true;
-		}
-		return false;
+		return moduleDescriptionExists(deviceType);
 	}
 	
 	/*
 	 * This function checks if a FHEM module description exists
 	 */
 	public boolean moduleDescriptionExists(String deviceType) {
-		File f = new File(folderName+"/"+deviceType.toLowerCase()+".json");
-		if(f.exists() && !f.isDirectory()) { 
-		    return true;
+		String fileName = deviceType.toLowerCase()+".json";
+		try {
+			File f = new File(classLoader.getResource(folderName+"/"+fileName).getFile());
+			if(f.exists() && !f.isDirectory()) { 
+			    return true;
+			}
+			return false;
+		} catch (NullPointerException e) {
+			return false;
 		}
-		return false;
+		
 	}
 	
 	/*
@@ -49,31 +58,20 @@ public class ModuleDescriptionLoader {
 	 */
 	public JsonNode getModuleDescription(JsonNode jsonlist2Device) {
 		String deviceType = jsonlist2Device.get("Internals").get("TYPE").asText();
-		byte[] encoded;
-		try {
-			encoded = Files.readAllBytes(Paths.get(folderName+"/"+deviceType.toLowerCase()+".json"));
-			String moduleDescription = new String(encoded, StandardCharsets.UTF_8);
-			return reader.readTree(moduleDescription);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			System.err.println("Loading module description '"+deviceType+"' failed: \n"+e.getMessage());
-			return null;
-		}
+		return getModuleDescription(deviceType);
 	}
 	
 	public JsonNode getModuleDescription(String deviceType) {
 		if (deviceType == null) return null;
+		String fileName = deviceType.toLowerCase()+".json";
 		
-		byte[] encoded;
 		try {
-			encoded = Files.readAllBytes(Paths.get(folderName+"/"+deviceType.toLowerCase()+".json"));
-			String moduleDescription = new String(encoded, StandardCharsets.UTF_8);
+			String moduleDescription = IOUtils.toString(classLoader.getResourceAsStream(folderName+"/"+fileName));
 			return reader.readTree(moduleDescription);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("Loading description file "+folderName+"/"+fileName+" failed", e);
+			return null;
 		}
-		return null;
 	}
 
 }

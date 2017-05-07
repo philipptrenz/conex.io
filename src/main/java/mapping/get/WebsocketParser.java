@@ -24,7 +24,7 @@ public class WebsocketParser {
 	private DeviceMapper deviceMapper;
 	
 	public WebsocketParser() {
-		this.loader = new ModuleDescriptionLoader("module_descriptions");
+		this.loader = new ModuleDescriptionLoader();
 		this.mapper = new FunctionMapper();
 		this.deviceMapper = new DeviceMapper(loader);
 	}

@@ -29,7 +29,7 @@ public class FHEMCommandBuilder {
 	
 	public FHEMCommandBuilder() {
 		
-		this.loader = new ModuleDescriptionLoader("module_descriptions");
+		this.loader = new ModuleDescriptionLoader();
 		this.mapper = new ObjectMapper();
 		mapper.registerModule(new JodaModule());
 		
