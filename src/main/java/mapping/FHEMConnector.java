@@ -20,7 +20,6 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
 
-import org.apache.commons.logging.Log;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft_17;
@@ -239,7 +238,6 @@ public class FHEMConnector implements HomeAutomationServerConnector, Application
 		startWebsocket(now);
 		
 		List<Device> devices = jsonParser.parse(jsonlist2);
-		log.info("Got "+devices+" from FHEM");
 		deviceMap = devices.stream().collect(Collectors.toMap(Device::getDeviceId, Device -> Device));
 		
 		log.info("Retrieved "+deviceMap.size()+" devices from FHEM via jsonlist2");

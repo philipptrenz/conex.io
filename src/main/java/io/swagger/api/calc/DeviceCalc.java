@@ -38,9 +38,6 @@ public class DeviceCalc {
 	 */
 	public List<Device> getDeviceListFiltered() {
 		List <Device> ausgabe;
-		
-		
-		
 		if(!filterIsEmpty(filter)) {
 			for (int i= 0; i < geraete.size(); i++) {
         			Device d = geraete.get(i);
