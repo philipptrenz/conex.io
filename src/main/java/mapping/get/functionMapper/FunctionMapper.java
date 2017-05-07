@@ -60,7 +60,9 @@ public class FunctionMapper {
 				
 				// 1. Generate prototype JSON as JsonNode from Java Class by classname
 				String className = funcDescription.get("class_name").asText();
-				Class<Function> functionClass = (Class<Function>) Class.forName(className);
+				
+				
+				Class<?> functionClass = Class.forName(className);
 				Object function = functionClass.newInstance();
 				ObjectNode proto = mapper.valueToTree(function);
 				
