@@ -1,8 +1,13 @@
 package mapping.get;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -13,6 +18,8 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import io.swagger.model.Device;
 
 public class JsonParser {
+	
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	private ObjectReader reader;
 	private DeviceMapper mapper;
@@ -38,33 +45,23 @@ public class JsonParser {
 				
 				JsonNode jsonDevice = devicesIterator.next();		
 				
-				if (loader.moduleDescriptionExists(jsonDevice)) {
-					//System.out.println(jsonDevice.get("Name")+": module description exists; trying to map ...");
-					
+				if (loader.moduleDescriptionExists(jsonDevice)) {					
 					try {
 						Device device = mapper.mapJsonToDevice(jsonDevice);
 						if (device != null) {
-							//System.out.println("device added");
 							deviceList.add(device);
-							
-							//System.out.println(device+"\n");
 						}
 						
 					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						log.error("An error occured while mapping json to Device", e);
 					}
-				} else {
-					//System.out.println(jsonDevice.get("Name")+" ignored \n");
 				}
 			}
 				
 		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("While parsing json an error occured", e);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("While parsing json an error occured", e);
 		}
 		return deviceList;
 	}

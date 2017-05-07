@@ -86,8 +86,7 @@ public class FunctionValueToFHEMValueMapper {
 	    	try {
 				throw new Exception("from_to mapping for type "+mappingCase.get("value_type")+" not yet implemented!");
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log.error("valueType is not 'integer'", e);
 			}
 	    }
 	    

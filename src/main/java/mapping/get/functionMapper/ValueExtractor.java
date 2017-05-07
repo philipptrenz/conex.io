@@ -4,6 +4,9 @@ import java.text.SimpleDateFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
@@ -18,6 +21,8 @@ import mapping.exceptions.NoValidKeyPathException;
  * to get mapped defined in the FHEM module description (json file).
  */
 public class ValueExtractor {
+	
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	/**
 	 * Extract value.
@@ -35,8 +40,7 @@ public class ValueExtractor {
 			unmappedDeviceValue = MappingHelper.navigateJsonKeyPath(jsonlist2Device, key_path).asText();
 			return extractValue(unmappedDeviceValue, property, propertyName, function);
 		} catch (NoValidKeyPathException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("Key path '"+key_path+"' is not valid", e);
 		}
 		return null;
 	}
@@ -51,7 +55,6 @@ public class ValueExtractor {
 		default: break;
 		}
 		
-		if (!property.has("cases")) System.out.println("this shouldn't happen");
 		ArrayNode cases = (ArrayNode) property.get("cases");
 
 		String value = "";
@@ -72,10 +75,6 @@ public class ValueExtractor {
 				if (value != null && !value.isEmpty()) {
 					return value;
 				}
-				
-			default:
-				//System.out.println("extract_mode '"+extractMode+"' not found for value '"+unmappedDeviceValue+"', maybe function description is made for newer version of conex.io core");
-				break;
 			}
 			
 		}
@@ -100,10 +99,8 @@ public class ValueExtractor {
 			RFC3339DateFormat format = new RFC3339DateFormat();
 			
 			return format.format(simpleDateFormat.parse(unmappedDeviceValue));
-			//return null;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("Date mapping failed", e);
 			return "";
 		}		
 	}
@@ -124,7 +121,7 @@ public class ValueExtractor {
 					return Integer.toString(constValue);	
 					
 				} else {
-					System.out.println("None of the available mappings for direct mode are fitting");
+					log.debug("None of the available mappings for direct mode are fitting");
 				}
 			}
 		}

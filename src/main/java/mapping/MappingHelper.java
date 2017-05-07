@@ -5,12 +5,17 @@ import java.lang.reflect.Method;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 import mapping.exceptions.NeededAnnotationOnModelNotAvailableException;
 import mapping.exceptions.NoValidKeyPathException;
 
 public class MappingHelper {
+	
+	private final static Logger log = LoggerFactory.getLogger(MappingHelper.class);
 	
 	public static JsonNode navigateJsonKeyPath(JsonNode node, String path) throws NoValidKeyPathException {
 		// remove whitespaces, linebreaks etc
@@ -31,8 +36,6 @@ public class MappingHelper {
 			Method setMethod = null;
 			for (Method m : methods) {
 				
-				if (propertyName == null) System.out.println("ups");
-				
 				if (m.getName().toLowerCase().contains("get"+propertyName.toLowerCase())) {
 					setMethod = m;
 					
@@ -43,13 +46,12 @@ public class MappingHelper {
 						if (setMethod.getAnnotation(Max.class) == null) throw new NeededAnnotationOnModelNotAvailableException(function.getClass());
 						return (int) setMethod.getAnnotation(Max.class).value();
 					} else {
-						System.out.println("Function 'getConstraintValueFromFunctionClassAnnotation' has no case for type '"+type+"'");
+						log.error("Function 'getConstraintValueFromFunctionClassAnnotation' has no case for type '"+type+"'");
 					}
 				}
 			}
 		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
+			log.error("Retrieving min/max value from Function class notation failed", e);
 		}
 		return 0;
 	}

@@ -3,6 +3,9 @@ package mapping.get.functionMapper;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,6 +23,7 @@ public class FunctionMapper {
 	private RequirementsValidator requirementsValidator;
 	private ValueExtractor extractor;
 	
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	public FunctionMapper() {
 		this.mapper = new ObjectMapper();
@@ -96,7 +100,7 @@ public class FunctionMapper {
 				return null;
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("While Function mapping an error occured", e);
 			return null;
 		}
 			
@@ -119,12 +123,14 @@ public class FunctionMapper {
 			
 			for (JsonNode funcDescription : readDescription) {	
 				
-				Class<Function> clazz = null;
+				String functionType = funcDescription.get("class_name").asText();
+				
+				Class clazz = null;
 				try {
-					clazz = (Class<Function>) Class.forName(funcDescription.get("class_name").asText());
+					clazz = Class.forName(functionType);
 				} catch (ClassNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					log.error("Function "+functionType+" not found", e);
+					
 				}
 				
 				// if device has this Function
@@ -134,50 +140,6 @@ public class FunctionMapper {
 					boolean valueMapped = false;
 					boolean timestampMapped = false;
 					
-					/*
-					Iterator<Map.Entry<String, JsonNode>> properties;
-					properties = funcDescription.get("properties").fields();
-					
-					while (properties.hasNext()) {
-						Map.Entry<String, JsonNode> entry = properties.next();
-						String key = entry.getKey();
-						JsonNode prop = entry.getValue();
-						
-						String keyPath = prop.get("key_path").asText().toLowerCase();
-						
-						// if reading is defined in this Function
-						if (keyPath.startsWith("readings/"+message.reading.toLowerCase())) {
-
-							String value = null;
-							if (keyPath.equals("readings/"+message.reading.toLowerCase()+"/value")) {								
-								value = extractor.extractValue(message.value, prop, key, f);
-								valueMapped = true;
-							} else if (keyPath.equals("readings/"+message.reading.toLowerCase()+"/time")) {
-								value = extractor.extractValue(message.timestamp, prop, key, f);
-								timestampMapped = true;
-							} else {
-								value = null;
-							}
-							
-							if (value != null && !value.isEmpty()) {
-								ObjectNode proto = mapper.valueToTree(updatedList.get(functionsList.indexOf(f)));
-								
-								proto.put(key, value);
-								Function updatedFunction;
-								try {
-									updatedFunction = (Function) mapper.treeToValue(proto, clazz);
-									
-									// replace in device
-									updatedList.set(functionsList.indexOf(f), updatedFunction);
-									
-									updated = true;
-								} catch (JsonProcessingException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
-							}
-						}
-					}*/
 					for (JsonNode prop : funcDescription.get("properties")) {
 						String key = prop.get("value_name").asText();
 						String keyPath = prop.get("key_path").asText().toLowerCase();
@@ -209,8 +171,7 @@ public class FunctionMapper {
 									
 									updated = true;
 								} catch (JsonProcessingException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
+									log.error("Mapping json to Function failed", e);
 								}
 							}
 						}

@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 import io.swagger.model.Device;
@@ -20,6 +23,8 @@ public class DeviceMapper {
 	
 	private FunctionMapper funcMapper;
 	private ModuleDescriptionLoader loader;
+	
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	/*
 	 * Constructor
@@ -73,7 +78,7 @@ public class DeviceMapper {
 			JsonNode type = MappingHelper.navigateJsonKeyPath(jsonlist2Device, keyPath);
 			id = type.asText();
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("Extracting deviceId failed", e);	
 		}
 		return id;
 	}
@@ -86,7 +91,7 @@ public class DeviceMapper {
 			JsonNode type = MappingHelper.navigateJsonKeyPath(jsonlist2Device, keyPath);
 			id = type.asText().toLowerCase();
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("Extracting typeId failed", e);	
 		}
 		return id;
 	}
@@ -98,6 +103,7 @@ public class DeviceMapper {
 			string = MappingHelper.navigateJsonKeyPath(jsonlist2Device, mappingDescription.get("key_path").asText()).asText();
 		} catch (NoValidKeyPathException e) {
 			string = null;
+			log.error("Extracting roomIds failed", e);	
 		}
 		return mapRoomIds(string, moduleDescription);
 	}

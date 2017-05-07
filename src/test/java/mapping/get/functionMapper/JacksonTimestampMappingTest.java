@@ -22,8 +22,6 @@ public class JacksonTimestampMappingTest {
     public void test() throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JodaModule());
-
-        System.out.println(mapper.readValue(json, GreetingResource.class));
     }
 }
 

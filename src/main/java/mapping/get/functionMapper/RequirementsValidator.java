@@ -1,5 +1,9 @@
 package mapping.get.functionMapper;
 
+import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 import mapping.MappingHelper;
@@ -14,6 +18,7 @@ import mapping.exceptions.NoValidKeyPathException;
  */
 public class RequirementsValidator {
 	
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	/**
 	 * Do fit requirements.
@@ -37,7 +42,7 @@ public class RequirementsValidator {
 			
 			case "one_of": return isModeOneOf(requirement, jsonlist2Device);
 			
-			default: System.out.println("mode '"+mode+"' not found");
+			default: log.debug("Requirements mode '"+mode+"' not found");
 				
 			}
 			
