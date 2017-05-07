@@ -1,7 +1,5 @@
 package mapping.errors;
 
-import org.springframework.ui.context.Theme;
-
 public class FHEMModuleDescriptionNotFoundError extends Error {
 
 	public FHEMModuleDescriptionNotFoundError(String fhemDeviceName) {

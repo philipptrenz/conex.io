@@ -5,8 +5,6 @@ import java.lang.reflect.Method;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
-import org.apache.naming.NamingContextBindingsEnumeration;
-
 import com.fasterxml.jackson.databind.JsonNode;
 
 import mapping.exceptions.NeededAnnotationOnModelNotAvailableException;

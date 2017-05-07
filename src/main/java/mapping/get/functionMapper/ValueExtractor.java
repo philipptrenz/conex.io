@@ -1,23 +1,14 @@
 package mapping.get.functionMapper;
 
-import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Null;
-
-import org.springframework.beans.factory.annotation.Value;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
-import aQute.lib.osgi.Annotation;
 import io.swagger.RFC3339DateFormat;
 import mapping.MappingHelper;
-import mapping.exceptions.NeededAnnotationOnModelNotAvailableException;
 import mapping.exceptions.NoValidKeyPathException;
 
 /**

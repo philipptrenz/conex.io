@@ -20,7 +20,6 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
 
-import org.apache.http.auth.UsernamePasswordCredentials;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft_17;
 import org.java_websocket.handshake.ServerHandshake;
@@ -30,10 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextClosedEvent;
-import org.springframework.http.StreamingHttpOutputMessage;
 import org.springframework.stereotype.Component;
-
-import com.google.common.base.FinalizableSoftReference;
 
 import io.swagger.HomeAutomationServerConnector;
 import io.swagger.model.Device;

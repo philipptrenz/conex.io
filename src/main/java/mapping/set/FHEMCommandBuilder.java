@@ -15,7 +15,6 @@ import com.fasterxml.jackson.datatype.joda.JodaModule;
 
 import io.swagger.model.Device;
 import io.swagger.model.Function;
-import mapping.FHEMConnector;
 import mapping.get.ModuleDescriptionLoader;
 
 public class FHEMCommandBuilder {
