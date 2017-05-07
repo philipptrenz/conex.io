@@ -125,7 +125,7 @@ public class FunctionMapper {
 				
 				String functionType = funcDescription.get("class_name").asText();
 				
-				Class clazz = null;
+				Class<?> clazz = null;
 				try {
 					clazz = Class.forName(functionType);
 				} catch (ClassNotFoundException e) {
