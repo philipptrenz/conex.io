@@ -11,7 +11,7 @@ This is a prototypical implemementation for the home automation server [FHEM](ht
 ## Get started
 
 The API uses `jsonlist2` and the longpoll mode `websocket` to connect to your FHEM installation.
-Therefor define a new FHEMWEB device, set attributes `longpoll` to `websocket` and `csrfToken` to `none`.
+Therefor define a new FHEMWEB device, set attributes `longpoll` to `websocket` and `csrfToken` to `none` (current workaround).
 
 * Install Java 8, Maven and git
 * Clone repo with `git clone https://github.com/philipptrenz/conex.io/` and switch to this folder
