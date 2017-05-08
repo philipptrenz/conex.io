@@ -8,7 +8,7 @@ This is a prototypical implemementation for the home automation server [FHEM](ht
 
 ...
 
-## 
+## Get started
 
 The API uses `jsonlist2` and the longpoll mode `websocket` to connect to your FHEM installation.
 Therefor define a new FHEMWEB device, set attributes `longpoll` to `websocket` and `csrfToken` to `none`.
