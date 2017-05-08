@@ -149,6 +149,17 @@ public class DeviceCalculatorTest {
     	List <Device> list = dc.getDeviceListFiltered();
     	assertTrue(list.isEmpty());
 	}
+	@Test
+	public void deviceIdsAsNone() {
+		List <String> searchDevices = null;    	
+    	Filter f = new Filter();
+    	
+    	f.setDeviceIds(searchDevices);
+    	
+    	DeviceCalcTestCase dc = new DeviceCalcTestCase(f);
+    	List <Device> list = dc.getDeviceListFiltered();
+    	assertEquals(list, io.swagger.api.calc.DeviceMockup.getDevicesMockup());		
+	}
 
 	
 	/**
@@ -264,6 +275,18 @@ public class DeviceCalculatorTest {
     	List <String> list = dc.getFuntionsByDevicesFiltered();
     	assertTrue(list.isEmpty());
 	}
+	@Test
+	public void functionIdsAsNone() {
+		List <String> searchFunction = null;    	
+    	Filter f = new Filter();
+    	
+    	f.setFunctionIds(searchFunction);
+    	
+    	DeviceCalcTestCase dc = new DeviceCalcTestCase(f);
+    	List <String> list = dc.getFuntionsByDevicesFiltered();
+    	assertTrue(!list.isEmpty());		
+	}
+
 	
 	
 	/**
@@ -377,6 +400,17 @@ public class DeviceCalculatorTest {
     	List <String> list = dc.getGroupsByDevicesFiltered();
     	assertTrue(list.isEmpty());
 	}
+	@Test
+	public void groupIdsAsNone() {
+		List <String> searchGroup = null;    	
+    	Filter f = new Filter();
+    	
+    	f.setFunctionIds(searchGroup);
+    	
+    	DeviceCalcTestCase dc = new DeviceCalcTestCase(f);
+    	List <String> list = dc.getGroupsByDevicesFiltered();
+    	assertTrue(!list.isEmpty());		
+	}
 	
 	
 	/**
@@ -489,5 +523,16 @@ public class DeviceCalculatorTest {
     	DeviceCalcTestCase dc = new DeviceCalcTestCase(f);
     	List <String> list = dc.getRoomsByDevicesFiltered();
     	assertTrue(list.isEmpty());
+	}
+	@Test
+	public void roomIdsAsNone() {
+		List <String> searchRoom = null;    	
+    	Filter f = new Filter();
+    	
+    	f.setFunctionIds(searchRoom);
+    	
+    	DeviceCalcTestCase dc = new DeviceCalcTestCase(f);
+    	List <String> list = dc.getRoomsByDevicesFiltered();
+    	assertTrue(!list.isEmpty());		
 	}
 }
