@@ -15,7 +15,7 @@ Therefor define a new FHEMWEB device, set attributes `longpoll` to `websocket` a
 
 * Install Java 8, Maven and git
 * Clone repo with `git clone https://github.com/philipptrenz/conex.io/` and switch to this folder
-* Open `/src/main/java/resources/application.properties` and configure url, port and credentials (optional) to your FHEM installation
+* Open `/src/main/java/resources/application.properties` and configure `fhem.url`, `fhem.port` and credentials (optional) to your FHEM installation
 * Run with `mvn spring-boot:run`
 
 ## Helpful notes
