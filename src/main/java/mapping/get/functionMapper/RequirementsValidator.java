@@ -22,6 +22,8 @@ public class RequirementsValidator {
 	
 	/**
 	 * Do fit requirements.
+	 * 
+	 * If more than one requirement is defined, they all have to be valid  for the jsonDevice (AND)
 	 *
 	 * @param mappingDescription the mapping description
 	 * @param jsonlist2Device the jsonlist 2 device
@@ -35,15 +37,27 @@ public class RequirementsValidator {
 		for (JsonNode requirement : mappingRequirements) {			
 			
 			String mode = requirement.get("mode").asText();
+			boolean fitsRequirements;
 			
 			switch (mode) {
 			
-			case "contains_all": return isModeContainsAll(requirement, jsonlist2Device);
-			
-			case "one_of": return isModeOneOf(requirement, jsonlist2Device);
-			
-			default: log.debug("Requirements mode '"+mode+"' not found");
+			case "contains_all": 
+				fitsRequirements = isModeContainsAll(requirement, jsonlist2Device);
+				break;
+			case "one_of": 
+				fitsRequirements = isModeOneOf(requirement, jsonlist2Device);		
+				break;
+			default: 
+				log.debug("Requirements mode '"+mode+"' is empty, so it's okay");
+				fitsRequirements = true;
+				break;
 				
+			}
+			
+			if (fitsRequirements) {
+				continue;
+			} else {
+				return false;
 			}
 			
 		}
@@ -76,8 +90,6 @@ public class RequirementsValidator {
 					return false;
 				}
 			}
-			
-			
 		} catch (NoValidKeyPathException e) {
 			return false;
 		}

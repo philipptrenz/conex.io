@@ -40,9 +40,8 @@ public class ValueExtractor {
 			unmappedDeviceValue = MappingHelper.navigateJsonKeyPath(jsonlist2Device, key_path).asText();
 			return extractValue(unmappedDeviceValue, property, propertyName, function);
 		} catch (NoValidKeyPathException e) {
-			log.error("Key path '"+key_path+"' is not valid", e);
+			return null;
 		}
-		return null;
 	}
 	
 	public String extractValue(String unmappedDeviceValue, JsonNode property, String propertyName, Object function) {

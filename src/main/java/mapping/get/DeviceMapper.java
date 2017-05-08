@@ -103,7 +103,6 @@ public class DeviceMapper {
 			string = MappingHelper.navigateJsonKeyPath(jsonlist2Device, mappingDescription.get("key_path").asText()).asText();
 		} catch (NoValidKeyPathException e) {
 			string = null;
-			log.error("Extracting roomIds failed", e);	
 		}
 		return mapRoomIds(string, moduleDescription);
 	}

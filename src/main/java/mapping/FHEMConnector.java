@@ -232,7 +232,7 @@ public class FHEMConnector implements HomeAutomationServerConnector, Application
 		}
 		
 		startWebsocket(now);
-		
+				
 		List<Device> devices = jsonParser.parse(jsonlist2);
 		deviceMap = devices.stream().collect(Collectors.toMap(Device::getDeviceId, Device -> Device));
 		
