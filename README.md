@@ -10,13 +10,13 @@ This is a prototypical implemementation for the home automation server [FHEM](ht
 
 ## 
 
-The API uses ´jsonlist2´ and the longpoll mode ´websocket´ to connect to your FHEM installation.
-Therefor define a new FHEMWEB device, set attributes ´longpoll´ to ´websocket´ and ´csrfToken´ to ´none´.
+The API uses `jsonlist2` and the longpoll mode `websocket` to connect to your FHEM installation.
+Therefor define a new FHEMWEB device, set attributes `longpoll` to `websocket` and `csrfToken` to `none`.
 
 * Install Java 8, Maven and git
-* Clone repo with ´git clone https://github.com/philipptrenz/conex.io/´ and switch to this folder
-* Open ´/src/main/java/resources/application.properties´ and configure url, port and credentials (optional) to your FHEM installation
-* Run with ´mvn spring-boot:run´
+* Clone repo with `git clone https://github.com/philipptrenz/conex.io/` and switch to this folder
+* Open `/src/main/java/resources/application.properties` and configure url, port and credentials (optional) to your FHEM installation
+* Run with `mvn spring-boot:run`
 
 ## Helpful notes
 
@@ -26,5 +26,4 @@ The underlying library integrating swagger to SpringBoot is [springfox](https://
 
 You can view the api documentation in swagger-ui by pointing to  http://localhost:8080/v0/
 
-Change default port value in application.properties
-
+Change default api port value in application.properties
