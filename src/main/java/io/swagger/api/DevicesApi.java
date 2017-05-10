@@ -6,6 +6,8 @@ import io.swagger.model.Filter;
 import io.swagger.model.Patcher;
 
 import io.swagger.annotations.*;
+import io.swagger.exception.HomeAutomationServerNotReachableException;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,7 +33,7 @@ public interface DevicesApi {
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.PATCH)
-    ResponseEntity<Void> devicesPatch(@ApiParam(value = "Filter object with function values" ,required=true ) @RequestBody Patcher patcher);
+    ResponseEntity<Void> devicesPatch(@ApiParam(value = "Filter object with function values" ,required=true ) @RequestBody Patcher patcher)  throws HomeAutomationServerNotReachableException;
 
 
     @ApiOperation(value = "", notes = "Get a list of `device` objects based on the specified filter. ", response = Devices.class, tags={  })
@@ -42,6 +44,6 @@ public interface DevicesApi {
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.POST)
-    ResponseEntity<Devices> devicesPost(@ApiParam(value = "The user specified filter" ,required=true ) @RequestBody Filter filter);
+    ResponseEntity<Devices> devicesPost(@ApiParam(value = "The user specified filter" ,required=true ) @RequestBody Filter filter)  throws HomeAutomationServerNotReachableException;
 
 }

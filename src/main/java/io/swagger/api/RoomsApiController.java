@@ -6,6 +6,7 @@ import io.swagger.model.Ids;
 import io.swagger.HomeAutomationServerConnector;
 import io.swagger.annotations.*;
 import io.swagger.api.calc.DeviceCalc;
+import io.swagger.exception.HomeAutomationServerNotReachableException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,11 +30,13 @@ public class RoomsApiController implements RoomsApi {
 	@Autowired
 	private HomeAutomationServerConnector connector;
 
-    public ResponseEntity<Ids> roomsPost(@ApiParam(value = "The user specified filter" ,required=true ) @RequestBody Filter filter) {
-        DeviceCalc calc = new DeviceCalc(filter, connector.getDevices());
+    public ResponseEntity<Ids> roomsPost(@ApiParam(value = "The user specified filter" ,required=true ) @RequestBody Filter filter)  throws HomeAutomationServerNotReachableException {
+    	
+		DeviceCalc calc = new DeviceCalc(filter, connector.getDevices());
         Ids id = new Ids();
         id.setIds(calc.getRoomsByDevicesFiltered());
         return new ResponseEntity<Ids>(id, HttpStatus.OK);
+        
     }
 
 }

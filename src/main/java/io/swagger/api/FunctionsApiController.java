@@ -7,6 +7,7 @@ import io.swagger.model.Ids;
 import io.swagger.HomeAutomationServerConnector;
 import io.swagger.annotations.*;
 import io.swagger.api.calc.DeviceCalc;
+import io.swagger.exception.HomeAutomationServerNotReachableException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,7 +31,7 @@ public class FunctionsApiController implements FunctionsApi {
 	@Autowired
 	private HomeAutomationServerConnector connector;
 
-    public ResponseEntity<Ids> functionsPost(@ApiParam(value = "The user specified filter" ,required=true ) @RequestBody Filter filter) {
+    public ResponseEntity<Ids> functionsPost(@ApiParam(value = "The user specified filter" ,required=true ) @RequestBody Filter filter)  throws HomeAutomationServerNotReachableException {
         DeviceCalc calc = new DeviceCalc(filter, connector.getDevices());
         Ids id = new Ids();
         id.setIds(calc.getFuntionsByDevicesFiltered());

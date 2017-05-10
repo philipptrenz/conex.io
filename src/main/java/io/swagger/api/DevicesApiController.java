@@ -8,6 +8,7 @@ import io.swagger.model.Patcher;
 import io.swagger.HomeAutomationServerConnector;
 import io.swagger.annotations.*;
 import io.swagger.api.calc.DeviceCalc;
+import io.swagger.exception.HomeAutomationServerNotReachableException;
 
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class DevicesApiController implements DevicesApi {
 	@Autowired
 	private HomeAutomationServerConnector connector;
 	
-    public ResponseEntity<Void> devicesPatch(@ApiParam(value = "Filter object with function values" ,required=true ) @RequestBody Patcher patcher) {
+    public ResponseEntity<Void> devicesPatch(@ApiParam(value = "Filter object with function values" ,required=true ) @RequestBody Patcher patcher) throws HomeAutomationServerNotReachableException{
     	DeviceCalc calc = new DeviceCalc(patcher.getFilter(), connector.getDevices());
         Devices list = new Devices();
         list.setDevices(calc.getDeviceListFilteringWithPatcherFunction(patcher.getFunction()));
@@ -33,7 +34,7 @@ public class DevicesApiController implements DevicesApi {
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
-    public ResponseEntity<Devices> devicesPost(@ApiParam(value = "The user specified filter" ,required=true ) @RequestBody Filter filter) {
+    public ResponseEntity<Devices> devicesPost(@ApiParam(value = "The user specified filter" ,required=true ) @RequestBody Filter filter)  throws HomeAutomationServerNotReachableException {
         DeviceCalc calc = new DeviceCalc(filter, connector.getDevices());
         Devices list = new Devices();
         list.setDevices(calc.getDeviceListFiltered());

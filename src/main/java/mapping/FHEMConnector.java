@@ -14,8 +14,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.net.Authenticator;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
 import java.net.PasswordAuthentication;
+import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -32,6 +36,7 @@ import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.stereotype.Component;
 
 import io.swagger.HomeAutomationServerConnector;
+import io.swagger.exception.HomeAutomationServerNotReachableException;
 import io.swagger.model.Device;
 import io.swagger.model.Function;
 import mapping.get.JsonParser;
@@ -48,6 +53,7 @@ public class FHEMConnector implements HomeAutomationServerConnector, Application
 	
 	private final String authUsername;
 	private final String authPassword;
+	private final int fhemConnectionTimeout;
 	
 	private WebSocketClient websocket;
 	private WebsocketParser websocketParser;
@@ -62,25 +68,38 @@ public class FHEMConnector implements HomeAutomationServerConnector, Application
 	public FHEMConnector(
 			@Value("${fhem.url}") String fhemUrl, 
 			@Value("${fhem.port}") int fhemPort, 
+			@Value("${fhem.timeout}") int fhemConnectionTimeout, 
 			@Value("${fhem.username}") String authUsername,
 			@Value("${fhem.password}") String authPassword) {
 		
 		this.url = fhemUrl;
 		this.port = fhemPort;
+		this.fhemConnectionTimeout = fhemConnectionTimeout;
+		
 		this.authUsername = authUsername;
 		this.authPassword = authPassword;
-	
-		
-		log.info("Accessing FHEM via "+fhemUrl+":"+fhemPort);
 		
 		this.websocketParser = new WebsocketParser();
 		
 		this.jsonParser = new JsonParser();
 		this.commandBuilder = new FHEMCommandBuilder();
 		
-		// TODO: Validate ipAddress and port
-		
-		reload();		
+		if (isFHEMReachable()) {
+			log.info("Accessing FHEM @ "+fhemUrl+":"+fhemPort);
+			reload();		
+		} else {
+			log.error("FHEM is NOT reachable @ "+fhemUrl+":"+fhemPort);
+			/*
+			 * TODO: !!!
+			 *
+			
+			log.error("FHEM is NOT reachable @ "+fhemUrl+":"+fhemPort);
+			waitForFHEMisReachable();
+			log.info("FHEM is now accessable @ "+fhemUrl+":"+fhemPort);
+			// Then 
+			reload(); // start
+			*/
+		}
 	} 
 	
 	private void startWebsocket(long now) {
@@ -144,11 +163,11 @@ public class FHEMConnector implements HomeAutomationServerConnector, Application
 		websocket = null;
 	}
 	
-	private String sendFhemCommand(String command) {
+	private String sendFhemCommand(String command) throws HomeAutomationServerNotReachableException {
 		
 		if (command == null || command.isEmpty()) {
 			log.warn("Command to get sent to FHEM is null, ignoring");
-			return "";
+			return null;
 		}
 		
 		log.info("Sending command to FHEM: '"+command+"'");
@@ -168,6 +187,7 @@ public class FHEMConnector implements HomeAutomationServerConnector, Application
 			}
 			
 			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+			con.setConnectTimeout(fhemConnectionTimeout);
 			con.setRequestMethod("GET");
 			
 			responseCode = con.getResponseCode();
@@ -181,7 +201,14 @@ public class FHEMConnector implements HomeAutomationServerConnector, Application
 			}
 			in.close();
 			return response.toString();
-		} catch (IOException e) {
+			
+		} catch (SocketTimeoutException e0) {
+			log.error("Error on FHEM connection: "+e0.getMessage());
+			throw new HomeAutomationServerNotReachableException(e0.getMessage());
+		} catch (ConnectException e1) {
+			log.error("Error on FHEM connection: "+e1.getMessage());
+			throw new HomeAutomationServerNotReachableException(e1.getMessage());
+		} catch (IOException e2) {
 			switch(responseCode) {
 			case 400:
 				log.error("FHEM connection returned 401: Bad Request");
@@ -190,11 +217,48 @@ public class FHEMConnector implements HomeAutomationServerConnector, Application
 				log.error("FHEM connection returned 401: Unauthorized");
 				break;
 			default:
-				log.error("Unknown FHEM connection error", e);
+				log.error("Unknown FHEM connection error", e2);
 			}
-			return null;
+			throw new HomeAutomationServerNotReachableException(e2.getMessage());
 		}
+	}
+	
+	private boolean isFHEMReachable() {
+	    try {
+	        try (Socket soc = new Socket()) {
+	            soc.connect(new InetSocketAddress(url, port), fhemConnectionTimeout);
+	        }
+	        return true;
+	    } catch (IOException ex) {
+	        return false;
+	    }
+	}
+	
+	private void waitForFHEMisReachable() {
 		
+		int maxSeconds = 60*1; // 5 minutes
+		
+		long startTime = System.currentTimeMillis();
+		while(true){
+			
+			/*
+			if ((System.currentTimeMillis()-startTime) > maxSeconds*1000) {
+				log.info("FHEM was not reachable for "+maxSeconds+" seconds, shutting application down");
+				
+				// TODO
+			}*/
+			
+			if (!isFHEMReachable()) {
+				log.error("Can not connect to FHEM, trying again ...");
+		        try {
+		            Thread.sleep(3000); // 3 seconds
+		        } catch(InterruptedException ie){
+		            log.error("While sleeping for next reachability test on FHEM an error occured: "+ie.getMessage());
+		        }
+		    }  else {
+		    	return;
+		    }
+		}
 	}
 	
 	private boolean useCredentials() {
@@ -211,7 +275,7 @@ public class FHEMConnector implements HomeAutomationServerConnector, Application
 	 */
 	@Override
 	public void onApplicationEvent(ContextClosedEvent arg0) {
-		log.info("Closing websocket connection to FHEM because software is shutting down");
+		log.info("Closing websocket connection to FHEM, software is shutting down");
 		closeWebsocket();
 	}
 	
@@ -223,11 +287,19 @@ public class FHEMConnector implements HomeAutomationServerConnector, Application
 		
 		closeWebsocket();
 		
-		String jsonlist2 = sendFhemCommand("jsonlist2");
+		String jsonlist2 = null;
+		
+		try {
+			jsonlist2 = sendFhemCommand("jsonlist2");
+		} catch (HomeAutomationServerNotReachableException e) {
+			
+			// TODO: handle exception
+			
+			log.error("While requesting 'jsonlist2Ä' from FHEM an error occured "+e.getMessage());
+		}
 		long now = System.currentTimeMillis() / 1000l;
 		
 		if (jsonlist2 == null || jsonlist2.isEmpty()) {
-			log.error("No jsonlist2 data received! 'longpoll' has to be set to 'websocket' and since FHEM 5.8 'csrfToken' must be 'none'.");
 			return false;
 		}
 		
@@ -240,11 +312,15 @@ public class FHEMConnector implements HomeAutomationServerConnector, Application
 		return true;
 	}
 	
-	public List<Device> getDevices() {
-		return new ArrayList<Device>(deviceMap.values());
+	public List<Device> getDevices() throws HomeAutomationServerNotReachableException {	
+		if (isFHEMReachable()) {
+			return new ArrayList<Device>(deviceMap.values());
+		} else {
+			throw new HomeAutomationServerNotReachableException();
+		}
 	}
 	
-	public boolean setDevices(List<Device> devices, Function functionValuesToSet) {
+	public boolean setDevices(List<Device> devices, Function functionValuesToSet) throws HomeAutomationServerNotReachableException {
 		try {
 			String  command = commandBuilder.buildCommand(devices, functionValuesToSet);
 			sendFhemCommand(command);
