@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import io.swagger.exception.HomeAutomationServerNotReachableException;
 import io.swagger.model.Device;
 import mapping.FHEMConnector;
 import mapping.get.functionMapper.FunctionMapper;
@@ -156,12 +157,12 @@ public class WebsocketParser {
 			
 		case "REREADCFG":
 			// after the configuration is reread.
-			connector.reload();
+			reloadFhemData(connector);
 			break;
 			
 		case "SAVE":
 			// before the configuration is saved.
-			connector.reload();
+			reloadFhemData(connector);
 			break;
 			
 		case "SHUTDOWN":
@@ -170,17 +171,17 @@ public class WebsocketParser {
 			
 		case "DEFINED":
 			// after a device is defined.
-			connector.reload();
+			reloadFhemData(connector);
 			break;
 			
 		case "DELETED":
 			// after a device was deleted.
-			connector.reload();
+			reloadFhemData(connector);
 			break;
 			
 		case "RENAMED":
 			// after a device was renamed.
-			connector.reload();
+			reloadFhemData(connector);
 			break;
 			
 		case "UNDEFINED":
@@ -189,7 +190,7 @@ public class WebsocketParser {
 			
 		case "MODIFIED":
 			// after a device modification.
-			connector.reload();
+			reloadFhemData(connector);
 			break;
 			
 		case "UPDATE":
@@ -197,8 +198,16 @@ public class WebsocketParser {
 			break;
 			
 		default: 
-			connector.reload();
+			reloadFhemData(connector);
 			break;
+		}
+	}
+	
+	private void reloadFhemData(FHEMConnector connector) {
+		try {
+			connector.reload();
+		} catch (HomeAutomationServerNotReachableException e) {
+			log.error("While trying to reload data from FHEM an error occured", e);
 		}
 	}
 }

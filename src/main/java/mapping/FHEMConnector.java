@@ -13,6 +13,9 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import javax.annotation.PostConstruct;
+
 import java.net.Authenticator;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
@@ -24,6 +27,7 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
 
+import org.hamcrest.SelfDescribing;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft_17;
 import org.java_websocket.handshake.ServerHandshake;
@@ -34,6 +38,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import io.swagger.HomeAutomationServerConnector;
 import io.swagger.exception.HomeAutomationServerNotReachableException;
@@ -43,8 +48,8 @@ import mapping.get.JsonParser;
 import mapping.get.WebsocketParser;
 import mapping.set.FHEMCommandBuilder;
 
-@Component
-public class FHEMConnector implements HomeAutomationServerConnector, ApplicationListener<ContextClosedEvent> {
+@Service
+public class FHEMConnector implements Runnable, HomeAutomationServerConnector, ApplicationListener<ContextClosedEvent>{
 	
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
@@ -83,24 +88,38 @@ public class FHEMConnector implements HomeAutomationServerConnector, Application
 		
 		this.jsonParser = new JsonParser();
 		this.commandBuilder = new FHEMCommandBuilder();
+	} 
+	
+	@PostConstruct
+	public void startFhemConnector() {
+		new Thread(this, this.getClass().getSimpleName()).start();
+	}
+	
+	@Override
+	public void run() {
+		log.info("Accessing FHEM @ "+url+":"+port);
 		
 		if (isFHEMReachable()) {
-			log.info("Accessing FHEM @ "+fhemUrl+":"+fhemPort);
-			reload();		
+			initializeFhemConnection();
 		} else {
-			log.error("FHEM is NOT reachable @ "+fhemUrl+":"+fhemPort);
-			/*
-			 * TODO: !!!
-			 *
-			
-			log.error("FHEM is NOT reachable @ "+fhemUrl+":"+fhemPort);
 			waitForFHEMisReachable();
-			log.info("FHEM is now accessable @ "+fhemUrl+":"+fhemPort);
-			// Then 
-			reload(); // start
-			*/
+			
+			// when fhem comes available
+			log.info("Accessing FHEM @ "+url+":"+port);
+			initializeFhemConnection();
 		}
-	} 
+	}
+	
+	private void initializeFhemConnection() {
+		try {
+			reload();
+		} catch (HomeAutomationServerNotReachableException e) {
+			log.error("FHEM not reachable @ "+url+":"+port);
+			
+			// TODO
+			log.error("TODO: Handle this error");
+		}
+	}
 	
 	private void startWebsocket(long now) {
 		
@@ -122,11 +141,11 @@ public class FHEMConnector implements HomeAutomationServerConnector, Application
 		
 		try {
 			URI uri = new URI("ws://"+url+":"+port+"/fhem.pl"+query);
-			
 			websocket = new WebSocketClient(uri, new Draft_17(), httpHeader, connectionTimeout) {
 
 				@Override
 				public void onOpen(ServerHandshake handshakedata) {
+					 Thread.currentThread().setName("FHEMWebsocket");
 					 log.info("Opened new websocket connection to FHEM");
 					// TODO
 				}
@@ -235,21 +254,15 @@ public class FHEMConnector implements HomeAutomationServerConnector, Application
 	}
 	
 	private void waitForFHEMisReachable() {
-		
-		int maxSeconds = 60*1; // 5 minutes
+		log.error("FHEM is not reachable @ "+url+":"+port+", trying to connect periodically ...");
 		
 		long startTime = System.currentTimeMillis();
 		while(true){
-			
-			/*
-			if ((System.currentTimeMillis()-startTime) > maxSeconds*1000) {
-				log.info("FHEM was not reachable for "+maxSeconds+" seconds, shutting application down");
-				
-				// TODO
-			}*/
-			
 			if (!isFHEMReachable()) {
-				log.error("Can not connect to FHEM, trying again ...");
+				if ((System.currentTimeMillis()-startTime) > 15*1000) { // when 30 seconds have elapsed
+					log.error("FHEM is still not reachable");
+					startTime = System.currentTimeMillis();
+				}
 		        try {
 		            Thread.sleep(3000); // 3 seconds
 		        } catch(InterruptedException ie){
@@ -283,23 +296,15 @@ public class FHEMConnector implements HomeAutomationServerConnector, Application
 	
 
 	
-	public boolean reload() {
+	public boolean reload() throws HomeAutomationServerNotReachableException {
 		
 		closeWebsocket();
 		
-		String jsonlist2 = null;
-		
-		try {
-			jsonlist2 = sendFhemCommand("jsonlist2");
-		} catch (HomeAutomationServerNotReachableException e) {
-			
-			// TODO: handle exception
-			
-			log.error("While requesting 'jsonlist2Ä' from FHEM an error occured "+e.getMessage());
-		}
+		String jsonlist2 = sendFhemCommand("jsonlist2");
 		long now = System.currentTimeMillis() / 1000l;
 		
 		if (jsonlist2 == null || jsonlist2.isEmpty()) {
+			log.error("FHEM returned null or emty message");
 			return false;
 		}
 		
@@ -320,7 +325,7 @@ public class FHEMConnector implements HomeAutomationServerConnector, Application
 		}
 	}
 	
-	public boolean setDevices(List<Device> devices, Function functionValuesToSet) throws HomeAutomationServerNotReachableException {
+	public synchronized boolean setDevices(List<Device> devices, Function functionValuesToSet) throws HomeAutomationServerNotReachableException {
 		try {
 			String  command = commandBuilder.buildCommand(devices, functionValuesToSet);
 			sendFhemCommand(command);
@@ -330,28 +335,5 @@ public class FHEMConnector implements HomeAutomationServerConnector, Application
 			log.error("CommandBuilder returned null", e2);
 			return false;
 		}	
-	}
-	
-	/*
-	 * Just for testing purposes
-	 */
-	public String getJsonlist2MockupAsStringFromFile() {
-		byte[] encoded;
-		try {
-			String file;
-			file = "jsonlist2_p.a.trick_sensitive.json";
-			//file = "jsonlist2_cooltux_sensitive.json";
-			
-			encoded = Files.readAllBytes(Paths.get("testdata/"+file));
-			return new String(encoded, StandardCharsets.UTF_8);
-		} catch (IOException e) {
-			try {
-				encoded = Files.readAllBytes(Paths.get("testdata/jsonlist2_20170324.json"));
-				return new String(encoded, StandardCharsets.UTF_8);
-			} catch (IOException e2) {
-				log.error("Reading testdata from file failed", e2);
-				return "";
-			}
-		}
 	}
 }
