@@ -1,5 +1,7 @@
 package mapping.get.functionMapper;
 
+import static org.hamcrest.CoreMatchers.nullValue;
+
 import org.apache.commons.logging.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,7 +82,13 @@ public class RequirementsValidator {
 			}
 			
 			JsonNode array = requirement.get("attributes");
-			String delimiters = requirement.get("delimiters").asText();
+			String delimiters;
+			try {
+				delimiters = requirement.get("delimiters").asText();
+			} catch (NullPointerException e) {
+				delimiters = null;
+			}
+			
 			
 			for (final JsonNode node : array) {
 				String value = node.asText();
