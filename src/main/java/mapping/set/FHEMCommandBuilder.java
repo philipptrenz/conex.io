@@ -96,7 +96,7 @@ public class FHEMCommandBuilder {
 			String key = entry.getKey();
 			String value = entry.getValue().asText();
 			
-			if (key.equals("function_id")) continue;
+			if (key.equalsIgnoreCase("function_id")) continue;
 			if (entry.getValue().isNull()) continue;
 				
 			JsonNode valueDescription = getValueDescription(key, descriptionProperties);
@@ -143,8 +143,9 @@ public class FHEMCommandBuilder {
 		JsonNode setSection = moduleDescription.get("functions").get("set");
 		
 		for (JsonNode functionDescriptionSet : setSection) {
-			String className = functionDescriptionSet.get("class_name").asText();
-			if (className.contains(function.getClass().getSimpleName()) || function.getClass().getName().contains(className)) {
+			String className = functionDescriptionSet.get("function_id").asText();
+			
+			if (className.equalsIgnoreCase(function.getClass().getSimpleName())) {
 				return functionDescriptionSet;
 			} else {
 				continue;

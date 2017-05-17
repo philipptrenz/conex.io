@@ -205,6 +205,7 @@ definitions:
             format: date-time
   Dimmer:
     description: Generic slider switch
+    type: object
     allOf:
       - $ref: '#/definitions/Function'
       - properties:
@@ -219,6 +220,7 @@ definitions:
             
   ColorDimmer:
     description: Generic color dimmer using the hsv color model
+    type: object
     allOf:
       - $ref: '#/definitions/Dimmer'
       - properties:

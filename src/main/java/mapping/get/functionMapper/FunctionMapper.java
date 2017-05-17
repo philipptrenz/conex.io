@@ -3,8 +3,10 @@ package mapping.get.functionMapper;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.mapstruct.Mapping;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -15,6 +17,7 @@ import com.fasterxml.jackson.datatype.joda.JodaModule;
 
 import io.swagger.model.Device;
 import io.swagger.model.Function;
+import mapping.MappingHelper;
 import mapping.get.WebsocketDeviceUpdateMessage;
 
 public class FunctionMapper {
@@ -22,6 +25,9 @@ public class FunctionMapper {
 	private ObjectMapper mapper;
 	private RequirementsValidator requirementsValidator;
 	private ValueExtractor extractor;
+	
+	@Autowired
+    public MappingHelper mappingHelper;
 	
 	private String log_info = "";
 	
@@ -64,13 +70,10 @@ public class FunctionMapper {
 			// 0. Check if jsonlist2 data fits requirements
 			if (requirementsValidator.doFitRequirements(funcDescription.get("requirements"), json)) {
 			
-				String functionId = funcDescription.get("function_id").asText();
+				String functionId = funcDescription.get("function_id").asText();				
 				
-				// 1. Generate prototype JSON as JsonNode from Java Class by classname
-				String className = funcDescription.get("class_name").asText();
-				
-				
-				Class<?> functionClass = Class.forName(className);
+				//Class<?> functionClass = Class.forName(className);
+				Class<?> functionClass = mappingHelper.findFunctionClassByFunctionId(functionId);
 				Object function = functionClass.newInstance();
 				ObjectNode proto = mapper.valueToTree(function);
 				
@@ -97,7 +100,7 @@ public class FunctionMapper {
 				proto.put("function_id", functionId);
 				
 				// 3. Map back to Java object
-				function = mapper.treeToValue(proto, Class.forName(className));
+				function = mapper.treeToValue(proto, functionClass);
 				return (Function) function;
 				
 			} else {
@@ -129,15 +132,9 @@ public class FunctionMapper {
 			
 			for (JsonNode funcDescription : readDescription) {	
 				
-				String functionType = funcDescription.get("class_name").asText();
+				String functionId = funcDescription.get("function_id").asText();
 				
-				Class<?> clazz = null;
-				try {
-					clazz = Class.forName(functionType);
-				} catch (ClassNotFoundException e) {
-					log.error("Function "+functionType+" not found ("+log_info+")", e);
-					
-				}
+				Class<?> clazz = MappingHelper.findFunctionClassByFunctionId(functionId);
 				
 				// if device has this Function
 				if (clazz != null && f.getClass().equals(clazz)) {

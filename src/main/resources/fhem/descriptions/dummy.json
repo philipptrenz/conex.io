@@ -22,8 +22,7 @@
 	"functions": {
 		"get": [
 			{
-				"function_id": "onoff",
-				"class_name": "io.swagger.model.OnOff",
+				"function_id": "OnOff",
 				"requirements": [
 					{
 						"mode": "contains_all",
@@ -77,8 +76,7 @@
 		],
 		"set": [
 			{
-				"function_id": "onoff",
-				"class_name": "io.swagger.model.OnOff",
+				"function_id": "OnOff",
 				"properties": [
 					{
 						"value_name": "isOn",

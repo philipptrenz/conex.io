@@ -12,7 +12,7 @@ import javax.validation.constraints.*;
 /**
  * Device
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-04-12T11:16:22.579Z")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-05-17T12:31:36.374+02:00")
 
 public class Device   {
   @JsonProperty("device_id")

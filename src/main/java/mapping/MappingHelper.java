@@ -16,6 +16,7 @@ import mapping.exceptions.NoValidKeyPathException;
 public class MappingHelper {
 	
 	private final static Logger log = LoggerFactory.getLogger(MappingHelper.class);
+	private final static String MODEL_PACKAGE = "io.swagger.model";
 	
 	public static JsonNode navigateJsonKeyPath(JsonNode node, String path) throws NoValidKeyPathException {
 		// remove whitespaces, linebreaks etc
@@ -55,4 +56,15 @@ public class MappingHelper {
 		}
 		return 0;
 	}
+	
+	public static Class<?> findFunctionClassByFunctionId(String functionId) {
+		try{
+			return Class.forName(MODEL_PACKAGE + "." + functionId);
+		} catch (ClassNotFoundException e){
+			log.error("Function class '"+functionId+"' could not be found!", e);
+			return null;
+		}
+	}
+		
+	
 }

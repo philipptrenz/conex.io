@@ -22,8 +22,7 @@
 	"functions": {
 		"get": [
 			{
-				"function_id": "onoff",
-				"class_name": "io.swagger.model.OnOff",
+				"function_id": "OnOff",
 				"requirements": [
 					{
 						"mode": "one_of",
@@ -69,8 +68,7 @@
 				]
 			},
 			{
-				"function_id": "dimmer",
-				"class_name": "io.swagger.model.Dimmer",
+				"function_id": "Dimmer",
 				"requirements": [
 					{
 						"mode": "one_of",
@@ -109,8 +107,7 @@
 		],
 		"set": [
 			{
-				"function_id": "onoff",
-				"class_name": "io.swagger.model.OnOff",
+				"function_id": "OnOff",
 				"properties": [
 					{
 						"value_name": "isOn",
@@ -133,8 +130,7 @@
 				]
 			},
 			{
-				"function_id": "dimmer",
-				"class_name": "io.swagger.model.Dimmer",
+				"function_id": "Dimmer",
 				"properties": [
 					{
 						"value_name": "value",

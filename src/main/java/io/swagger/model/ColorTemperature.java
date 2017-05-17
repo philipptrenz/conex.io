@@ -10,39 +10,39 @@ import java.math.BigDecimal;
 import org.joda.time.DateTime;
 import javax.validation.constraints.*;
 /**
- * Generic temperature
+ * Generic color temperature
  */
-@ApiModel(description = "Generic temperature")
+@ApiModel(description = "Generic color temperature")
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2017-05-17T12:31:36.374+02:00")
 
-public class Temperature extends Function  {
-  @JsonProperty("value")
-  private BigDecimal value = null;
+public class ColorTemperature extends Function  {
+  @JsonProperty("ct")
+  private BigDecimal ct = null;
 
   @JsonProperty("timestamp")
   private DateTime timestamp = null;
 
-  public Temperature value(BigDecimal value) {
-    this.value = value;
+  public ColorTemperature ct(BigDecimal ct) {
+    this.ct = ct;
     return this;
   }
 
    /**
    * Temperature value in Kelvin
    * minimum: 0
-   * @return value
+   * @return ct
   **/
   @ApiModelProperty(value = "Temperature value in Kelvin")
   @DecimalMin("0")
-  public BigDecimal getValue() {
-    return value;
+  public BigDecimal getCt() {
+    return ct;
   }
 
-  public void setValue(BigDecimal value) {
-    this.value = value;
+  public void setCt(BigDecimal ct) {
+    this.ct = ct;
   }
 
-  public Temperature timestamp(DateTime timestamp) {
+  public ColorTemperature timestamp(DateTime timestamp) {
     this.timestamp = timestamp;
     return this;
   }
@@ -69,23 +69,23 @@ public class Temperature extends Function  {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Temperature temperature = (Temperature) o;
-    return Objects.equals(this.value, temperature.value) &&
-        Objects.equals(this.timestamp, temperature.timestamp) &&
+    ColorTemperature colorTemperature = (ColorTemperature) o;
+    return Objects.equals(this.ct, colorTemperature.ct) &&
+        Objects.equals(this.timestamp, colorTemperature.timestamp) &&
         super.equals(o);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(value, timestamp, super.hashCode());
+    return Objects.hash(ct, timestamp, super.hashCode());
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class Temperature {\n");
+    sb.append("class ColorTemperature {\n");
     sb.append("    ").append(toIndentedString(super.toString())).append("\n");
-    sb.append("    value: ").append(toIndentedString(value)).append("\n");
+    sb.append("    ct: ").append(toIndentedString(ct)).append("\n");
     sb.append("    timestamp: ").append(toIndentedString(timestamp)).append("\n");
     sb.append("}");
     return sb.toString();
