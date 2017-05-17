@@ -227,27 +227,17 @@
 		"func_properties": 
 		{
 			"type": "array",
+			"minItems": 1,
+			"additionalProperties": false,
 			"items": 
 			{
-				"type": "object",
-				"properties": {
-					"mode1": {
-						"$ref": "#/definitions/value.boolean"
-					},
-					"mode2": {
-						"$ref": "#/definitions/value.integer"
-					},
-					"mode3": {
-						"$ref": "#/definitions/value.timestamp"
+				"oneOf": 
+				[
+					{
+						"$ref": "#/definitions/value.modes"
 					}
-				}
-			},
-			"additionalProperties": false,
-			"oneOf": [
-				{ "required": [ "mode1" ] },
-				{ "required": [ "mode2" ] },
-              	{ "required": [ "mode3" ] }
-			]
+				]
+			}
 		},
 		"set": 
 		{
@@ -287,7 +277,7 @@
 						"one_of"
 					]
 				},
-				"key_path":
+				"key_path": 
 				{
 					"$ref": "#/definitions/key_path"
 				},
@@ -350,7 +340,7 @@
 				"delimiters"
 			]
 		},
-		"value.boolean": 
+		"value.modes": 
 		{
 			"type": "object",
 			"properties": 
@@ -358,92 +348,142 @@
 				"value_name": 
 				{
 					"type": "string"
-				},
-				"value_type": 
-				{
-					"type": "string",
-					"enum": 
-					[
-						"boolean"
-					]
-				},
-				"default": 
-				{
-					"type": "boolean"
 				},
 				"key_path": 
 				{
 					"$ref": "#/definitions/key_path"
 				},
-				"cases": 
-				{
-					"$ref": "#/definitions/cases"
-				}
-			}
-		},
-		"value.integer": 
-		{
-			"type": "object",
-			"properties": 
-			{
-				"value_name": 
-				{
-					"type": "string"
-				},
 				"value_type": 
 				{
 					"type": "string",
 					"enum": 
 					[
-						"integer"
-					]
-				},
-				"default": 
-				{
-					"type": "integer"
-				},
-				"key_path": 
-				{
-					"$ref": "#/definitions/key_path"
-				},
-				"cases": 
-				{
-					"$ref": "#/definitions/cases"
-				}
-			}
-		},
-		"value.timestamp": 
-		{
-			"type": "object",
-			"properties": 
-			{
-				"value_name": 
-				{
-					"type": "string"
-				},
-				"value_type": 
-				{
-					"type": "string",
-					"enum": 
-					[
+						"integer",
+						"boolean",
 						"date-time"
 					]
 				},
-				"key_path": 
+				"default": 
 				{
-					"$ref": "#/definitions/key_path"
+					"type": 
+					[
+						"string",
+						"boolean",
+						"integer"
+					]
+				},
+				"cases": 
+				{
+
 				},
 				"format": 
 				{
-					"type": "string"
+
 				}
 			},
+			"oneOf": 
+			[
+				{
+					"properties": 
+					{
+						"value_type": 
+						{
+							"type": "string",
+							"enum": 
+							[
+								"integer"
+							]
+						},
+						"default": 
+						{
+							"type": "integer"
+						},
+						"cases": 
+						{
+							"$ref": "#/definitions/cases"
+						}
+					},
+					"required": 
+					[
+						"default",
+						"cases"
+					],
+					"not": 
+					{
+						"required": 
+						[
+							"format"
+						]
+					}
+				},
+				{
+					"properties": 
+					{
+						"value_type": 
+						{
+							"type": "string",
+							"enum": 
+							[
+								"boolean"
+							]
+						},
+						"default": 
+						{
+							"type": "boolean"
+						},
+						"cases": 
+						{
+							"$ref": "#/definitions/cases"
+						}
+					},
+					"required": 
+					[
+						"default",
+						"cases"
+					],
+					"not": 
+					{
+						"required": 
+						[
+							"format"
+						]
+					}
+				},
+				{
+					"properties": 
+					{
+						"value_type": 
+						{
+							"type": "string",
+							"enum": 
+							[
+								"date-time"
+							]
+						},
+						"format": 
+						{
+							"type": "string"
+						}
+					},
+					"required": 
+					[
+						"format"
+					],
+					"not": 
+					{
+						"required": 
+						[
+							"cases"
+						]
+					}
+				}
+			],
+			"additionalProperties": false,
 			"required": 
 			[
 				"value_name",
-				"value_type",
 				"key_path",
-				"format"
+				"value_type"
 			]
 		},
 		"cases": 
