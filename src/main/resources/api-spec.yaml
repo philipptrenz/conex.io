@@ -2,7 +2,7 @@ swagger: '2.0'
 info:
   title: conex.io REST-Like API
   description: "The conex.io API provides the functionality to interact with home automation devices, which are connected to a home automation server, detached from the manufacturer specific communication syntax."
-  version: 0.9.5
+  version: 0.9.6
   contact:
     name: support@conex.io
 host: 'localhost:8080'
@@ -216,8 +216,25 @@ definitions:
             type: string
             format: date-time
             
-  Temperature:
-    description: Generic temperature sensor
+  ColorDimmer:
+    description: Generic color dimmer using the hsv color model
+    allOf:
+      - $ref: '#/definitions/Dimmer'
+      - properties:
+          hue:
+            description: Color value in degrees
+            type: integer
+            minimum: 0
+            maximum: 359
+            default: 0
+          saturation:
+            description: Saturation of color
+            type: integer
+            minimum: 0
+            maximum: 255
+            default: 0
+  ColorTemperature:
+    description: Generic color temperature
     allOf:
       - $ref: '#/definitions/Function'
       - properties:
@@ -225,13 +242,23 @@ definitions:
             description: Temperature value in Kelvin
             type: number
             minimum: 0
-            maximum: 511
             default: 0
           timestamp:
             type: string
             format: date-time
-            
-      
+  Temperature:
+    description: Generic temperature
+    allOf:
+      - $ref: '#/definitions/Function'
+      - properties:
+          value:
+            description: Temperature value in Kelvin
+            type: number
+            minimum: 0
+            default: 0
+          timestamp:
+            type: string
+            format: date-time
   Error:
     type: object
     properties:

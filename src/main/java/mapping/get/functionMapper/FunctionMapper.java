@@ -23,6 +23,8 @@ public class FunctionMapper {
 	private RequirementsValidator requirementsValidator;
 	private ValueExtractor extractor;
 	
+	private String log_info = "";
+	
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	public FunctionMapper() {
@@ -37,7 +39,9 @@ public class FunctionMapper {
 	/*
 	 * This function maps values from jsonlist2 to conex.io Functions
 	 */
-	public List<Function> mapJsonToFunctions(JsonNode json, JsonNode moduleDescription)  {
+	public List<Function> mapJsonToFunctions(JsonNode json, JsonNode moduleDescription, String log_info)  {
+		
+		this.log_info = log_info;
 		
 		List<Function> list = new ArrayList<>();
 		
@@ -87,7 +91,7 @@ public class FunctionMapper {
 				*/
 				for(JsonNode property : funcDescription.get("properties")) {
 					String key = property.get("value_name").asText();
-					String value = extractor.extractValue(json, property, key, function);
+					String value = extractor.extractValue(json, property, key, function, log_info);
 					proto.put(key, value);
 				}
 				proto.put("function_id", functionId);
@@ -100,7 +104,7 @@ public class FunctionMapper {
 				return null;
 			}
 		} catch (Exception e) {
-			log.error("While Function mapping an error occured", e);
+			log.error("While Function mapping an error occured ("+log_info+")", e);
 			return null;
 		}
 			
@@ -109,7 +113,9 @@ public class FunctionMapper {
 	/*
 	 * This function maps values from websocket connection to conex.io Functions
 	 */
-	public boolean mapWebsocketValuesToFunction(Device device, WebsocketDeviceUpdateMessage message, JsonNode moduleDescription)  {
+	public boolean mapWebsocketValuesToFunction(Device device, WebsocketDeviceUpdateMessage message, JsonNode moduleDescription, String log_info)  {
+		
+		this.log_info = log_info;
 		
 		boolean updated = false;
 		final List<Function> functionsList = device.getFunctions();
@@ -129,7 +135,7 @@ public class FunctionMapper {
 				try {
 					clazz = Class.forName(functionType);
 				} catch (ClassNotFoundException e) {
-					log.error("Function "+functionType+" not found", e);
+					log.error("Function "+functionType+" not found ("+log_info+")", e);
 					
 				}
 				
@@ -149,10 +155,10 @@ public class FunctionMapper {
 
 							String value = null;
 							if (keyPath.equals("readings/"+message.reading.toLowerCase()+"/value")) {								
-								value = extractor.extractValue(message.value, prop, key, f);
+								value = extractor.extractValue(message.value, prop, key, f, log_info);
 								valueMapped = true;
 							} else if (keyPath.equals("readings/"+message.reading.toLowerCase()+"/time")) {
-								value = extractor.extractValue(message.timestamp, prop, key, f);
+								value = extractor.extractValue(message.timestamp, prop, key, f, log_info);
 								timestampMapped = true;
 							} else {
 								value = null;
@@ -171,7 +177,7 @@ public class FunctionMapper {
 									
 									updated = true;
 								} catch (JsonProcessingException e) {
-									log.error("Mapping json to Function failed", e);
+									log.error("Mapping json to Function failed ("+log_info+")", e);
 								}
 							}
 						}

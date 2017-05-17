@@ -24,6 +24,8 @@ public class WebsocketParser {
 	private FunctionMapper mapper;
 	private DeviceMapper deviceMapper;
 	
+	private String log_info = "";
+	
 	public WebsocketParser() {
 		this.loader = new ModuleDescriptionLoader();
 		this.mapper = new FunctionMapper();
@@ -31,6 +33,7 @@ public class WebsocketParser {
 	}
 	
 	public void update(String websocketMessage, Map<String, Device> deviceMap, FHEMConnector connector) {
+		
 		
 		List<WebsocketDeviceUpdateMessage> updateMessageList = parseWebsocketMessage(websocketMessage);
 		
@@ -50,6 +53,8 @@ public class WebsocketParser {
 				} else if (deviceMap.containsKey(updateMessage.deviceId)) {
 					
 					Device device = deviceMap.get(updateMessage.deviceId);
+					log_info = "module: "+device.getTypeId();
+					
 					if (isParsable(updateMessage)) {
 						String typeId = device.getTypeId();
 						JsonNode moduleDescription = loader.getModuleDescription(typeId);
@@ -67,11 +72,11 @@ public class WebsocketParser {
 							} else {
 
 								if (moduleDescription != null) {
-									mapper.mapWebsocketValuesToFunction(device, updateMessage, moduleDescription);
+									mapper.mapWebsocketValuesToFunction(device, updateMessage, moduleDescription, log_info);
 								}
 								
 							}
-							log.info("Updated device with device_id '"+device.getDeviceId()+"' from FHEM via websocket");
+							log.info("Updated device with device_id '"+device.getDeviceId()+"' from FHEM via websocket ("+log_info+")");
 						}
 					}
 					

@@ -25,6 +25,7 @@ public class DeviceMapper {
 	private ModuleDescriptionLoader loader;
 	
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	private String log_info = "";
 	
 	/*
 	 * Constructor
@@ -42,6 +43,7 @@ public class DeviceMapper {
 		Device newDevice = new Device();
 	
 		JsonNode moduleDescription = loader.getModuleDescription(jsonlist2Device);
+		log_info = "type: "+jsonlist2Device.get("Internals").get("TYPE").asText();
 		
 		// map deviceId
 		newDevice.setDeviceId(getDeviceId(jsonlist2Device, moduleDescription));
@@ -56,7 +58,7 @@ public class DeviceMapper {
 		newDevice.setGroupIds(getGroupIds(jsonlist2Device, moduleDescription));
 		
 		// map functions
-		newDevice.setFunctions(funcMapper.mapJsonToFunctions(jsonlist2Device, moduleDescription));
+		newDevice.setFunctions(funcMapper.mapJsonToFunctions(jsonlist2Device, moduleDescription, log_info));
 		
 		// do not return broken devices or one without functions
 		if (newDevice.getDeviceId() == null || newDevice.getDeviceId().isEmpty() 
@@ -78,7 +80,7 @@ public class DeviceMapper {
 			JsonNode type = MappingHelper.navigateJsonKeyPath(jsonlist2Device, keyPath);
 			id = type.asText();
 		} catch (Exception e) {
-			log.error("Extracting deviceId failed", e);	
+			log.error("Extracting deviceId failed ("+log_info+")", e);	
 		}
 		return id;
 	}
@@ -91,7 +93,7 @@ public class DeviceMapper {
 			JsonNode type = MappingHelper.navigateJsonKeyPath(jsonlist2Device, keyPath);
 			id = type.asText().toLowerCase();
 		} catch (Exception e) {
-			log.error("Extracting typeId failed", e);	
+			log.error("Extracting typeId failed ("+log_info+")", e);	
 		}
 		return id;
 	}
@@ -125,7 +127,7 @@ public class DeviceMapper {
 		}
 	}
 	
-	private List<String> getGroupIds(JsonNode jsonlist2Device, JsonNode moduleDescription) {
+	public List<String> getGroupIds(JsonNode jsonlist2Device, JsonNode moduleDescription) {
 		JsonNode mappingDescription = moduleDescription.get("groups");
 		String string;
 		try {

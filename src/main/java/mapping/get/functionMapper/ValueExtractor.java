@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.util.NameTransformer;
 
 import io.swagger.RFC3339DateFormat;
 import mapping.MappingHelper;
@@ -24,6 +25,8 @@ public class ValueExtractor {
 	
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
+	private String log_info = "";
+	
 	/**
 	 * Extract value.
 	 *
@@ -32,19 +35,24 @@ public class ValueExtractor {
 	 * @return the string
 	 */
 	
-	public String extractValue(JsonNode jsonlist2Device, JsonNode property, String propertyName, Object function) {		
+	public String extractValue(JsonNode jsonlist2Device, JsonNode property, String propertyName, Object function, String log_info) {		
+		
+		
+		
 		
 		String key_path = property.get("key_path").asText();
 		String unmappedDeviceValue;
 		try {
 			unmappedDeviceValue = MappingHelper.navigateJsonKeyPath(jsonlist2Device, key_path).asText();
-			return extractValue(unmappedDeviceValue, property, propertyName, function);
+			return extractValue(unmappedDeviceValue, property, propertyName, function, log_info);
 		} catch (NoValidKeyPathException e) {
 			return null;
 		}
 	}
 	
-	public String extractValue(String unmappedDeviceValue, JsonNode property, String propertyName, Object function) {
+	public String extractValue(String unmappedDeviceValue, JsonNode property, String propertyName, Object function, String log_info) {
+		
+		this.log_info = log_info+", propertyName: "+propertyName+", function: "+function.getClass().getSimpleName();
 		
 		// watch for property name
 		switch(propertyName) {
@@ -65,17 +73,16 @@ public class ValueExtractor {
 			
 			case "direct": 
 				value = modeDirect(mappingCase, unmappedDeviceValue, propertyName, function);
-				if (value != null && !value.isEmpty()) {
-					return value;
-				}
+				break;
 			
 			case "range":
 				value = modeRange(mappingCase, unmappedDeviceValue, propertyName, function);
-				if (value != null && !value.isEmpty()) {
-					return value;
-				}
+				break;
+			case "constraint":
+				value = modeConstraint(mappingCase, unmappedDeviceValue, propertyName, function);
+				break;
 			}
-			
+			return value;
 		}
 		
 		/*
@@ -114,13 +121,40 @@ public class ValueExtractor {
 					
 				} else if (mappingCase.has("constraint")) {
 					
+					log.warn("Using mode 'direct' for constraint mapping is deprecated, use 'constraint' mode instead! ("+log_info+")");
+					
 					String type = mappingCase.get("constraint").asText();
 					int constValue = MappingHelper.getConstraintValueFromFunctionClassAnnotation(type, propertyName, function);
 					
 					return Integer.toString(constValue);	
 					
 				} else {
-					log.debug("None of the available mappings for direct mode are fitting");
+					log.warn("None of the available mappings for direct mode are fitting ("+log_info+")");
+				}
+			}
+		}
+		return null;
+	}
+	
+	private String modeConstraint(JsonNode mappingCase, String unmappedDeviceValue, String propertyName, Object function) {
+		ArrayNode regexList = (ArrayNode) mappingCase.get("regex");
+		for (JsonNode regex : regexList) {
+			if (unmappedDeviceValue.matches(regex.asText())) {
+				
+				if (mappingCase.has("value")) {
+					return mappingCase.get("value").asText();
+					
+				} else if (mappingCase.has("constraint")) {
+					
+					log.info("Using keyword 'direct' for constraint mapping is deprecated, use 'constraint' mode instead! ("+log_info+")");
+					
+					String type = mappingCase.get("constraint").asText();
+					int constValue = MappingHelper.getConstraintValueFromFunctionClassAnnotation(type, propertyName, function);
+					
+					return Integer.toString(constValue);	
+					
+				} else {
+					log.debug("None of the available mappings for direct mode are fitting ("+log_info+")");
 				}
 			}
 		}
