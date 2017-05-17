@@ -186,6 +186,7 @@ definitions:
   Function:
     description: Base Class for all functions
     type: object
+    discriminator: function_id
     properties:
       function_id:
         type: string
@@ -238,7 +239,7 @@ definitions:
     allOf:
       - $ref: '#/definitions/Function'
       - properties:
-          value:
+          ct:
             description: Temperature value in Kelvin
             type: number
             minimum: 0
