@@ -72,7 +72,6 @@ public class FunctionMapper {
 			
 				String functionId = funcDescription.get("function_id").asText();				
 				
-				//Class<?> functionClass = Class.forName(className);
 				Class<?> functionClass = mappingHelper.findFunctionClassByFunctionId(functionId);
 				Object function = functionClass.newInstance();
 				ObjectNode proto = mapper.valueToTree(function);
@@ -81,17 +80,6 @@ public class FunctionMapper {
 				// 2. Insert values from jsonlist2 to prototype
 				
 				// iterate over all properties to get the values mapped
-				/*
-				Iterator<Map.Entry<String, JsonNode>> fields;
-				fields = funcDescription.get("properties").fields();
-				while (fields.hasNext()) {
-					Map.Entry<String, JsonNode> entry = fields.next();
-					String key = entry.getKey();
-					JsonNode property = entry.getValue();
-					String value = extractor.extractValue(json, property, key, function);
-					proto.put(key, value);
-				}
-				*/
 				for(JsonNode property : funcDescription.get("properties")) {
 					String key = property.get("value_name").asText();
 					String value = extractor.extractValue(json, property, key, function, log_info);

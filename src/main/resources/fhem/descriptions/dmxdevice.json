@@ -1,0 +1,166 @@
+{
+	"information": {
+		"filename": "dmxdevice.json",
+		"description": "Mapping instructions for the FHEM module 'DMXDevice'",
+		"author": "Philipp Trenz, Benjamin Brausse",
+		"last_edited": "2017-05-19"
+	},
+	"device_id": {
+		"key_path": "Name"
+	},
+	"type_id": {
+		"key_path": "Internals/TYPE"
+	},
+	"rooms": {
+		"key_path": "Attributes/room",
+		"delimiters": ","
+	},
+	"groups": {
+		"key_path": "Attributes/group",
+		"delimiters": ","
+	},
+	"functions": {
+		"get": [
+			{
+				"function_id": "OnOff",
+				"requirements": [
+					{
+						"mode": "contains_all",
+						"key_path": "PossibleSets",
+						"attributes": [
+							"on",
+							"off"
+						],
+						"delimiters": " "
+					}
+				],
+				"properties": [
+					{
+						"value_name": "isOn",
+						"value_type": "boolean",
+						"default": false,
+						"key_path": "Readings/dim/Value",
+						"cases": [
+							{
+								"extract_mode": "direct",
+								"value": true,
+								"regex": [
+									"0"
+								]
+							},
+							{
+								"extract_mode": "direct",
+								"value": false,
+								"regex": [
+									"([^0])"
+								]
+							}
+						]
+					},
+					{
+						"value_name": "timestamp",
+						"value_type": "date-time",
+						"key_path": "Readings/state/Time",
+						"format": "yyyy-MM-dd HH:mm:ss"
+					}
+				]
+			},
+			{
+				"function_id": "Dimmer",
+				"requirements": [
+					{
+						"mode": "contains_all",
+						"key_path": "PossibleSets",
+						"attributes": [
+							"on",
+							"off",
+							"dim:slider,0,1,255"
+						],
+						"delimiters": " "
+					}
+				],
+				"properties": [
+					{
+						"value_name":"value",
+						"value_type": "integer",
+						"default": 0,
+						"key_path": "Readings/dim/Value",
+						"cases": [
+							{
+								"extract_mode": "range",
+								"minimum": 0,
+								"maximum": 255,
+								"regex": "([0-9]{1,3})"
+							},
+							{
+								"extract_mode": "direct",
+								"constraint": "min",
+								"regex": [
+									"off"
+								]
+							},
+							{
+								"extract_mode": "direct",
+								"constraint": "max",
+								"regex": [
+									"on"
+								]
+							}
+						]
+					},
+					{
+						"value_name": "timestamp",
+						"value_type": "date-time",
+						"key_path": "Readings/state/Time",
+						"format": "yyyy-MM-dd HH:mm:ss"
+					}
+				]
+			}
+		],
+		"set": [
+			{
+				"function_id": "OnOff",
+				"properties": [
+					{
+						"value_name": "isOn",
+						"value_type": "boolean",
+						"command_type":"set",
+						"reading":"",
+						"cases": [
+							{
+								"inject_mode": "direct",
+								"value": true,
+								"parameter": "on"
+							},
+							{
+								"inject_mode": "direct",
+								"value": false,
+								"parameter": "off"
+							}
+						]
+					}
+				]
+			},
+			{
+				"function_id": "Dimmer",
+				"properties": [
+					{
+						"value_name": "value",
+						"value_type": "integer",
+						"command_type":"set",
+						"reading": "dim",
+						"cases": [
+							{
+								"inject_mode": "range",
+								"minimum": 0,
+								"maximum": 255,
+								"prefix": "",
+								"suffix": ""
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+}
