@@ -83,7 +83,9 @@ public class FunctionMapper {
 				for(JsonNode property : funcDescription.get("properties")) {
 					String key = property.get("value_name").asText();
 					String value = extractor.extractValue(json, property, key, function, log_info);
-					proto.put(key, value);
+					if (value != null) {
+						proto.put(key, value);
+					}
 				}
 				proto.put("function_id", functionId);
 				

@@ -37,19 +37,27 @@ public class ValueExtractor {
 	
 	public String extractValue(JsonNode jsonlist2Device, JsonNode property, String propertyName, Object function, String log_info) {		
 		
-		
-		
-		
 		String key_path = property.get("key_path").asText();
 		String unmappedDeviceValue;
 		try {
 			unmappedDeviceValue = MappingHelper.navigateJsonKeyPath(jsonlist2Device, key_path).asText();
+			
+			if (unmappedDeviceValue == null) log.warn("unmappedDeviceValue is null! "+this.log_info);
+			if (property == null) log.warn("property is null! "+this.log_info);
+			if (propertyName == null) log.warn("propertyName is null! "+this.log_info);
+			if (function == null) log.warn("function is null! "+this.log_info);
+			
 			return extractValue(unmappedDeviceValue, property, propertyName, function, log_info);
 		} catch (NoValidKeyPathException e) {
+			log.error("NoValidKeyPathException! "+log_info+", propertyName: "+propertyName+", function: "+function.getClass().getSimpleName());
 			return null;
 		}
 	}
 	
+	
+	/*
+	 * BE AWARE: If string is null it will be rejected. To set property value null set string = "null"!
+	 */
 	public String extractValue(String unmappedDeviceValue, JsonNode property, String propertyName, Object function, String log_info) {
 		
 		this.log_info = log_info+", propertyName: "+propertyName+", function: "+function.getClass().getSimpleName();
@@ -82,6 +90,7 @@ public class ValueExtractor {
 				value = modeConstraint(mappingCase, unmappedDeviceValue, propertyName, function);
 				break;
 			}
+			if (value == null) log.warn("Value is null! "+this.log_info);
 			return value;
 		}
 		
@@ -117,7 +126,16 @@ public class ValueExtractor {
 			if (unmappedDeviceValue.matches(regex.asText())) {
 				
 				if (mappingCase.has("value")) {
-					return mappingCase.get("value").asText();
+					
+					String value = mappingCase.get("value").asText();
+					
+					
+					if (value == null || value.equals("null")) {
+						
+						log.error("Value is null! Mode: direct, "+this.log_info+" TEST: "+mappingCase.get("value").asBoolean());
+					}
+					
+					return value;
 					
 				} else if (mappingCase.has("constraint")) {
 					

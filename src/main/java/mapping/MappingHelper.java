@@ -25,7 +25,10 @@ public class MappingHelper {
 		
 		JsonNode temp = node;
 		for (String key : keys) {			
-			if (!temp.has(key)) throw new NoValidKeyPathException();
+			if (!temp.has(key)) {
+				//if (!path.endsWith("room") && !path.endsWith("group")) log.error("NoValidKeyPathException:"+"\npath: "+path+"\nNode :"+node);
+				throw new NoValidKeyPathException();
+			}
 			temp = temp.get(key);
 		}
 		return temp;
