@@ -69,12 +69,12 @@
 				"function_id": "ColorDimmer",
 				"requirements": [
 					{
-						"mode": "one_of",
-						"key_path": "Attributes/subType",
+						"mode": "contains_all",
+						"key_path": "PossibleSets",
 						"attributes": [
-							"colordimmer",
-							"extcolordimmer"
-						]
+							"HSV"
+						],
+						"delimiters": " "
 					}
 				],
 				"properties": [
@@ -148,6 +148,26 @@
 								"inject_mode": "direct",
 								"value": false,
 								"parameter": "off"
+							}
+						]
+					}
+				]
+			},
+			{
+				"function_id": "Dimmer",
+				"properties": [
+					{
+						"value_name": "value",
+						"value_type": "integer",
+						"command_type":"set",
+						"reading":"dim",
+						"cases": [
+							{
+								"inject_mode": "range",
+								"minimum": 0,
+								"maximum": 100,
+								"prefix": "",
+								"suffix": ""
 							}
 						]
 					}
