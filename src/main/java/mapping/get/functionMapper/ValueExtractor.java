@@ -89,6 +89,11 @@ public class ValueExtractor {
 			case "constraint":
 				value = modeConstraint(mappingCase, unmappedDeviceValue, propertyName, function);
 				break;
+				/*
+			case "color":
+				value = modeColor(mappingCase, unmappedDeviceValue, propertyName, function);
+				break;*/
+				
 			}
 			if (value == null) log.warn("Value is null! "+this.log_info);
 			return value;
@@ -209,5 +214,9 @@ public class ValueExtractor {
 		}
 		
 	}
+	/*
+	private String modeColor(JsonNode mappingCase, String unmappedDeviceValue, String propertyName, Object function) {
+		
+	}*/
 
 }

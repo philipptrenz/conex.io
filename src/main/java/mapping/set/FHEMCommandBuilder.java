@@ -15,6 +15,7 @@ import com.fasterxml.jackson.datatype.joda.JodaModule;
 
 import io.swagger.model.Device;
 import io.swagger.model.Function;
+import mapping.MappingHelper;
 import mapping.get.ModuleDescriptionLoader;
 
 public class FHEMCommandBuilder {
@@ -34,35 +35,33 @@ public class FHEMCommandBuilder {
 		
 		this.functionToFHEMValueMapper = new FunctionValueToFHEMValueMapper();
 	}
-	
-	public String buildCommand(List<Device> devices, Function functionValuesToSet) {
-		
-		if (functionValuesToSet != null) {
-			List<String> commands = new ArrayList<>();
-			Map<String, String> deviceIdsByTypeIdMap = concatDeviceIdsByTypeId(devices, functionValuesToSet.getClass());
-			
-			Iterator it = deviceIdsByTypeIdMap.entrySet().iterator();
-		    while (it.hasNext()) {
-		    	
-		    	String moduleCommand = "";
-		    	
-		        Map.Entry pair = (Map.Entry) it.next();
-		        
-		        String deviceType = (String) pair.getKey();
-		        String concatenatedDeviceIds = (String) pair.getValue();
-		        
-		        //log.info("Setting "+functionValuesToSet.getClass().getSimpleName()+" for "+concatenatedDeviceIds.replace(",", ", ")+" (type_id: "+deviceType+")");
-		        
-		        List<String> commandsForDeviceType = buildCommandForValues(functionValuesToSet, concatenatedDeviceIds, deviceType);
-		        commands.addAll(commandsForDeviceType);
 
-		        it.remove(); // avoids a ConcurrentModificationException
-		    }
-		    
-			return concatCommandList(commands);
-		} else {
-			return null;
-		}
+	public String buildCommand(List<Device> devices, Function functionValuesToSet) {
+			
+		if (functionValuesToSet == null) return null;
+		
+		List<String> commands = new ArrayList<>();
+		Map<String, String> deviceIdsByTypeIdMap = concatDeviceIdsByTypeId(devices, functionValuesToSet.getClass());
+		
+		Iterator it = deviceIdsByTypeIdMap.entrySet().iterator();
+	    while (it.hasNext()) {
+	    	
+	    	String moduleCommand = "";
+	    	
+	        Map.Entry pair = (Map.Entry) it.next();
+	        
+	        String deviceType = (String) pair.getKey();
+	        String concatenatedDeviceIds = (String) pair.getValue();
+	        
+	        //log.info("Setting "+functionValuesToSet.getClass().getSimpleName()+" for "+concatenatedDeviceIds.replace(",", ", ")+" (type_id: "+deviceType+")");
+	 
+	        List<String> commandsForDeviceType = buildCommandForValues(functionValuesToSet, concatenatedDeviceIds, deviceType);
+	        commands.addAll(commandsForDeviceType);
+
+	        it.remove(); // avoids a ConcurrentModificationException
+	    }
+	    
+		return concatCommandList(commands);
 	}
 	
 	private String concatCommandList(List<String> commandList) {
@@ -80,9 +79,7 @@ public class FHEMCommandBuilder {
 	private List<String> buildCommandForValues(Function function, String concatenatedDeviceIds, String deviceType){
 		
 		List<String> commands = new ArrayList<>();
-		
 		if (!loader.moduleDescriptionExists(deviceType)) return commands;
-		
 		JsonNode functionToSet = mapper.valueToTree(function);
 		JsonNode functionDescription = getFunctionDescriptionForSet(function, deviceType);
 		
@@ -162,6 +159,11 @@ public class FHEMCommandBuilder {
 				if (function.getClass().equals(functionClass)){
 					containsFunction = true;
 					break;
+				} else if (functionClass.isInstance(function)) {
+					if (!functionClass.getSimpleName().equalsIgnoreCase("Function")) {
+						containsFunction = true;
+						break;
+					}
 				}
 			}
 			if (containsFunction) {

@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import io.swagger.model.Device;
 import io.swagger.model.Filter;
 import io.swagger.model.Function;
+import mapping.MappingHelper;
 
 public class DeviceCalc {
 
@@ -161,6 +162,16 @@ public class DeviceCalc {
 			for (Function func : device.getFunctions()) {
 				if (filter.getFunctionIds().contains(func.getFunctionId())) {
 					matchingFunctions = true;
+				} else {
+					// check also for inheritance
+					for (String filterFunction : filter.getFunctionIds()) {						
+						Class<?> c = MappingHelper.findFunctionClassByFunctionId(filterFunction);
+						if (c == null) continue;
+						
+						if (c.isInstance(func)) {
+							matchingFunctions = true;
+						}
+					}
 				}
 			}
 			if (!matchingFunctions) {

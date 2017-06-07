@@ -68,14 +68,12 @@
 				]
 			},
 			{
-				"function_id": "Dimmer",
+				"function_id": "ColorDimmer",
 				"requirements": [
 					{
 						"mode": "one_of",
 						"key_path": "Attributes/subType",
 						"attributes": [
-							"dimmer",
-							"ctdimmer",
 							"colordimmer",
 							"extcolordimmer"
 						]
@@ -83,10 +81,24 @@
 				],
 				"properties": [
 					{
-						"value_name": "value",
+						"value_name": "hue",
 						"value_type": "integer",
 						"default": 0,
-						"key_path": "Readings/pct/Value",
+						"key_path": "Readings/hue/Value",
+						"cases": [
+							{
+								"extract_mode": "range",
+								"minimum": 0,
+								"maximum": 65280,
+								"regex": "(.*)"
+							}
+						]
+					},
+					{
+						"value_name": "saturation",
+						"value_type": "integer",
+						"default": 0,
+						"key_path": "Readings/sat/Value",
 						"cases": [
 							{
 								"extract_mode": "range",
@@ -97,9 +109,23 @@
 						]
 					},
 					{
+						"value_name": "value",
+						"value_type": "integer",
+						"default": 0,
+						"key_path": "Readings/bri/Value",
+						"cases": [
+							{
+								"extract_mode": "range",
+								"minimum": 0,
+								"maximum": 254,
+								"regex": "(.*)"
+							}
+						]
+					},
+					{
 						"value_name": "timestamp",
 						"value_type": "date-time",
-						"key_path": "Readings/sat/Time",
+						"key_path": "Readings/bri/Time",
 						"format": "yyyy-MM-dd HH:mm:ss"
 					}
 				]
@@ -136,12 +162,62 @@
 						"value_name": "value",
 						"value_type": "integer",
 						"command_type":"set",
-						"reading":"pct",
+						"reading":"bri",
 						"cases": [
 							{
 								"inject_mode": "range",
 								"minimum": 0,
-								"maximum": 100,
+								"maximum": 254,
+								"prefix": "",
+								"suffix": ""
+							}
+						]
+					}
+				]
+			},
+			{
+				"function_id": "ColorDimmer",
+				"properties": [
+					{
+						"value_name": "value",
+						"value_type": "integer",
+						"command_type":"set",
+						"reading":"bri",
+						"cases": [
+							{
+								"inject_mode": "range",
+								"minimum": 0,
+								"maximum": 254,
+								"prefix": "",
+								"suffix": ""
+							}
+						]
+					},
+					{
+						"value_name": "hue",
+						"value_type": "integer",
+						"command_type":"set",
+						"reading":"hue",
+						"cases": [
+							{
+								"inject_mode": "range",
+								"minimum": 0,
+								"maximum": 65280,
+								"prefix": "",
+								"suffix": ""
+							}
+						]
+					},
+					{
+						"value_name": "saturation",
+						"value_type": "integer",
+						"command_type":"set",
+						"reading":"sat",
+						"cases": [
+							{
+								"inject_mode": "range",
+								"minimum": 0,
+								"maximum": 255,
 								"prefix": "",
 								"suffix": ""
 							}
