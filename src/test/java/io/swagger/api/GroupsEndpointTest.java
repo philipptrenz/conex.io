@@ -32,7 +32,7 @@ public class GroupsEndpointTest {
     //@Autowired
     private TestRestTemplate restTemplate = new TestRestTemplate();
     
-    private String url = "http://localhost:8080/v0/groups";
+    private String apiGroupEndpoint = "http://localhost:8080/v0/groups";
 
     
     @Test
@@ -40,34 +40,34 @@ public class GroupsEndpointTest {
     	List <String> searchRooms = Arrays.asList("testroom_11");
     	List <String> searchFunctions = Arrays.asList("testfunction_0");
     	
-    	Filter f = new Filter();
+    	Filter filter = new Filter();
     	
-    	f.setRoomIds(searchRooms);
-    	f.setFunctionIds(searchFunctions);
+    	filter.setRoomIds(searchRooms);
+    	filter.setFunctionIds(searchFunctions);
         
-        HttpEntity<Filter> request = new HttpEntity<Filter>(f);
+        HttpEntity<Filter> request = new HttpEntity<Filter>(filter);
         ResponseEntity<Ids> response = restTemplate
-        		.exchange(url, HttpMethod.GET, request, Ids.class);
+        		.exchange(apiGroupEndpoint, HttpMethod.GET, request, Ids.class);
         
         assertThat(response.getStatusCode(), is(HttpStatus.METHOD_NOT_ALLOWED));
         
         ResponseEntity<Ids> responsePut = restTemplate
-        		.exchange(url, HttpMethod.PUT, request, Ids.class);
+        		.exchange(apiGroupEndpoint, HttpMethod.PUT, request, Ids.class);
         
         assertThat(responsePut.getStatusCode(), is(HttpStatus.METHOD_NOT_ALLOWED));
         
         ResponseEntity<Ids> responsePatch = restTemplate
-        		.exchange(url, HttpMethod.PATCH, request, Ids.class);
+        		.exchange(apiGroupEndpoint, HttpMethod.PATCH, request, Ids.class);
         
         assertThat(responsePatch.getStatusCode(), is(HttpStatus.METHOD_NOT_ALLOWED));
         
         ResponseEntity<Ids> responseDelete = restTemplate
-        		.exchange(url, HttpMethod.DELETE, request, Ids.class);
+        		.exchange(apiGroupEndpoint, HttpMethod.DELETE, request, Ids.class);
         
         assertThat(responseDelete.getStatusCode(), is(HttpStatus.METHOD_NOT_ALLOWED));
         
         ResponseEntity<Ids> responseHead = restTemplate
-        		.exchange(url, HttpMethod.HEAD, request, Ids.class);
+        		.exchange(apiGroupEndpoint, HttpMethod.HEAD, request, Ids.class);
         
         assertThat(responseHead.getStatusCode(), is(HttpStatus.METHOD_NOT_ALLOWED));
     }
@@ -77,7 +77,7 @@ public class GroupsEndpointTest {
         
         HttpEntity <String> request = new HttpEntity<String>("");
         ResponseEntity<Ids> response = restTemplate
-        		.exchange(url, HttpMethod.POST, request, Ids.class);
+        		.exchange(apiGroupEndpoint, HttpMethod.POST, request, Ids.class);
         
         assertThat(response.getStatusCode(), is(HttpStatus.UNSUPPORTED_MEDIA_TYPE));
     }
@@ -96,16 +96,16 @@ public class GroupsEndpointTest {
     	List <String> searchGroups = Arrays.asList("testgroup_11");
     	List <String> searchRooms = Arrays.asList("testroom_11");
     	
-    	Filter f = new Filter();
+    	Filter filter = new Filter();
     	
-    	f.setDeviceIds(searchDevices);
-    	f.setFunctionIds(searchFunctions);
-    	f.setGroupIds(searchGroups);
-    	f.setRoomIds(searchRooms);
+    	filter.setDeviceIds(searchDevices);
+    	filter.setFunctionIds(searchFunctions);
+    	filter.setGroupIds(searchGroups);
+    	filter.setRoomIds(searchRooms);
         
-        HttpEntity<Filter> request = new HttpEntity<Filter>(f);
+        HttpEntity<Filter> request = new HttpEntity<Filter>(filter);
         ResponseEntity<Ids> response = restTemplate
-        		.exchange(url, HttpMethod.POST, request, Ids.class);
+        		.exchange(apiGroupEndpoint, HttpMethod.POST, request, Ids.class);
         
         
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
@@ -119,13 +119,13 @@ public class GroupsEndpointTest {
     public void getGroupsByDeviceFilter() throws Exception {
     	List <String> searchDevices = Arrays.asList("testdevice_21");
     	
-    	Filter f = new Filter();
+    	Filter filter = new Filter();
     	
-    	f.setDeviceIds(searchDevices);
+    	filter.setDeviceIds(searchDevices);
         
-        HttpEntity<Filter> request = new HttpEntity<Filter>(f);
+        HttpEntity<Filter> request = new HttpEntity<Filter>(filter);
         ResponseEntity<Ids> response = restTemplate
-        		.exchange(url, HttpMethod.POST, request, Ids.class);
+        		.exchange(apiGroupEndpoint, HttpMethod.POST, request, Ids.class);
         
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         
@@ -138,13 +138,13 @@ public class GroupsEndpointTest {
     public void getGroupsByFunctionFilter() throws Exception {
     	List <String> searchFunctions = Arrays.asList("testfunction_0", "testfunction_1");
     	
-    	Filter f = new Filter();
+    	Filter filter = new Filter();
     	
-    	f.setFunctionIds(searchFunctions);
+    	filter.setFunctionIds(searchFunctions);
         
-        HttpEntity<Filter> request = new HttpEntity<Filter>(f);
+        HttpEntity<Filter> request = new HttpEntity<Filter>(filter);
         ResponseEntity<Ids> response = restTemplate
-        		.exchange(url, HttpMethod.POST, request, Ids.class);
+        		.exchange(apiGroupEndpoint, HttpMethod.POST, request, Ids.class);
         
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         
@@ -159,13 +159,13 @@ public class GroupsEndpointTest {
     public void getGroupsByGroupFilter() throws Exception {
     	List <String> searchGroups = Arrays.asList("testgroup_11");
     	
-    	Filter f = new Filter();
+    	Filter filter = new Filter();
     	
-    	f.setGroupIds(searchGroups);
+    	filter.setGroupIds(searchGroups);
         
-        HttpEntity<Filter> request = new HttpEntity<Filter>(f);
+        HttpEntity<Filter> request = new HttpEntity<Filter>(filter);
         ResponseEntity<Ids> response = restTemplate
-        		.exchange(url, HttpMethod.POST, request, Ids.class);
+        		.exchange(apiGroupEndpoint, HttpMethod.POST, request, Ids.class);
         
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         
@@ -178,13 +178,13 @@ public class GroupsEndpointTest {
     public void getGroupsByRoomFilter() throws Exception {
     	List <String> searchRooms = Arrays.asList("testroom_11");
     	
-    	Filter f = new Filter();
+    	Filter filter = new Filter();
     	
-    	f.setRoomIds(searchRooms);
+    	filter.setRoomIds(searchRooms);
         
-        HttpEntity<Filter> request = new HttpEntity<Filter>(f);
+        HttpEntity<Filter> request = new HttpEntity<Filter>(filter);
         ResponseEntity<Ids> response = restTemplate
-        		.exchange(url, HttpMethod.POST, request, Ids.class);
+        		.exchange(apiGroupEndpoint, HttpMethod.POST, request, Ids.class);
         
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         
@@ -197,14 +197,14 @@ public class GroupsEndpointTest {
     	List <String> searchRooms = Arrays.asList("testroom_12");
     	List <String> searchFunctions = Arrays.asList("testfunction_1");
     	
-    	Filter f = new Filter();
+    	Filter filter = new Filter();
     	
-    	f.setRoomIds(searchRooms);
-    	f.setFunctionIds(searchFunctions);
+    	filter.setRoomIds(searchRooms);
+    	filter.setFunctionIds(searchFunctions);
         
-        HttpEntity<Filter> request = new HttpEntity<Filter>(f);
+        HttpEntity<Filter> request = new HttpEntity<Filter>(filter);
         ResponseEntity<Ids> response = restTemplate
-        		.exchange(url, HttpMethod.POST, request, Ids.class);
+        		.exchange(apiGroupEndpoint, HttpMethod.POST, request, Ids.class);
         
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         
