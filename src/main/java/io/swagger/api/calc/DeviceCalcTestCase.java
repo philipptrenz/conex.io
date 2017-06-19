@@ -10,7 +10,7 @@ import io.swagger.model.Function;
 
 public class DeviceCalcTestCase {
 	private Filter filter;
-	private List<Device> geraete;
+	private List<Device> allDevicesList;
 	
 
 	/**
@@ -24,69 +24,69 @@ public class DeviceCalcTestCase {
 		else {
 			this.filter = new Filter();
 		}
-        this.geraete = io.swagger.api.calc.DeviceMockup.getDevicesMockup();
+        this.allDevicesList = io.swagger.api.calc.DeviceMockup.getDevicesMockup();
 	}
 	/**
 	 * Filtering for all Devices and endpoint /devices. Iterates through all Filter-functions - if required.
 	 * @return list of Device's
 	 */
 	public List<Device> getDeviceListFiltered() {
-		List <Device> ausgabe;
+		List <Device> filteredDevicesResult;
 		if(!filter.getDeviceIds().isEmpty() || !filter.getFunctionIds().isEmpty() ||
 				!filter.getGroupIds().isEmpty() || !filter.getRoomIds().isEmpty()) {
-			for (int i= 0; i < geraete.size(); i++) {
-        			Device d = geraete.get(i);
-        			if(!isDeviceMatchingFiltering(d, filter)) {
-        				geraete.remove(i);
-        				i--;
+			for (int filteringDevicesCounter= 0; filteringDevicesCounter < allDevicesList.size(); filteringDevicesCounter++) {
+        			Device device = allDevicesList.get(filteringDevicesCounter);
+        			if(!isDeviceMatchingFiltering(device, filter)) {
+        				allDevicesList.remove(filteringDevicesCounter);
+        				filteringDevicesCounter--;
         			}
         		}
         	}
-        ausgabe = geraete;
-		return ausgabe;
+        filteredDevicesResult = allDevicesList;
+		return filteredDevicesResult;
 	}
 	
-	public List<Device> getDeviceListFilteringWithPatcherFunction(Function f) {
-		if(f == null || f.getFunctionId() == null) {
-			f = new Function();
-			f.setFunctionId("null");
+	public List<Device> getDeviceListFilteringWithPatcherFunction(Function function) {
+		if(function == null || function.getFunctionId() == null) {
+			function = new Function();
+			function.setFunctionId("null");
 		}
-		if(!filter.getFunctionIds().contains(f.getFunctionId())) {
-			filter.addFunctionIdsItem(f.getFunctionId());
+		if(!filter.getFunctionIds().contains(function.getFunctionId())) {
+			filter.addFunctionIdsItem(function.getFunctionId());
 		}
 		
-		List <Device> list = getDeviceListFiltered();
-		if(!list.isEmpty()) {
-			for (int i = 0; i < list.size(); i++) {
-				List <Function> functionList = list.get(i).getFunctions();
-				boolean check = true;
+		List <Device> filteredDevicesList = getDeviceListFiltered();
+		if(!filteredDevicesList.isEmpty()) {
+			for (int devicePatcherFunctionCounter = 0; devicePatcherFunctionCounter < filteredDevicesList.size(); devicePatcherFunctionCounter++) {
+				List <Function> functionList = filteredDevicesList.get(devicePatcherFunctionCounter).getFunctions();
+				boolean deviceFuntionsContainsSpecificFunction = true;
 					for (Function listenFunction: functionList) {
-						if(listenFunction.getFunctionId().contains(f.getFunctionId())) {
-							check = false;	
+						if(listenFunction.getFunctionId().contains(function.getFunctionId())) {
+							deviceFuntionsContainsSpecificFunction = false;	
 					}
 				}
-					if(check) {
-						list.remove(i);
-						i--;
+					if(deviceFuntionsContainsSpecificFunction) {
+						filteredDevicesList.remove(devicePatcherFunctionCounter);
+						devicePatcherFunctionCounter--;
 					}
 				}
 			}
-		return list;
+		return filteredDevicesList;
 	}
 	/**
 	 * Filtering function for endpoint /functions
 	 * @return list of String Ids
 	 */
 	public List<String> getFuntionsByDevicesFiltered() {
-		List<String> functions = new ArrayList<String>();
-		for(Device d: getDeviceListFiltered()) {
-			for(Function f: d.getFunctions()) {
-				if(!functions.contains(f.getFunctionId())) {
-					functions.add(f.getFunctionId());
+		List<String> filteredFunctions = new ArrayList<String>();
+		for(Device device: getDeviceListFiltered()) {
+			for(Function f: device.getFunctions()) {
+				if(!filteredFunctions.contains(f.getFunctionId())) {
+					filteredFunctions.add(f.getFunctionId());
 				}
 			}
 		}
-		return functions;
+		return filteredFunctions;
 	}
 	
 	/**
@@ -94,15 +94,15 @@ public class DeviceCalcTestCase {
 	 * @return list of String Ids
 	 */
 	public List<String> getGroupsByDevicesFiltered() {
-		List<String> gruppen = new ArrayList<String>();
-		for(Device d: getDeviceListFiltered()) {
-			for(String group: d.getGroupIds()) {
-				if(!gruppen.contains(group)) {
-					gruppen.add(group);
+		List<String> filteredGroups = new ArrayList<String>();
+		for(Device device: getDeviceListFiltered()) {
+			for(String group: device.getGroupIds()) {
+				if(!filteredGroups.contains(group)) {
+					filteredGroups.add(group);
 				}
 			}
 		}
-		return gruppen;
+		return filteredGroups;
 	}
 	
 	/**
@@ -110,15 +110,15 @@ public class DeviceCalcTestCase {
 	 * @return list of String Ids
 	 */
 	public List<String> getRoomsByDevicesFiltered() {
-		List<String> rooms = new ArrayList<String>();
-		for(Device d: getDeviceListFiltered()) {
-			for(String raum: d.getRoomIds()) {
-				if(!rooms.contains(raum)) {
-					rooms.add(raum);
+		List<String> filteredRooms = new ArrayList<String>();
+		for(Device device: getDeviceListFiltered()) {
+			for(String room: device.getRoomIds()) {
+				if(!filteredRooms.contains(room)) {
+					filteredRooms.add(room);
 				}
 			}
 		}
-		return rooms;
+		return filteredRooms;
 	}
 	/**
 	 * Checks if a device matching all required filter attributes of the object filter
@@ -133,13 +133,13 @@ public class DeviceCalcTestCase {
 			}
 		}
 		if(filter.getFunctionIds() != null && !filter.getFunctionIds().isEmpty()) {
-			boolean matchingFunctions = false;
+			boolean deviceFuntionsContainsSpecificFunction = false;
     		for(Function func : device.getFunctions()) {
     			if (filter.getFunctionIds().contains(func.getFunctionId())) {
-    				matchingFunctions = true;
+    				deviceFuntionsContainsSpecificFunction = true;
     				}
     			}
-    		if(!matchingFunctions) {
+    		if(!deviceFuntionsContainsSpecificFunction) {
     			return false;
     		}
     		}
