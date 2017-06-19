@@ -1,9 +1,10 @@
-package io.swagger.api.calc;
+package io.swagger.calc.test;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import io.swagger.api.calc.DeviceMockup;
 import io.swagger.model.Device;
 import io.swagger.model.Filter;
 import io.swagger.model.Function;
