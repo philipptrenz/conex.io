@@ -1,5 +1,8 @@
 *.class
 
+# Do not commit generated models
+/src/main/java/io/swagger/model/
+
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
