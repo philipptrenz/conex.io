@@ -10,7 +10,7 @@ public class DeviceMockup {
 
 public static List<Device> getDevicesMockup() {
 		
-		List<Device> list = new ArrayList<Device>();
+		List<Device> deviceList = new ArrayList<Device>();
 		int j = 0;
 		int k = 0;
 		for (int i = 0; i < 50; i++) {
@@ -27,25 +27,25 @@ public static List<Device> getDevicesMockup() {
 			device.addRoomIdsItem("testroom_"+(j+2));
 			
 			
-			Function f = new Function();
-			f.setFunctionId("testfunction_"+k);
-			device.addFunctionsItem(f);
+			Function function = new Function();
+			function.setFunctionId("testfunction_"+k);
+			device.addFunctionsItem(function);
 			
-			Function f2 = new Function();
-			f2.setFunctionId("testfunction_"+(k+1));	
-			device.addFunctionsItem(f2);
+			Function function2 = new Function();
+			function2.setFunctionId("testfunction_"+(k+1));	
+			device.addFunctionsItem(function2);
 			
-			Function f3 = new Function();
-			f3.setFunctionId("testfunction_"+(k+2));
-			device.addFunctionsItem(f3);
+			Function function3 = new Function();
+			function3.setFunctionId("testfunction_"+(k+2));
+			device.addFunctionsItem(function3);
 			
-			list.add(device);
+			deviceList.add(device);
 			
 			j++;
 			if (j > 10) j = 0;
 			if (k > 15) k = 0;
 		}
-		return list;
+		return deviceList;
 		
 	}
 

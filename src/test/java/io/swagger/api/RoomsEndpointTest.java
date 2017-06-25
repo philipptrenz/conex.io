@@ -32,7 +32,7 @@ public class RoomsEndpointTest {
     //@Autowired
     private TestRestTemplate restTemplate = new TestRestTemplate();
     
-    private String url = "http://localhost:8080/v0/rooms";
+    private String apiRoomsEndpoint = "http://localhost:8080/v0/rooms";
 
     
     @Test
@@ -40,34 +40,34 @@ public class RoomsEndpointTest {
     	List <String> searchRooms = Arrays.asList("testroom_10");
     	List <String> searchFunctions = Arrays.asList("testfunction_1");
     	
-    	Filter f = new Filter();
+    	Filter filter = new Filter();
     	
-    	f.setRoomIds(searchRooms);
-    	f.setFunctionIds(searchFunctions);
+    	filter.setRoomIds(searchRooms);
+    	filter.setFunctionIds(searchFunctions);
         
-        HttpEntity<Filter> request = new HttpEntity<Filter>(f);
+        HttpEntity<Filter> request = new HttpEntity<Filter>(filter);
         ResponseEntity<Ids> response = restTemplate
-        		.exchange(url, HttpMethod.GET, request, Ids.class);
+        		.exchange(apiRoomsEndpoint, HttpMethod.GET, request, Ids.class);
         
         assertThat(response.getStatusCode(), is(HttpStatus.METHOD_NOT_ALLOWED));
         
         ResponseEntity<Ids> responsePut = restTemplate
-        		.exchange(url, HttpMethod.PUT, request, Ids.class);
+        		.exchange(apiRoomsEndpoint, HttpMethod.PUT, request, Ids.class);
         
         assertThat(responsePut.getStatusCode(), is(HttpStatus.METHOD_NOT_ALLOWED));
         
         ResponseEntity<Ids> responsePatch = restTemplate
-        		.exchange(url, HttpMethod.PATCH, request, Ids.class);
+        		.exchange(apiRoomsEndpoint, HttpMethod.PATCH, request, Ids.class);
         
         assertThat(responsePatch.getStatusCode(), is(HttpStatus.METHOD_NOT_ALLOWED));
         
         ResponseEntity<Ids> responseDelete = restTemplate
-        		.exchange(url, HttpMethod.DELETE, request, Ids.class);
+        		.exchange(apiRoomsEndpoint, HttpMethod.DELETE, request, Ids.class);
         
         assertThat(responseDelete.getStatusCode(), is(HttpStatus.METHOD_NOT_ALLOWED));
         
         ResponseEntity<Ids> responseHead = restTemplate
-        		.exchange(url, HttpMethod.HEAD, request, Ids.class);
+        		.exchange(apiRoomsEndpoint, HttpMethod.HEAD, request, Ids.class);
         
         assertThat(responseHead.getStatusCode(), is(HttpStatus.METHOD_NOT_ALLOWED));
     }
@@ -77,7 +77,7 @@ public class RoomsEndpointTest {
         
         HttpEntity <String> request = new HttpEntity<String>("");
         ResponseEntity<Ids> response = restTemplate
-        		.exchange(url, HttpMethod.POST, request, Ids.class);
+        		.exchange(apiRoomsEndpoint, HttpMethod.POST, request, Ids.class);
         
         assertThat(response.getStatusCode(), is(HttpStatus.UNSUPPORTED_MEDIA_TYPE));
     }
@@ -105,7 +105,7 @@ public class RoomsEndpointTest {
         
         HttpEntity<Filter> request = new HttpEntity<Filter>(f);
         ResponseEntity<Ids> response = restTemplate
-        		.exchange(url, HttpMethod.POST, request, Ids.class);
+        		.exchange(apiRoomsEndpoint, HttpMethod.POST, request, Ids.class);
         
         
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
@@ -125,7 +125,7 @@ public class RoomsEndpointTest {
         
         HttpEntity<Filter> request = new HttpEntity<Filter>(f);
         ResponseEntity<Ids> response = restTemplate
-        		.exchange(url, HttpMethod.POST, request, Ids.class);
+        		.exchange(apiRoomsEndpoint, HttpMethod.POST, request, Ids.class);
         
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         
@@ -144,7 +144,7 @@ public class RoomsEndpointTest {
         
         HttpEntity<Filter> request = new HttpEntity<Filter>(f);
         ResponseEntity<Ids> response = restTemplate
-        		.exchange(url, HttpMethod.POST, request, Ids.class);
+        		.exchange(apiRoomsEndpoint, HttpMethod.POST, request, Ids.class);
         
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         
@@ -165,7 +165,7 @@ public class RoomsEndpointTest {
         
         HttpEntity<Filter> request = new HttpEntity<Filter>(f);
         ResponseEntity<Ids> response = restTemplate
-        		.exchange(url, HttpMethod.POST, request, Ids.class);
+        		.exchange(apiRoomsEndpoint, HttpMethod.POST, request, Ids.class);
         
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         
@@ -184,7 +184,7 @@ public class RoomsEndpointTest {
         
         HttpEntity<Filter> request = new HttpEntity<Filter>(f);
         ResponseEntity<Ids> response = restTemplate
-        		.exchange(url, HttpMethod.POST, request, Ids.class);
+        		.exchange(apiRoomsEndpoint, HttpMethod.POST, request, Ids.class);
         
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         
@@ -204,7 +204,7 @@ public class RoomsEndpointTest {
         
         HttpEntity<Filter> request = new HttpEntity<Filter>(f);
         ResponseEntity<Ids> response = restTemplate
-        		.exchange(url, HttpMethod.POST, request, Ids.class);
+        		.exchange(apiRoomsEndpoint, HttpMethod.POST, request, Ids.class);
         
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         

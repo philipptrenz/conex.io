@@ -17,7 +17,7 @@ public class DeviceCalc {
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	private Filter filter;
-	private List<Device> geraete;
+	private List<Device> filteredDevices;
 
 	/**
 	 * Set's the Filter-Object and get the Devices from Mapping layer
@@ -31,7 +31,7 @@ public class DeviceCalc {
 		} else {
 			this.filter = new Filter();
 		}
-		this.geraete = geraete;
+		this.filteredDevices = geraete;
 	}
 
 	/**
@@ -43,50 +43,50 @@ public class DeviceCalc {
 	public List<Device> getDeviceListFiltered() {
 		List<Device> ausgabe;
 		if (!filterIsEmpty(filter)) {
-			for (int i = 0; i < geraete.size(); i++) {
-				Device d = geraete.get(i);
+			for (int deviceFilterCounter = 0; deviceFilterCounter < filteredDevices.size(); deviceFilterCounter++) {
+				Device d = filteredDevices.get(deviceFilterCounter);
 				if (!isDeviceMatchingFiltering(d, filter)) {
-					geraete.remove(i);
-					i--;
+					filteredDevices.remove(deviceFilterCounter);
+					deviceFilterCounter--;
 				}
 			}
 		}
-		log.info("Filtered " + geraete.size() + " devices");
-		ausgabe = geraete;
+		log.info("Filtered " + filteredDevices.size() + " devices");
+		ausgabe = filteredDevices;
 		return ausgabe;
 	}
 
-	public List<Device> getDeviceListFilteringWithPatcherFunction(Function f) {
-		if (f == null || f.getFunctionId() == null) {
-			f = new Function();
-			f.setFunctionId("null");
+	public List<Device> getDeviceListFilteringWithPatcherFunction(Function function) {
+		if (function == null || function.getFunctionId() == null) {
+			function = new Function();
+			function.setFunctionId("null");
 		}
 
 		if (filter.getFunctionIds() == null) {
 			filter.setFunctionIds(new ArrayList<>());
 		}
 
-		if (!filter.getFunctionIds().contains(f.getFunctionId())) {
-			filter.addFunctionIdsItem(f.getFunctionId());
+		if (!filter.getFunctionIds().contains(function.getFunctionId())) {
+			filter.addFunctionIdsItem(function.getFunctionId());
 		}
 
-		List<Device> list = getDeviceListFiltered();
-		if (!list.isEmpty()) {
-			for (int i = 0; i < list.size(); i++) {
-				List<Function> functionList = list.get(i).getFunctions();
-				boolean check = true;
+		List<Device> deviveFilteredList = getDeviceListFiltered();
+		if (!deviveFilteredList.isEmpty()) {
+			for (int deviceListPatchCounter = 0; deviceListPatchCounter < deviveFilteredList.size(); deviceListPatchCounter++) {
+				List<Function> functionList = deviveFilteredList.get(deviceListPatchCounter).getFunctions();
+				boolean deviceContainsFunction = true;
 				for (Function listenFunction : functionList) {
-					if (listenFunction.getFunctionId().contains(f.getFunctionId())) {
-						check = false;
+					if (listenFunction.getFunctionId().contains(function.getFunctionId())) {
+						deviceContainsFunction = false;
 					}
 				}
-				if (check) {
-					list.remove(i);
-					i--;
+				if (deviceContainsFunction) {
+					deviveFilteredList.remove(deviceListPatchCounter);
+					deviceListPatchCounter--;
 				}
 			}
 		}
-		return list;
+		return deviveFilteredList;
 	}
 
 	/**
@@ -95,15 +95,15 @@ public class DeviceCalc {
 	 * @return list of String Ids
 	 */
 	public List<String> getFuntionsByDevicesFiltered() {
-		List<String> functions = new ArrayList<String>();
-		for (Device d : getDeviceListFiltered()) {
-			for (Function f : d.getFunctions()) {
-				if (!functions.contains(f.getFunctionId())) {
-					functions.add(f.getFunctionId());
+		List<String> filteredFunctions = new ArrayList<String>();
+		for (Device device : getDeviceListFiltered()) {
+			for (Function function : device.getFunctions()) {
+				if (!filteredFunctions.contains(function.getFunctionId())) {
+					filteredFunctions.add(function.getFunctionId());
 				}
 			}
 		}
-		return functions;
+		return filteredFunctions;
 	}
 
 	/**
@@ -112,15 +112,15 @@ public class DeviceCalc {
 	 * @return list of String Ids
 	 */
 	public List<String> getGroupsByDevicesFiltered() {
-		List<String> gruppen = new ArrayList<String>();
-		for (Device d : getDeviceListFiltered()) {
-			for (String group : d.getGroupIds()) {
-				if (!gruppen.contains(group)) {
-					gruppen.add(group);
+		List<String> filteredGroups = new ArrayList<String>();
+		for (Device device : getDeviceListFiltered()) {
+			for (String group : device.getGroupIds()) {
+				if (!filteredGroups.contains(group)) {
+					filteredGroups.add(group);
 				}
 			}
 		}
-		return gruppen;
+		return filteredGroups;
 	}
 
 	/**
@@ -129,15 +129,15 @@ public class DeviceCalc {
 	 * @return list of String Ids
 	 */
 	public List<String> getRoomsByDevicesFiltered() {
-		List<String> rooms = new ArrayList<String>();
-		for (Device d : getDeviceListFiltered()) {
-			for (String raum : d.getRoomIds()) {
-				if (!rooms.contains(raum)) {
-					rooms.add(raum);
+		List<String> filteredRooms = new ArrayList<String>();
+		for (Device device : getDeviceListFiltered()) {
+			for (String room : device.getRoomIds()) {
+				if (!filteredRooms.contains(room)) {
+					filteredRooms.add(room);
 				}
 			}
 		}
-		return rooms;
+		return filteredRooms;
 	}
 
 	/**
@@ -158,23 +158,23 @@ public class DeviceCalc {
 			}
 		}
 		if (filter.getFunctionIds() != null && !filter.getFunctionIds().isEmpty()) {
-			boolean matchingFunctions = false;
-			for (Function func : device.getFunctions()) {
-				if (filter.getFunctionIds().contains(func.getFunctionId())) {
-					matchingFunctions = true;
+			boolean deviceFunctionsContaintsFunction = false;
+			for (Function function : device.getFunctions()) {
+				if (filter.getFunctionIds().contains(function.getFunctionId())) {
+					deviceFunctionsContaintsFunction = true;
 				} else {
 					// check also for inheritance
 					for (String filterFunction : filter.getFunctionIds()) {						
-						Class<?> c = MappingHelper.findFunctionClassByFunctionId(filterFunction);
-						if (c == null) continue;
+						Class<?> mappedClassbyFunctionId = MappingHelper.findFunctionClassByFunctionId(filterFunction);
+						if (mappedClassbyFunctionId == null) continue;
 						
-						if (c.isInstance(func)) {
-							matchingFunctions = true;
+						if (mappedClassbyFunctionId.isInstance(function)) {
+							deviceFunctionsContaintsFunction = true;
 						}
 					}
 				}
 			}
-			if (!matchingFunctions) {
+			if (!deviceFunctionsContaintsFunction) {
 				return false;
 			}
 		}
