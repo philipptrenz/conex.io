@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.util.NameTransformer;
 
 import io.swagger.RFC3339DateFormat;
 import mapping.MappingHelper;
@@ -20,11 +19,15 @@ import mapping.exceptions.NoValidKeyPathException;
  * 
  * This class validates the incoming FHEM device from jsonlist2 as JSON to fit the requirements
  * to get mapped defined in the FHEM module description (json file).
+ * 
+ * @author Philipp Trenz
  */
 public class ValueExtractor {
 	
+	/** The log. */
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
+	/** The log info. */
 	private String log_info = "";
 	
 	/**
@@ -32,9 +35,11 @@ public class ValueExtractor {
 	 *
 	 * @param jsonlist2Device the jsonlist 2 device
 	 * @param property the property
+	 * @param propertyName the property name
+	 * @param function the function
+	 * @param log_info the log info
 	 * @return the string
 	 */
-	
 	public String extractValue(JsonNode jsonlist2Device, JsonNode property, String propertyName, Object function, String log_info) {		
 		
 		String key_path = property.get("key_path").asText();
@@ -55,11 +60,19 @@ public class ValueExtractor {
 	}
 	
 	
-	/*
+	/**
+	 * Extract value.
+	 * 
 	 * BE AWARE: If string is null it will be rejected. To set property value null set string = "null"!
+	 *
+	 * @param unmappedDeviceValue the unmapped device value
+	 * @param property the property
+	 * @param propertyName the property name
+	 * @param function the function
+	 * @param log_info the log info
+	 * @return the string
 	 */
 	public String extractValue(String unmappedDeviceValue, JsonNode property, String propertyName, Object function, String log_info) {
-		
 		this.log_info = log_info+", propertyName: "+propertyName+", function: "+function.getClass().getSimpleName();
 		
 		// watch for property name
@@ -99,19 +112,17 @@ public class ValueExtractor {
 			return value;
 		}
 		
-		/*
-		 * TODO: 
-		 * 1. look which extract_mode is given and to which type will be mapped
-		 * 2. choose correct extraction method
-		 * 3. extract and convert value to Java (for validation)
-		 * 4. convert to string and return
-		 * 
-		 */
-		
 		String defaultValue = property.get("default").asText();
 		return defaultValue;
 	}
 	
+	/**
+	 * Gets the timestamp.
+	 *
+	 * @param unmappedDeviceValue the unmapped device value
+	 * @param property the property
+	 * @return the timestamp
+	 */
 	private String getTimestamp(String unmappedDeviceValue, JsonNode property) {
 		try {
 			String pattern = property.get("format").asText();
@@ -125,6 +136,15 @@ public class ValueExtractor {
 		}		
 	}
 	
+	/**
+	 * Mapping via mode: direct.
+	 *
+	 * @param mappingCase the mapping case
+	 * @param unmappedDeviceValue the unmapped device value
+	 * @param propertyName the property name
+	 * @param function the function
+	 * @return the string
+	 */
 	private String modeDirect(JsonNode mappingCase, String unmappedDeviceValue, String propertyName, Object function) {
 		ArrayNode regexList = (ArrayNode) mappingCase.get("regex");
 		for (JsonNode regex : regexList ) {
@@ -159,6 +179,15 @@ public class ValueExtractor {
 		return null;
 	}
 	
+	/**
+	 * Mapping via mode: constraint.
+	 *
+	 * @param mappingCase the mapping case
+	 * @param unmappedDeviceValue the unmapped device value
+	 * @param propertyName the property name
+	 * @param function the function
+	 * @return the string
+	 */
 	private String modeConstraint(JsonNode mappingCase, String unmappedDeviceValue, String propertyName, Object function) {
 		ArrayNode regexList = (ArrayNode) mappingCase.get("regex");
 		for (JsonNode regex : regexList) {
@@ -184,6 +213,15 @@ public class ValueExtractor {
 		return null;
 	}
 	
+	/**
+	 * Mapping via mode: range.
+	 *
+	 * @param mappingCase the mapping case
+	 * @param unmappedDeviceValue the unmapped device value
+	 * @param propertyName the property name
+	 * @param function the function
+	 * @return the string
+	 */
 	private String modeRange(JsonNode mappingCase, String unmappedDeviceValue, String propertyName, Object function) {
 		
 		try {
@@ -214,9 +252,5 @@ public class ValueExtractor {
 		}
 		
 	}
-	/*
-	private String modeColor(JsonNode mappingCase, String unmappedDeviceValue, String propertyName, Object function) {
-		
-	}*/
 
 }

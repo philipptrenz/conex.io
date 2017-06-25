@@ -13,11 +13,29 @@ import com.fasterxml.jackson.databind.JsonNode;
 import mapping.exceptions.NeededAnnotationOnModelNotAvailableException;
 import mapping.exceptions.NoValidKeyPathException;
 
+/**
+ * The Class MappingHelper.
+ * 
+ * This class provides several methods needed for mapping.
+ * 
+ * @author Philipp Trenz
+ */
 public class MappingHelper {
 	
+	/** The Constant log. */
 	private final static Logger log = LoggerFactory.getLogger(MappingHelper.class);
+	
+	/** The Constant MODEL_PACKAGE where models get generated to. */
 	private final static String MODEL_PACKAGE = "io.swagger.model";
 	
+	/**
+	 * Navigate json key path.
+	 *
+	 * @param node the node
+	 * @param path the path to the value
+	 * @return the json node
+	 * @throws NoValidKeyPathException the no valid key path exception
+	 */
 	public static JsonNode navigateJsonKeyPath(JsonNode node, String path) throws NoValidKeyPathException {
 		// remove whitespaces, linebreaks etc
 		path = path.replaceAll("\\r\\n|\\r|\\n", "").replace(" ", "");
@@ -34,6 +52,14 @@ public class MappingHelper {
 		return temp;
 	}
 	
+	/**
+	 * Gets the constraint value from function class annotation.
+	 *
+	 * @param type the type
+	 * @param propertyName the property name
+	 * @param function the function
+	 * @return the constraint value from function class annotation
+	 */
 	public static int getConstraintValueFromFunctionClassAnnotation(String type, String propertyName, Object function) {
 		try {
 			Method[] methods = function.getClass().getMethods();
@@ -60,6 +86,12 @@ public class MappingHelper {
 		return 0;
 	}
 	
+	/**
+	 * Find function class by function id.
+	 *
+	 * @param functionId the function id
+	 * @return the class
+	 */
 	public static Class<?> findFunctionClassByFunctionId(String functionId) {
 		try{
 			return Class.forName(MODEL_PACKAGE + "." + functionId);

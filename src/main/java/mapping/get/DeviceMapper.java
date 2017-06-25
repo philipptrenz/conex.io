@@ -14,29 +14,42 @@ import mapping.MappingHelper;
 import mapping.exceptions.NoValidKeyPathException;
 import mapping.get.functionMapper.FunctionMapper;
 
-/*
- * Class to load FHEM module descriptions
+/**
+ * The Class DeviceMapper.
  * 
- * TODO: Add caching for reduced IO-accesses
+ * This class maps the retrieved JSON objects to models.
+ * 
+ * @author Philipp Trenz
  */
 public class DeviceMapper {
 	
+	/** The func mapper. */
 	private FunctionMapper funcMapper;
+	
+	/** The loader. */
 	private ModuleDescriptionLoader loader;
 	
+	/** The log. */
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	
+	/** The log info. */
 	private String log_info = "";
 	
-	/*
-	 * Constructor
+	/**
+	 * Instantiates a new device mapper.
+	 *
+	 * @param loader the loader
 	 */
 	public DeviceMapper(ModuleDescriptionLoader loader) {
 		this.loader = loader;
 		this.funcMapper = new FunctionMapper();
 	}
 	
-	/*
-	 * 
+	/**
+	 * Map json to device.
+	 *
+	 * @param jsonlist2Device the jsonlist 2 device
+	 * @return the device
 	 */
 	public Device mapJsonToDevice(JsonNode jsonlist2Device)  {
 		
@@ -72,6 +85,13 @@ public class DeviceMapper {
 	
 	
 	
+	/**
+	 * Gets the device id.
+	 *
+	 * @param jsonlist2Device the jsonlist 2 device
+	 * @param moduleDescription the module description
+	 * @return the device id
+	 */
 	private String getDeviceId(JsonNode jsonlist2Device, JsonNode moduleDescription) {
 		JsonNode mappingDescription = moduleDescription.get("device_id");
 		String id = null;
@@ -85,6 +105,13 @@ public class DeviceMapper {
 		return id;
 	}
 	
+	/**
+	 * Gets the type id.
+	 *
+	 * @param jsonlist2Device the jsonlist 2 device
+	 * @param moduleDescription the module description
+	 * @return the type id
+	 */
 	private String getTypeId(JsonNode jsonlist2Device, JsonNode moduleDescription) {
 		JsonNode mappingDescription = moduleDescription.get("type_id");
 		String id = null;
@@ -98,6 +125,13 @@ public class DeviceMapper {
 		return id;
 	}
 	
+	/**
+	 * Gets the room ids.
+	 *
+	 * @param jsonlist2Device the jsonlist 2 device
+	 * @param moduleDescription the module description
+	 * @return the room ids
+	 */
 	private List<String> getRoomIds(JsonNode jsonlist2Device, JsonNode moduleDescription) {
 		JsonNode mappingDescription = moduleDescription.get("rooms");
 		String string;
@@ -109,6 +143,13 @@ public class DeviceMapper {
 		return mapRoomIds(string, moduleDescription);
 	}
 	
+	/**
+	 * Map room ids.
+	 *
+	 * @param string the string
+	 * @param moduleDescription the module description
+	 * @return the list
+	 */
 	public List<String> mapRoomIds(String string, JsonNode moduleDescription) {
 		if (string != null && !string.isEmpty() && moduleDescription.has("rooms")) {
 			JsonNode mappingDescription = moduleDescription.get("rooms");
@@ -127,6 +168,13 @@ public class DeviceMapper {
 		}
 	}
 	
+	/**
+	 * Gets the group ids.
+	 *
+	 * @param jsonlist2Device the jsonlist 2 device
+	 * @param moduleDescription the module description
+	 * @return the group ids
+	 */
 	public List<String> getGroupIds(JsonNode jsonlist2Device, JsonNode moduleDescription) {
 		JsonNode mappingDescription = moduleDescription.get("groups");
 		String string;
@@ -139,6 +187,13 @@ public class DeviceMapper {
 		
 	}
 	
+	/**
+	 * Map group ids.
+	 *
+	 * @param string the string
+	 * @param moduleDescription the module description
+	 * @return the list
+	 */
 	public List<String> mapGroupIds(String string, JsonNode moduleDescription) {
 		if (string != null && !string.isEmpty() && moduleDescription.has("groups")) {
 			JsonNode mappingDescription = moduleDescription.get("groups");

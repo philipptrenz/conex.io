@@ -8,10 +8,27 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.model.Function;
 import mapping.MappingHelper;
 
+/**
+ * The Class FunctionValueToFHEMValueMapper.
+ * 
+ * This class maps function values from application format to FHEM format.
+ * 
+ * @author Philipp Trenz
+ */
 public class FunctionValueToFHEMValueMapper {
 	
+	/** The log. */
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
+	/**
+	 * Map function value to FHEM value.
+	 *
+	 * @param propertyName the property name
+	 * @param deviceValue the device value
+	 * @param valueDescription the value description
+	 * @param function the function
+	 * @return the string
+	 */
 	public String mapFunctionValueToFHEMValue(String propertyName, String deviceValue, JsonNode valueDescription, Function function) {
 		
 		String valueType = valueDescription.get("value_type").asText();
@@ -45,6 +62,15 @@ public class FunctionValueToFHEMValueMapper {
 		return null;
 	}
 	
+	/**
+	 * Mode direct.
+	 *
+	 * @param propertyName the property name
+	 * @param deviceValue the device value
+	 * @param mappingCase the mapping case
+	 * @param function the function
+	 * @return the string
+	 */
 	private String modeDirect(String propertyName, String deviceValue, JsonNode mappingCase, Function function) {
 		
 		if (deviceValue.equals(mappingCase.get("value").asText())) {
@@ -54,6 +80,16 @@ public class FunctionValueToFHEMValueMapper {
 		return null;
 	}
 	
+	/**
+	 * Mode from to.
+	 *
+	 * @param propertyName the property name
+	 * @param functionValue the function value
+	 * @param mappingCase the mapping case
+	 * @param function the function
+	 * @param valueType the value type
+	 * @return the string
+	 */
 	private String modeFromTo(String propertyName, String functionValue, JsonNode mappingCase, Function function, String valueType) {
 		
 		int minimumDestinationValue = mappingCase.get("minimum").asInt();
@@ -93,6 +129,16 @@ public class FunctionValueToFHEMValueMapper {
 		return null;
 	}	
 	
+/**
+ * Mode range.
+ *
+ * @param propertyName the property name
+ * @param functionValue the function value
+ * @param mappingCase the mapping case
+ * @param function the function
+ * @param valueType the value type
+ * @return the string
+ */
 private String modeRange(String propertyName, String functionValue, JsonNode mappingCase, Function function, String valueType) {
 		
 		int minimumDestinationValue = mappingCase.get("minimum").asInt();

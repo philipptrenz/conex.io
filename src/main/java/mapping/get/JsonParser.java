@@ -15,14 +15,31 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import io.swagger.model.Device;
 
+/**
+ * The Class JsonParser.
+ * 
+ * This class parses the via FHEM command 'jsonlist2'
+ * retrieved JSON.
+ * 
+ * @author Philipp Trenz
+ */
 public class JsonParser {
 	
+	/** The log. */
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
+	/** The reader. */
 	private ObjectReader reader;
+	
+	/** The mapper. */
 	private DeviceMapper mapper;
+	
+	/** The loader. */
 	private ModuleDescriptionLoader loader;
 	
+	/**
+	 * Instantiates a new json parser.
+	 */
 	public JsonParser() {
 		
 		this.reader = new ObjectMapper().reader();
@@ -31,6 +48,12 @@ public class JsonParser {
 
 	}
 	
+	/**
+	 * Parses the.
+	 *
+	 * @param jsonlist2 the jsonlist 2
+	 * @return the array list
+	 */
 	public ArrayList<Device> parse(String jsonlist2) {
 		
 		ArrayList<Device> deviceList = new ArrayList<>();

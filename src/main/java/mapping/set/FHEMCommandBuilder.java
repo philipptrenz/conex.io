@@ -18,15 +18,31 @@ import io.swagger.model.Function;
 import mapping.MappingHelper;
 import mapping.get.ModuleDescriptionLoader;
 
+/**
+ * The Class FHEMCommandBuilder.
+ * 
+ * This class generates valid FHEM commands based on retrieved filter and function objects 
+ * at the 'PATCH /devices' endpoint and the module function descriptions.
+ * 
+ * @author Philipp Trenz
+ */
 public class FHEMCommandBuilder {
 
+	/** The log. */
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
+	/** The loader. */
 	private ModuleDescriptionLoader loader;
+	
+	/** The mapper. */
 	private ObjectMapper mapper;
 	
+	/** The function to FHEM value mapper. */
 	private FunctionValueToFHEMValueMapper functionToFHEMValueMapper;
 	
+	/**
+	 * Instantiates a new FHEM command builder.
+	 */
 	public FHEMCommandBuilder() {
 		
 		this.loader = new ModuleDescriptionLoader();
@@ -36,6 +52,13 @@ public class FHEMCommandBuilder {
 		this.functionToFHEMValueMapper = new FunctionValueToFHEMValueMapper();
 	}
 
+	/**
+	 * Builds the command.
+	 *
+	 * @param devices the devices
+	 * @param functionValuesToSet the function values to set
+	 * @return the string
+	 */
 	public String buildCommand(List<Device> devices, Function functionValuesToSet) {
 			
 		if (functionValuesToSet == null) return null;
@@ -64,6 +87,12 @@ public class FHEMCommandBuilder {
 		return concatCommandList(commands);
 	}
 	
+	/**
+	 * Concatenate command list.
+	 *
+	 * @param commandList the command list
+	 * @return the string
+	 */
 	private String concatCommandList(List<String> commandList) {
 		
 		String command = "";
@@ -76,6 +105,14 @@ public class FHEMCommandBuilder {
 		return command;
 	}
 	
+	/**
+	 * Builds the command for values.
+	 *
+	 * @param function the function
+	 * @param concatenatedDeviceIds the concatenated device ids
+	 * @param deviceType the device type
+	 * @return the list
+	 */
 	private List<String> buildCommandForValues(Function function, String concatenatedDeviceIds, String deviceType){
 		
 		List<String> commands = new ArrayList<>();
@@ -124,6 +161,13 @@ public class FHEMCommandBuilder {
 		return commands;
 	}
 	
+	/**
+	 * Gets the value description.
+	 *
+	 * @param valueName the value name
+	 * @param descriptionProperties the description properties
+	 * @return the value description
+	 */
 	private JsonNode getValueDescription(String valueName, JsonNode descriptionProperties) {
 		for (JsonNode property : descriptionProperties) {
 			if (property.get("value_name").asText().equals(valueName)) {
@@ -135,6 +179,13 @@ public class FHEMCommandBuilder {
 		return null;
 	}
 	
+	/**
+	 * Gets the function description for setting properties.
+	 *
+	 * @param function the function
+	 * @param deviceType the device type
+	 * @return the function description for set
+	 */
 	private JsonNode getFunctionDescriptionForSet(Function function, String deviceType) {
 		JsonNode moduleDescription = loader.getModuleDescription(deviceType);
 		JsonNode setSection = moduleDescription.get("functions").get("set");
@@ -151,6 +202,13 @@ public class FHEMCommandBuilder {
 		return null;
 	}
 	
+	/**
+	 * Concatenates device ids by type_id.
+	 *
+	 * @param deviceList the device list
+	 * @param functionClass the function class
+	 * @return the map
+	 */
 	private Map<String, String> concatDeviceIdsByTypeId(List<Device> deviceList, Class<?> functionClass){
 		Map<String, String> deviceIdsByTypeIdMap = new HashMap<>();
 		for (Device device : deviceList) {

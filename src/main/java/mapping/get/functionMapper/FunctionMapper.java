@@ -3,7 +3,6 @@ package mapping.get.functionMapper;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mapstruct.Mapping;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,19 +19,37 @@ import io.swagger.model.Function;
 import mapping.MappingHelper;
 import mapping.get.WebsocketDeviceUpdateMessage;
 
+/**
+ * The Class FunctionMapper.
+ * 
+ * This class maps the FHEM values to function models (OnOff, Dimmer, ...).
+ * 
+ * @author Philipp Trenz
+ */
 public class FunctionMapper {
 	
+	/** The mapper. */
 	private ObjectMapper mapper;
+	
+	/** The requirements validator. */
 	private RequirementsValidator requirementsValidator;
+	
+	/** The extractor. */
 	private ValueExtractor extractor;
 	
+	/** The mapping helper. */
 	@Autowired
     public MappingHelper mappingHelper;
 	
+	/** The log info. */
 	private String log_info = "";
 	
+	/** The log. */
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
+	/**
+	 * Instantiates a new function mapper.
+	 */
 	public FunctionMapper() {
 		this.mapper = new ObjectMapper();
 		this.requirementsValidator = new RequirementsValidator();
@@ -42,6 +59,14 @@ public class FunctionMapper {
 		mapper.registerModule(new JodaModule());
 	}
 	
+	/**
+	 * Map json to functions.
+	 *
+	 * @param json the json
+	 * @param moduleDescription the module description
+	 * @param log_info the log info
+	 * @return the list
+	 */
 	/*
 	 * This function maps values from jsonlist2 to conex.io Functions
 	 */
@@ -63,6 +88,13 @@ public class FunctionMapper {
 		return list;
 	}
 	
+	/**
+	 * Map function.
+	 *
+	 * @param funcDescription the func description
+	 * @param json the json
+	 * @return the function
+	 */
 	private Function mapFunction(JsonNode funcDescription, JsonNode json){
 
 		try {
@@ -103,6 +135,15 @@ public class FunctionMapper {
 			
 	}
 	
+	/**
+	 * Map websocket values to function.
+	 *
+	 * @param device the device
+	 * @param message the message
+	 * @param moduleDescription the module description
+	 * @param log_info the log info
+	 * @return true, if successful
+	 */
 	/*
 	 * This function maps values from websocket connection to conex.io Functions
 	 */

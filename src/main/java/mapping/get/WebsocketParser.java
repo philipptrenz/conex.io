@@ -16,22 +16,47 @@ import io.swagger.model.Device;
 import mapping.FHEMConnector;
 import mapping.get.functionMapper.FunctionMapper;
 
+/**
+ * The Class WebsocketParser.
+ * 
+ * This class parses FHEM updates received via websockets and 
+ * updates internal values of devices.
+ * 
+ * @author Philipp Trenz
+ */
 public class WebsocketParser {
 	
+	/** The log. */
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
+	/** The loader. */
 	private ModuleDescriptionLoader loader;
+	
+	/** The mapper. */
 	private FunctionMapper mapper;
+	
+	/** The device mapper. */
 	private DeviceMapper deviceMapper;
 	
+	/** The log info. */
 	private String log_info = "";
 	
+	/**
+	 * Instantiates a new websocket parser.
+	 */
 	public WebsocketParser() {
 		this.loader = new ModuleDescriptionLoader();
 		this.mapper = new FunctionMapper();
 		this.deviceMapper = new DeviceMapper(loader);
 	}
 	
+	/**
+	 * Update.
+	 *
+	 * @param websocketMessage the websocket message
+	 * @param deviceMap the device map
+	 * @param connector the connector
+	 */
 	public void update(String websocketMessage, Map<String, Device> deviceMap, FHEMConnector connector) {
 		
 		
@@ -89,6 +114,12 @@ public class WebsocketParser {
 		}
 	}
 
+	/**
+	 * Parses the websocket message.
+	 *
+	 * @param message the message
+	 * @return the list
+	 */
 	private List<WebsocketDeviceUpdateMessage> parseWebsocketMessage(String message) {
 		
 		List<WebsocketDeviceUpdateMessage> deviceUpdateMessages = new ArrayList<>();
@@ -149,10 +180,26 @@ public class WebsocketParser {
 		return deviceUpdateMessages;
 	}
 	
+	/**
+	 * Checks if message is parsable.
+	 *
+	 * @param message the message
+	 * @return true, if is parsable
+	 */
 	private boolean isParsable(WebsocketDeviceUpdateMessage message) {
 		return (message != null && message.deviceId != null && !message.deviceId.isEmpty() && message.reading != null && !message.reading.isEmpty() && message.value != null && !message.value.isEmpty() && message.timestamp != null && !message.timestamp.isEmpty());
 	}
 	
+	/**
+	 * Handle FHEM global event.
+	 * 
+	 * FHEM fires global events which get handled here. I.e. at a 'SAVE' 
+	 * event we assume devices have been added or deleted so we trigger 
+	 * a reload of all data from FHEM.
+	 *
+	 * @param updateMessage the update message
+	 * @param connector the connector
+	 */
 	private void handleFHEMGlobalEvent(WebsocketDeviceUpdateMessage updateMessage, FHEMConnector connector) {
 		switch(updateMessage.reading) {
 		
@@ -208,6 +255,11 @@ public class WebsocketParser {
 		}
 	}
 	
+	/**
+	 * Reload fhem data.
+	 *
+	 * @param connector the connector
+	 */
 	private void reloadFhemData(FHEMConnector connector) {
 		try {
 			connector.reload();
