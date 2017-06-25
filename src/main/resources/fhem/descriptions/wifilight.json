@@ -64,70 +64,8 @@
 						"format": "yyyy-MM-dd HH:mm:ss"
 					}
 				]
-			},
-			{
-				"function_id": "ColorDimmer",
-				"requirements": [
-					{
-						"mode": "one_of",
-						"key_path": "Attributes/subType",
-						"attributes": [
-							"colordimmer",
-							"extcolordimmer"
-						]
-					}
-				],
-				"properties": [
-					{
-						"value_name": "hue",
-						"value_type": "integer",
-						"default": 0,
-						"key_path": "Readings/hue/Value",
-						"cases": [
-							{
-								"extract_mode": "range",
-								"minimum": 0,
-								"maximum": 360,
-								"regex": "(.*)"
-							}
-						]
-					},
-					{
-						"value_name": "saturation",
-						"value_type": "integer",
-						"default": 0,
-						"key_path": "Readings/saturation/Value",
-						"cases": [
-							{
-								"extract_mode": "range",
-								"minimum": 0,
-								"maximum": 100,
-								"regex": "(.*)"
-							}
-						]
-					},
-					{
-						"value_name": "value",
-						"value_type": "integer",
-						"default": 0,
-						"key_path": "Readings/brightness/Value",
-						"cases": [
-							{
-								"extract_mode": "range",
-								"minimum": 0,
-								"maximum": 100,
-								"regex": "(.*)"
-							}
-						]
-					},
-					{
-						"value_name": "timestamp",
-						"value_type": "date-time",
-						"key_path": "Readings/brightness/Time",
-						"format": "yyyy-MM-dd HH:mm:ss"
-					}
-				]
 			}
+			
 		],
 		"set": [
 			{
