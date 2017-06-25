@@ -6,8 +6,16 @@ import java.util.List;
 import io.swagger.model.Device;
 import io.swagger.model.Function;
 
+/**
+ * The Class DeviceMockup.
+ */
 public class DeviceMockup {
 
+/**
+ * Gets the devices mockup.
+ *
+ * @return the devices mockup
+ */
 public static List<Device> getDevicesMockup() {
 		
 		List<Device> deviceList = new ArrayList<Device>();

@@ -12,18 +12,25 @@ import io.swagger.model.Filter;
 import io.swagger.model.Function;
 import mapping.MappingHelper;
 
+/**
+ * The Class DeviceCalc.
+ */
 public class DeviceCalc {
 
+	/** The log. */
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
+	/** The filter. */
 	private Filter filter;
+	
+	/** The filtered devices. */
 	private List<Device> filteredDevices;
 
 	/**
-	 * Set's the Filter-Object and get the Devices from Mapping layer
-	 * 
-	 * @param filter
-	 *            Filter-Object
+	 * Set's the Filter-Object and get the Devices from Mapping layer.
+	 *
+	 * @param filter            Filter-Object
+	 * @param geraete the geraete
 	 */
 	public DeviceCalc(Filter filter, List<Device> geraete) {
 		if (filter != null) {
@@ -56,6 +63,12 @@ public class DeviceCalc {
 		return ausgabe;
 	}
 
+	/**
+	 * Gets the device list filtering with patcher function.
+	 *
+	 * @param function the function
+	 * @return the device list filtering with patcher function
+	 */
 	public List<Device> getDeviceListFilteringWithPatcherFunction(Function function) {
 		if (function == null || function.getFunctionId() == null) {
 			function = new Function();
@@ -90,8 +103,8 @@ public class DeviceCalc {
 	}
 
 	/**
-	 * Filtering function for endpoint /functions
-	 * 
+	 * Filtering function for endpoint /functions.
+	 *
 	 * @return list of String Ids
 	 */
 	public List<String> getFuntionsByDevicesFiltered() {
@@ -107,8 +120,8 @@ public class DeviceCalc {
 	}
 
 	/**
-	 * Filtering groups for endpoint /groups
-	 * 
+	 * Filtering groups for endpoint /groups.
+	 *
 	 * @return list of String Ids
 	 */
 	public List<String> getGroupsByDevicesFiltered() {
@@ -124,8 +137,8 @@ public class DeviceCalc {
 	}
 
 	/**
-	 * Filtering rooms for endpoint /rooms
-	 * 
+	 * Filtering rooms for endpoint /rooms.
+	 *
 	 * @return list of String Ids
 	 */
 	public List<String> getRoomsByDevicesFiltered() {
@@ -142,12 +155,10 @@ public class DeviceCalc {
 
 	/**
 	 * Checks if a device matching all required filter attributes of the object
-	 * filter
-	 * 
-	 * @param device
-	 *            = The object to be filtered
-	 * @param filter
-	 *            = The filter object
+	 * filter.
+	 *
+	 * @param device            = The object to be filtered
+	 * @param filter            = The filter object
 	 * @return true if the device matches all required filter attributes.
 	 *         Otherwise return false
 	 */
@@ -191,6 +202,12 @@ public class DeviceCalc {
 		return true;
 	}
 
+	/**
+	 * Filter is empty.
+	 *
+	 * @param filter the filter
+	 * @return true, if successful
+	 */
 	private boolean filterIsEmpty(Filter filter) {
 
 		boolean devicesAreEmpty = (filter.getDeviceIds() == null || filter.getDeviceIds().isEmpty());
