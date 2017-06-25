@@ -1,0 +1,13 @@
+io.swagger
+io.swagger.api
+io.swagger.api.calc
+io.swagger.calc.test
+io.swagger.configuration
+io.swagger.exception
+io.swagger.model
+mapping
+mapping.errors
+mapping.exceptions
+mapping.get
+mapping.get.functionMapper
+mapping.set
