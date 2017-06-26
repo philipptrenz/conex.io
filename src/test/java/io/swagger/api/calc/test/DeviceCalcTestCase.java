@@ -1,10 +1,9 @@
-package io.swagger.calc.test;
+package io.swagger.api.calc.test;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import io.swagger.api.calc.DeviceMockup;
 import io.swagger.model.Device;
 import io.swagger.model.Filter;
 import io.swagger.model.Function;
@@ -25,7 +24,7 @@ public class DeviceCalcTestCase {
 		else {
 			this.filter = new Filter();
 		}
-        this.allDevicesList = io.swagger.api.calc.DeviceMockup.getDevicesMockup();
+        this.allDevicesList = io.swagger.api.calc.test.DeviceMockup.getDevicesMockup();
 	}
 	/**
 	 * Filtering for all Devices and endpoint /devices. Iterates through all Filter-functions - if required.

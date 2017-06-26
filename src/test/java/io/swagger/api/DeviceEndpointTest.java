@@ -25,20 +25,29 @@ import io.swagger.model.Devices;
 import io.swagger.model.Filter;
 import io.swagger.model.Function;
 import io.swagger.model.Patcher;
+// TODO: Auto-generated Javadoc
+
 /**
- * @author Timo Schwan
+ * device endpoint testing cases.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = Swagger2SpringBoot.class)
 @WebAppConfiguration
 public class DeviceEndpointTest {
     
+    /** The rest template. */
     //@Autowired
     private TestRestTemplate restTemplate = new TestRestTemplate();
     
+    /** The api device endpoint url. */
     private final String apiDeviceEndpoint = "http://localhost:8080/v0/devices";
 
     
+    /**
+     * Check device endpoint by non-permitted http-methods.
+     *
+     * @throws Exception the exception
+     */
     @Test
     public void devicesEndpointNotPermittedHttpMethod() throws Exception {
     	List <String> searchRooms = Arrays.asList("testroom_0");
@@ -71,6 +80,11 @@ public class DeviceEndpointTest {
         assertThat(responseHead.getStatusCode(), is(HttpStatus.METHOD_NOT_ALLOWED));
     }
     
+    /**
+     * Get devices by non-json request.
+     *
+     * @throws Exception the exception
+     */
     @Test
     public void devicesPostEndpointNonJsonRequest() throws Exception {
         
@@ -84,9 +98,9 @@ public class DeviceEndpointTest {
     
     
     /**
-     * Gibt ein Gerät anhand aller Filterattribute zurück
-     * Status [Complete]
-     * @throws Exception
+     * Gets devices by all filters.
+     *
+     * @throws Exception the exception
      */
     @Test
     public void postDevicesByAllFilters() throws Exception {
@@ -114,6 +128,11 @@ public class DeviceEndpointTest {
         }
     }
     
+    /**
+     * Gets devices by device only filtering.
+     *
+     * @throws Exception the exception
+     */
     @Test
     public void postDevicesByDeviceFilter() throws Exception {
     	List <String> searchDevices = Arrays.asList("testdevice_0");
@@ -134,6 +153,11 @@ public class DeviceEndpointTest {
         }
     }
     
+    /**
+     * Gets devices by function filter only.
+     *
+     * @throws Exception the exception
+     */
     @Test
     public void postDevicesByFunctionFilter() throws Exception {
     	List <String> searchFunctions = Arrays.asList("testfunction_0");
@@ -154,6 +178,11 @@ public class DeviceEndpointTest {
         }
     }
     
+    /**
+     * Gets devices by group filter only.
+     *
+     * @throws Exception the exception
+     */
     @Test
     public void postDevicesByGroupFilter() throws Exception {
     	List <String> searchGroups = Arrays.asList("testgroup_11", "testgroup_12");
@@ -174,6 +203,11 @@ public class DeviceEndpointTest {
         }
     }
     
+    /**
+     * Gets devices by room filter only.
+     *
+     * @throws Exception the exception
+     */
     @Test
     public void postDevicesByRoomFilter() throws Exception {
     	List <String> searchRooms = Arrays.asList("testroom_10", "testroom_12");
@@ -193,6 +227,12 @@ public class DeviceEndpointTest {
         assertTrue(DeviceCalc.isDeviceMatchingFiltering(device, filter));
         }
     }
+    
+    /**
+     * Gets devices by multiple filters.
+     *
+     * @throws Exception the exception
+     */
     @Test
     public void postDevicesByMultipleFilters() throws Exception {
     	List <String> searchRooms = Arrays.asList("testroom_10");
@@ -214,6 +254,12 @@ public class DeviceEndpointTest {
         assertTrue(DeviceCalc.isDeviceMatchingFiltering(device, filter));
         }
     }
+    
+    /**
+     * Patch devices by function only.
+     *
+     * @throws Exception the exception
+     */
     @Test
     public void patchDevicesByFunctionOnly() throws Exception {
     	Function filter = new Function();
@@ -228,8 +274,14 @@ public class DeviceEndpointTest {
         
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
     }
+    
+    /**
+     * Patch devices by all filters.
+     *
+     * @throws Exception the exception
+     */
     @Test
-    public void patchDevicesByAllFitlers() throws Exception {
+    public void patchDevicesByAllFilters() throws Exception {
     	Function function = new Function();
     	function.setFunctionId("onoff");
     	

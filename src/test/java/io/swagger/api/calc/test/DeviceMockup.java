@@ -1,4 +1,4 @@
-package io.swagger.api.calc;
+package io.swagger.api.calc.test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,6 +6,7 @@ import java.util.List;
 import io.swagger.model.Device;
 import io.swagger.model.Function;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class DeviceMockup.
  */

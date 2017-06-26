@@ -21,7 +21,11 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import io.swagger.Swagger2SpringBoot;
 import io.swagger.model.Filter;
 import io.swagger.model.Ids;
+// TODO: Auto-generated Javadoc
+
 /**
+ * The Class RoomsEndpointTest.
+ *
  * @author Timo Schwan
  */
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -29,12 +33,19 @@ import io.swagger.model.Ids;
 @WebAppConfiguration
 public class RoomsEndpointTest {
     
+    /** The rest template. */
     //@Autowired
     private TestRestTemplate restTemplate = new TestRestTemplate();
     
+    /** The api rooms endpoint. */
     private String apiRoomsEndpoint = "http://localhost:8080/v0/rooms";
 
     
+    /**
+     * Rooms endpoint not permitted http method.
+     *
+     * @throws Exception the exception
+     */
     @Test
     public void roomsEndpointNotPermittedHttpMethod() throws Exception {
     	List <String> searchRooms = Arrays.asList("testroom_10");
@@ -72,6 +83,11 @@ public class RoomsEndpointTest {
         assertThat(responseHead.getStatusCode(), is(HttpStatus.METHOD_NOT_ALLOWED));
     }
     
+    /**
+     * Rooms endpoint non json request.
+     *
+     * @throws Exception the exception
+     */
     @Test
     public void roomsEndpointNonJsonRequest() throws Exception {
         
@@ -86,8 +102,10 @@ public class RoomsEndpointTest {
     
     /**
      * Gibt ein Gerät anhand aller Filterattribute zurück
-     * Status [Complete]
-     * @throws Exception
+     * Status [Complete].
+     *
+     * @return the rooms by all filters
+     * @throws Exception the exception
      */
     @Test
     public void getRoomsByAllFilters() throws Exception {
@@ -115,6 +133,12 @@ public class RoomsEndpointTest {
         assertTrue(roomIds.getIds().contains("testroom_11"));
     }
     
+    /**
+     * Gets the rooms by device filter.
+     *
+     * @return the rooms by device filter
+     * @throws Exception the exception
+     */
     @Test
     public void getRoomsByDeviceFilter() throws Exception {
     	List <String> searchDevices = Arrays.asList("testdevice_21");
@@ -134,6 +158,12 @@ public class RoomsEndpointTest {
         assertTrue(roomIds.getIds().contains("testroom_12"));
     }
     
+    /**
+     * Gets the rooms by function filter.
+     *
+     * @return the rooms by function filter
+     * @throws Exception the exception
+     */
     @Test
     public void getRoomsByFunctionFilter() throws Exception {
     	List <String> searchFunctions = Arrays.asList("testfunction_0", "testfunction_1");
@@ -155,6 +185,12 @@ public class RoomsEndpointTest {
         assertTrue(roomIds.getIds().contains("testroom_12"));
     }
     
+    /**
+     * Gets the rooms by group filter.
+     *
+     * @return the rooms by group filter
+     * @throws Exception the exception
+     */
     @Test
     public void getRoomsByGroupFilter() throws Exception {
     	List <String> searchGroups = Arrays.asList("testgroup_12");
@@ -174,6 +210,12 @@ public class RoomsEndpointTest {
         assertTrue(roomIds.getIds().contains("testroom_10"));
     }
     
+    /**
+     * Gets the rooms by room filter.
+     *
+     * @return the rooms by room filter
+     * @throws Exception the exception
+     */
     @Test
     public void getRoomsByRoomFilter() throws Exception {
     	List <String> searchRooms = Arrays.asList("testroom_11");
@@ -192,6 +234,13 @@ public class RoomsEndpointTest {
         
         assertTrue(roomIds.getIds().contains("testroom_11"));
     }
+    
+    /**
+     * Gets the rooms by multiple filters.
+     *
+     * @return the rooms by multiple filters
+     * @throws Exception the exception
+     */
     @Test
     public void getRoomsByMultipleFilters() throws Exception {
     	List <String> searchRooms = Arrays.asList("testroom_10");
