@@ -25,7 +25,7 @@ import io.swagger.model.Devices;
 import io.swagger.model.Filter;
 import io.swagger.model.Function;
 import io.swagger.model.Patcher;
-// TODO: Auto-generated Javadoc
+
 
 /**
  * device endpoint testing cases.

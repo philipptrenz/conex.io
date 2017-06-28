@@ -155,7 +155,6 @@ public class FunctionsEndpointTest {
     /**
      * Gets the functions by function filter.
      *
-     * @return the functions by function filter
      * @throws Exception the exception
      */
     @Test
@@ -181,7 +180,6 @@ public class FunctionsEndpointTest {
     /**
      * Gets the functions by group filter.
      *
-     * @return the functions by group filter
      * @throws Exception the exception
      */
     @Test
@@ -206,8 +204,7 @@ public class FunctionsEndpointTest {
     
     /**
      * Gets the functions by room filter.
-     *
-     * @return the functions by room filter
+     * 
      * @throws Exception the exception
      */
     @Test
@@ -232,7 +229,6 @@ public class FunctionsEndpointTest {
     /**
      * Gets the functions by multiple filters.
      *
-     * @return the functions by multiple filters
      * @throws Exception the exception
      */
     @Test

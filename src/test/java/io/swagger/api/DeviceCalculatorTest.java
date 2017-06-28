@@ -671,7 +671,6 @@ public class DeviceCalculatorTest {
 	/**
 	 * Gets no rooms.
 	 *
-	 * @return no rooms
 	 */
 	@Test
 	public void getNoRooms() {

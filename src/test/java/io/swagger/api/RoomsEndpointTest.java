@@ -21,12 +21,10 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import io.swagger.Swagger2SpringBoot;
 import io.swagger.model.Filter;
 import io.swagger.model.Ids;
-// TODO: Auto-generated Javadoc
+
 
 /**
- * The Class RoomsEndpointTest.
- *
- * @author Timo Schwan
+ * Rooms endpoint testing cases.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = Swagger2SpringBoot.class)
@@ -37,12 +35,12 @@ public class RoomsEndpointTest {
     //@Autowired
     private TestRestTemplate restTemplate = new TestRestTemplate();
     
-    /** The api rooms endpoint. */
+    /** The api rooms endpoint url. */
     private String apiRoomsEndpoint = "http://localhost:8080/v0/rooms";
 
     
     /**
-     * Rooms endpoint not permitted http method.
+     * Gets rooms by non-permitted http-methods.
      *
      * @throws Exception the exception
      */
@@ -84,7 +82,7 @@ public class RoomsEndpointTest {
     }
     
     /**
-     * Rooms endpoint non json request.
+     * Get rooms by non-json request.
      *
      * @throws Exception the exception
      */
@@ -101,10 +99,8 @@ public class RoomsEndpointTest {
     
     
     /**
-     * Gibt ein Gerät anhand aller Filterattribute zurück
-     * Status [Complete].
-     *
-     * @return the rooms by all filters
+     * Get rooms by all filters.
+     * 
      * @throws Exception the exception
      */
     @Test
@@ -134,9 +130,8 @@ public class RoomsEndpointTest {
     }
     
     /**
-     * Gets the rooms by device filter.
+     * Gets the rooms by device filter only.
      *
-     * @return the rooms by device filter
      * @throws Exception the exception
      */
     @Test
@@ -159,9 +154,8 @@ public class RoomsEndpointTest {
     }
     
     /**
-     * Gets the rooms by function filter.
+     * Gets the rooms by function filter only.
      *
-     * @return the rooms by function filter
      * @throws Exception the exception
      */
     @Test
@@ -186,9 +180,8 @@ public class RoomsEndpointTest {
     }
     
     /**
-     * Gets the rooms by group filter.
+     * Gets the rooms by group filter only.
      *
-     * @return the rooms by group filter
      * @throws Exception the exception
      */
     @Test
@@ -211,9 +204,8 @@ public class RoomsEndpointTest {
     }
     
     /**
-     * Gets the rooms by room filter.
+     * Gets the rooms by room filter only.
      *
-     * @return the rooms by room filter
      * @throws Exception the exception
      */
     @Test
@@ -238,7 +230,6 @@ public class RoomsEndpointTest {
     /**
      * Gets the rooms by multiple filters.
      *
-     * @return the rooms by multiple filters
      * @throws Exception the exception
      */
     @Test

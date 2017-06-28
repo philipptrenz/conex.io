@@ -21,12 +21,10 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import io.swagger.Swagger2SpringBoot;
 import io.swagger.model.Filter;
 import io.swagger.model.Ids;
-// TODO: Auto-generated Javadoc
+
 
 /**
- * The Class GroupsEndpointTest.
- *
- * @author Timo Schwan
+ * Groups endpoint testing cases.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = Swagger2SpringBoot.class)
@@ -37,7 +35,7 @@ public class GroupsEndpointTest {
     //@Autowired
     private TestRestTemplate restTemplate = new TestRestTemplate();
     
-    /** The api group endpoint. */
+    /** The api group endpoint url. */
     private String apiGroupEndpoint = "http://localhost:8080/v0/groups";
 
     
@@ -84,7 +82,7 @@ public class GroupsEndpointTest {
     }
     
     /**
-     * Groups endpoint non json request.
+     * Gets groups by non json request.
      *
      * @throws Exception the exception
      */
@@ -101,10 +99,8 @@ public class GroupsEndpointTest {
     
     
     /**
-     * Gibt ein Gerät anhand aller Filterattribute zurück
-     * Status [Complete].
-     *
-     * @return the groups by all filters
+     * Get groups by all filters.
+     * 
      * @throws Exception the exception
      */
     @Test
@@ -134,9 +130,8 @@ public class GroupsEndpointTest {
     }
     
     /**
-     * Gets the groups by device filter.
+     * Gets the groups by device filter only.
      *
-     * @return the groups by device filter
      * @throws Exception the exception
      */
     @Test
@@ -159,9 +154,8 @@ public class GroupsEndpointTest {
     }
     
     /**
-     * Gets the groups by function filter.
+     * Gets the groups by function filter only.
      *
-     * @return the groups by function filter
      * @throws Exception the exception
      */
     @Test
@@ -186,9 +180,8 @@ public class GroupsEndpointTest {
     }
     
     /**
-     * Gets the groups by group filter.
+     * Gets the groups by group filter only.
      *
-     * @return the groups by group filter
      * @throws Exception the exception
      */
     @Test
@@ -211,9 +204,8 @@ public class GroupsEndpointTest {
     }
     
     /**
-     * Gets the groups by room filter.
+     * Gets the groups by room filter only.
      *
-     * @return the groups by room filter
      * @throws Exception the exception
      */
     @Test
@@ -238,7 +230,6 @@ public class GroupsEndpointTest {
     /**
      * Gets the groups by multiple filters.
      *
-     * @return the groups by multiple filters
      * @throws Exception the exception
      */
     @Test
