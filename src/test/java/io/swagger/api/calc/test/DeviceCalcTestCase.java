@@ -1,21 +1,28 @@
-package io.swagger.calc.test;
+package io.swagger.api.calc.test;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import io.swagger.api.calc.DeviceMockup;
 import io.swagger.model.Device;
 import io.swagger.model.Filter;
 import io.swagger.model.Function;
 
+/**
+ * Device calculator for testing cases.
+ */
 public class DeviceCalcTestCase {
+	
+	/** The filter object. */
 	private Filter filter;
+	
+	/** All devices as list. */
 	private List<Device> allDevicesList;
 	
 
 	/**
-	 * Set's the Filter-Object and get the Devices from Mapping layer
+	 * Sets the filter-object and get the Devices from Mapping layer.
+	 *
 	 * @param filter Filter-Object
 	 */
 	public DeviceCalcTestCase(Filter filter) {
@@ -25,11 +32,11 @@ public class DeviceCalcTestCase {
 		else {
 			this.filter = new Filter();
 		}
-        this.allDevicesList = io.swagger.api.calc.DeviceMockup.getDevicesMockup();
+        this.allDevicesList = io.swagger.api.calc.test.DeviceMockup.getDevicesMockup();
 	}
 	/**
-	 * Filtering for all Devices and endpoint /devices. Iterates through all Filter-functions - if required.
-	 * @return list of Device's
+	 * Filtering for all devices for endpoint /devices. Iterates through all filter-functions - if required.
+	 * @return list of devices
 	 */
 	public List<Device> getDeviceListFiltered() {
 		List <Device> filteredDevicesResult;
@@ -47,6 +54,12 @@ public class DeviceCalcTestCase {
 		return filteredDevicesResult;
 	}
 	
+	/**
+	 * Gets the filtered device list with patcher function.
+	 *
+	 * @param function = the specific function
+	 * @return the filtered device list
+	 */
 	public List<Device> getDeviceListFilteringWithPatcherFunction(Function function) {
 		if(function == null || function.getFunctionId() == null) {
 			function = new Function();
@@ -74,9 +87,11 @@ public class DeviceCalcTestCase {
 			}
 		return filteredDevicesList;
 	}
+	
 	/**
-	 * Filtering function for endpoint /functions
-	 * @return list of String Ids
+	 * Filtering function for endpoint /functions.
+	 *
+	 * @return list of function_Ids
 	 */
 	public List<String> getFuntionsByDevicesFiltered() {
 		List<String> filteredFunctions = new ArrayList<String>();
@@ -91,8 +106,9 @@ public class DeviceCalcTestCase {
 	}
 	
 	/**
-	 * Filtering groups for endpoint /groups
-	 * @return list of String Ids
+	 * Filtering groups for endpoint /groups.
+	 *
+	 * @return list of group_Ids
 	 */
 	public List<String> getGroupsByDevicesFiltered() {
 		List<String> filteredGroups = new ArrayList<String>();
@@ -107,8 +123,9 @@ public class DeviceCalcTestCase {
 	}
 	
 	/**
-	 * Filtering rooms for endpoint /rooms
-	 * @return list of String Ids
+	 * Filtering rooms for endpoint /rooms.
+	 *
+	 * @return list of room_Ids
 	 */
 	public List<String> getRoomsByDevicesFiltered() {
 		List<String> filteredRooms = new ArrayList<String>();
@@ -121,8 +138,10 @@ public class DeviceCalcTestCase {
 		}
 		return filteredRooms;
 	}
+	
 	/**
-	 * Checks if a device matching all required filter attributes of the object filter
+	 * Checks if a device matching all required filter attributes of the object filter.
+	 *
 	 * @param device = The object to be filtered
 	 * @param filter = The filter object
 	 * @return true if the device matches all required filter attributes. Otherwise return false

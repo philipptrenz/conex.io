@@ -21,20 +21,28 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import io.swagger.Swagger2SpringBoot;
 import io.swagger.model.Filter;
 import io.swagger.model.Ids;
+
 /**
- * @author Timo Schwan
+ * Functions endpoint testing cases.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = Swagger2SpringBoot.class)
 @WebAppConfiguration
 public class FunctionsEndpointTest {
     
+    /** The rest template. */
     //@Autowired
     private TestRestTemplate restTemplate = new TestRestTemplate();
     
+    /** The api function endpoint url */
     private String apiFunctionEndpoint = "http://localhost:8080/v0/functions";
 
     
+    /**
+     * Check functions endpoint by non-permitted http-methods.
+     *
+     * @throws Exception the exception
+     */
     @Test
     public void functionsEndpointNotPermittedHttpMethod() throws Exception {
     	List <String> searchRooms = Arrays.asList("testroom_10");
@@ -72,6 +80,11 @@ public class FunctionsEndpointTest {
         assertThat(responseHead.getStatusCode(), is(HttpStatus.METHOD_NOT_ALLOWED));
     }
     
+    /**
+     * Check functions endpoint by non-json request.
+     *
+     * @throws Exception the exception
+     */
     @Test
     public void functionsEndpointNonJsonRequest() throws Exception {
         
@@ -85,9 +98,9 @@ public class FunctionsEndpointTest {
     
     
     /**
-     * Gibt ein Gerät anhand aller Filterattribute zurück
-     * Status [Complete]
-     * @throws Exception
+     * Get functions by all filters.
+     * 
+     * @throws Exception the exception
      */
     @Test
     public void getFunctionsByAllFilters() throws Exception {
@@ -115,6 +128,11 @@ public class FunctionsEndpointTest {
         assertTrue(functionIds.getIds().contains("testfunction_1"));
     }
     
+    /**
+     * Gets the functions by device filter.
+     *
+     * @throws Exception the exception
+     */
     @Test
     public void getFunctionsByDeviceFilter() throws Exception {
     	List <String> searchDevices = Arrays.asList("testdevice_21");
@@ -134,6 +152,11 @@ public class FunctionsEndpointTest {
         assertTrue(functionIds.getIds().contains("testfunction_0"));
     }
     
+    /**
+     * Gets the functions by function filter.
+     *
+     * @throws Exception the exception
+     */
     @Test
     public void getFunctionsByFunctionFilter() throws Exception {
     	List <String> searchFunctions = Arrays.asList("testfunction_0", "testfunction_1");
@@ -154,6 +177,11 @@ public class FunctionsEndpointTest {
         assertTrue(functionIds.getIds().contains("testfunction_1"));
     }
     
+    /**
+     * Gets the functions by group filter.
+     *
+     * @throws Exception the exception
+     */
     @Test
     public void getFunctionsByGroupFilter() throws Exception {
     	List <String> searchGroups = Arrays.asList("testgroup_11");
@@ -174,6 +202,11 @@ public class FunctionsEndpointTest {
         assertTrue(functionIds.getIds().contains("testfunction_1"));
     }
     
+    /**
+     * Gets the functions by room filter.
+     * 
+     * @throws Exception the exception
+     */
     @Test
     public void getFunctionsByRoomFilter() throws Exception {
     	List <String> searchRooms = Arrays.asList("testroom_10");
@@ -192,6 +225,12 @@ public class FunctionsEndpointTest {
         
         assertTrue(functionIds.getIds().contains("testfunction_1"));
     }
+    
+    /**
+     * Gets the functions by multiple filters.
+     *
+     * @throws Exception the exception
+     */
     @Test
     public void getFunctionsByMultipleFilters() throws Exception {
     	List <String> searchRooms = Arrays.asList("testroom_11");

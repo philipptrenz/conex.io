@@ -1,4 +1,4 @@
-package io.swagger.api.calc;
+package io.swagger.api.calc.test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,14 +7,14 @@ import io.swagger.model.Device;
 import io.swagger.model.Function;
 
 /**
- * The Class DeviceMockup.
+ * Devices mockup for endpoint testing cases.
  */
 public class DeviceMockup {
 
 /**
  * Gets the devices mockup.
  *
- * @return the devices mockup
+ * @return the devices mockup list
  */
 public static List<Device> getDevicesMockup() {
 		

@@ -21,20 +21,29 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import io.swagger.Swagger2SpringBoot;
 import io.swagger.model.Filter;
 import io.swagger.model.Ids;
+
+
 /**
- * @author Timo Schwan
+ * Groups endpoint testing cases.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = Swagger2SpringBoot.class)
 @WebAppConfiguration
 public class GroupsEndpointTest {
     
+    /** The rest template. */
     //@Autowired
     private TestRestTemplate restTemplate = new TestRestTemplate();
     
+    /** The api group endpoint url. */
     private String apiGroupEndpoint = "http://localhost:8080/v0/groups";
 
     
+    /**
+     * Groups endpoint not permitted http method.
+     *
+     * @throws Exception the exception
+     */
     @Test
     public void groupsEndpointNotPermittedHttpMethod() throws Exception {
     	List <String> searchRooms = Arrays.asList("testroom_11");
@@ -72,6 +81,11 @@ public class GroupsEndpointTest {
         assertThat(responseHead.getStatusCode(), is(HttpStatus.METHOD_NOT_ALLOWED));
     }
     
+    /**
+     * Gets groups by non json request.
+     *
+     * @throws Exception the exception
+     */
     @Test
     public void groupsEndpointNonJsonRequest() throws Exception {
         
@@ -85,9 +99,9 @@ public class GroupsEndpointTest {
     
     
     /**
-     * Gibt ein Gerät anhand aller Filterattribute zurück
-     * Status [Complete]
-     * @throws Exception
+     * Get groups by all filters.
+     * 
+     * @throws Exception the exception
      */
     @Test
     public void getGroupsByAllFilters() throws Exception {
@@ -115,6 +129,11 @@ public class GroupsEndpointTest {
         assertTrue(groupIds.getIds().contains("testgroup_10"));
     }
     
+    /**
+     * Gets the groups by device filter only.
+     *
+     * @throws Exception the exception
+     */
     @Test
     public void getGroupsByDeviceFilter() throws Exception {
     	List <String> searchDevices = Arrays.asList("testdevice_21");
@@ -134,6 +153,11 @@ public class GroupsEndpointTest {
         assertTrue(groupIds.getIds().contains("testgroup_12"));
     }
     
+    /**
+     * Gets the groups by function filter only.
+     *
+     * @throws Exception the exception
+     */
     @Test
     public void getGroupsByFunctionFilter() throws Exception {
     	List <String> searchFunctions = Arrays.asList("testfunction_0", "testfunction_1");
@@ -155,6 +179,11 @@ public class GroupsEndpointTest {
         assertTrue(groupIds.getIds().contains("testgroup_12"));
     }
     
+    /**
+     * Gets the groups by group filter only.
+     *
+     * @throws Exception the exception
+     */
     @Test
     public void getGroupsByGroupFilter() throws Exception {
     	List <String> searchGroups = Arrays.asList("testgroup_11");
@@ -174,6 +203,11 @@ public class GroupsEndpointTest {
         assertTrue(groupIds.getIds().contains("testgroup_11"));
     }
     
+    /**
+     * Gets the groups by room filter only.
+     *
+     * @throws Exception the exception
+     */
     @Test
     public void getGroupsByRoomFilter() throws Exception {
     	List <String> searchRooms = Arrays.asList("testroom_11");
@@ -192,6 +226,12 @@ public class GroupsEndpointTest {
         
         assertTrue(functionIds.getIds().contains("testgroup_12"));
     }
+    
+    /**
+     * Gets the groups by multiple filters.
+     *
+     * @throws Exception the exception
+     */
     @Test
     public void getGroupsByMultipleFilters() throws Exception {
     	List <String> searchRooms = Arrays.asList("testroom_12");

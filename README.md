@@ -10,12 +10,12 @@ This is a prototypical implemementation for the home automation server [FHEM](ht
 
 ## Get started
 
-The API uses `jsonlist2` and the longpoll mode `websocket` to connect to your FHEM installation.
+The API uses `jsonlist2` and the longpoll mode `websocket` from the FHEM module `FHEMWEB` to connect to your FHEM installation.
 Therefor define a new FHEMWEB device, set attributes `longpoll` to `websocket` and `csrfToken` to `none` (current workaround).
 
 * Install Java 8, Maven and git
 * Clone repo with `git clone https://github.com/philipptrenz/conex.io/` and switch to this folder
-* Open `/src/main/java/resources/application.properties` and configure `fhem.url`, `fhem.port` and credentials (optional) to your FHEM installation
+* Open `src/main/java/resources/application.properties` and configure `fhem.url`, `fhem.port` as well as the optional credentials to your FHEM installation
 * Run with `mvn spring-boot:run`
 
 The software fetches all devices via `jsonlist2` on boot and receives updates by `longpoll`. Also on global events (fhem.cfg saved, new devices installed, ...) all data gets updated with `jsonlist2` to stay in sync, no reboot is required.
