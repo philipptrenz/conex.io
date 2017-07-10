@@ -70,7 +70,7 @@ public class DeviceCalc {
 	 * @return the device list filtering with patcher function
 	 */
 	public List<Device> getDeviceListFilteringWithPatcherFunction(Function function) {
-		if (function == null || function.getFunctionId() == null) {
+		if (function == null || function != null || function.getFunctionId() == null) {
 			function = new Function();
 			function.setFunctionId("null");
 		}
