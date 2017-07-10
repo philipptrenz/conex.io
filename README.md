@@ -4,9 +4,7 @@ The conex.io API provides the functionality to interact with home automation dev
 
 This is a prototypical implemementation for the home automation server [FHEM](https://fhem.de/).
 
-## Overview  
-
-...
+**For further information take a look at the Wiki!**
 
 ## Get started
 
@@ -20,6 +18,7 @@ Therefor define a new FHEMWEB device, set attributes `longpoll` to `websocket` a
 *NOTE:* If you encounter any problems with tests by packaging with the tests use `mvn package -Dmaven.test.skip=true`
 
 The software fetches all devices via `jsonlist2` on boot and receives updates by `longpoll`. Also on global events (fhem.cfg saved, new devices installed, ...) all data gets updated with `jsonlist2` to stay in sync, no reboot is required.
+
 
 ## Helpful notes
 
