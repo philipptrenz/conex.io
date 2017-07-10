@@ -30,11 +30,16 @@ public class DevicesApiController implements DevicesApi {
      * @see io.swagger.api.DevicesApi#devicesPatch(io.swagger.model.Patcher)
      */
     public ResponseEntity<Void> devicesPatch(@ApiParam(value = "Filter object with function values" ,required=true ) @RequestBody Patcher patcher) throws HomeAutomationServerNotReachableException{
-    	DeviceCalc calc = new DeviceCalc(patcher.getFilter(), connector.getDevices());
+    	if(patcher.getFilter() != null && patcher.getFunction() != null) {
+    		DeviceCalc calc = new DeviceCalc(patcher.getFilter(), connector.getDevices());
         Devices list = new Devices();
         list.setDevices(calc.getDeviceListFilteringWithPatcherFunction(patcher.getFunction()));
         connector.setDevices(list.getDevices(), patcher.getFunction());
         return new ResponseEntity<Void>(HttpStatus.OK);
+    	}
+    	else {
+    		return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+    	}
     }
 
     /* (non-Javadoc)
