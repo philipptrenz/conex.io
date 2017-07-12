@@ -28,6 +28,6 @@ This API was partly generated using the [swagger-codegen](https://github.com/swa
 
 The underlying library integrating swagger to SpringBoot is [springfox](https://github.com/springfox/springfox)  
 
-You can view the api documentation in the swagger-ui: http://<ip-of-your-device>:8080/v0/
+You can view the api documentation in the swagger-ui: http://\<ip-of-your-device\>:8080/v0/
 
 Change the default api port value in the application.properties.
