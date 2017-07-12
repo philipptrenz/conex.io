@@ -1,6 +1,8 @@
 <img src="img/logo.png" alt="our logo" width="400">
 
-The conex.io API provides the functionality to interact with home automation devices, which are connected to a home automation server, detached from the manufacturer specific communication syntax.
+The conex.io project provides an API to interact with home automation devices, which are connected to a home automation server, detached from the manufacturer specific communication syntax. 
+
+Therefore devices with their different value definitions get abstracted from the home automation server and unified to make them available at a easy to use RESTlike API for developers of home automation applications.
 
 This is a prototypical implemementation for the home automation server [FHEM](https://fhem.de/).
 
@@ -26,6 +28,6 @@ This API was partly generated using the [swagger-codegen](https://github.com/swa
 
 The underlying library integrating swagger to SpringBoot is [springfox](https://github.com/springfox/springfox)  
 
-You can view the api documentation in the swagger-ui: http://localhost:8080/v0/
+You can view the api documentation in the swagger-ui: http://<ip-of-your-device>:8080/v0/
 
 Change the default api port value in the application.properties.
