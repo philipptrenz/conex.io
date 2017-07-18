@@ -17,7 +17,6 @@ Therefor define a new FHEMWEB device, set attributes `longpoll` to `websocket` a
 * Clone repo with `git clone https://github.com/philipptrenz/conex.io/` and switch to this folder
 * Open `src/main/resources/application.properties` and configure `fhem.url`, `fhem.port` as well as the optional credentials to your FHEM installation
 * Run with `mvn spring-boot:run` *OR* generate a runnable JAR with `mvn package` (can be found in the `target` folder)
-*NOTE:* If you encounter any problems with tests by packaging with the tests use `mvn package -Dmaven.test.skip=true`
 
 The software fetches all devices via `jsonlist2` on boot and receives updates by `longpoll`. Also on global events (fhem.cfg saved, new devices installed, ...) all data gets updated with `jsonlist2` to stay in sync, no reboot is required.
 
