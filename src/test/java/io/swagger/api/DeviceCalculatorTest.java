@@ -1,13 +1,18 @@
 package io.swagger.api;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.*;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.web.WebAppConfiguration;
 
+import io.swagger.Swagger2SpringBoot;
 import io.swagger.api.calc.test.DeviceCalcTestCase;
 import io.swagger.model.Device;
 import io.swagger.model.Filter;
@@ -16,12 +21,17 @@ import io.swagger.model.Function;
 /**
  * device calculator testing cases.
  */
+@WebAppConfiguration
+@ContextConfiguration(classes = Swagger2SpringBoot.class)
 public class DeviceCalculatorTest {
 	
 	/**
 	 * Get Devices by all filters.
 	 *
 	 */
+	
+	@Autowired
+	ApplicationContext context;
 	
 	@Test
 	public void getDevicesByAllFilters() {
@@ -189,21 +199,6 @@ public class DeviceCalculatorTest {
     	List <Device> filteredDeviceList = deviceCalcTestCaseInstance.getDeviceListFiltered();
     	assertTrue(filteredDeviceList.isEmpty());
 	}
-	
-	/**
-	 * Gets devices as null filter object.
-	 */
-	@Test
-	public void deviceIdsAsNone() {
-		List <String> searchDevices = null;    	
-    	Filter filter = new Filter();
-    	
-    	filter.setDeviceIds(searchDevices);
-    	
-    	DeviceCalcTestCase deviceCalcTestCaseInstance = new DeviceCalcTestCase(filter);
-    	List <Device> filteredDeviceList = deviceCalcTestCaseInstance.getDeviceListFiltered();
-    	assertEquals(filteredDeviceList, io.swagger.api.calc.test.DeviceMockup.getDevicesMockup());		
-	}
 
 	
 	/**
@@ -354,21 +349,6 @@ public class DeviceCalculatorTest {
     	DeviceCalcTestCase deviceCalcTestCaseInstance = new DeviceCalcTestCase(filter);
     	List <String> filteredDeviceList = deviceCalcTestCaseInstance.getFuntionsByDevicesFiltered();
     	assertTrue(filteredDeviceList.isEmpty());
-	}
-	
-	/**
-	 * Gets functions as null filter object.
-	 */
-	@Test
-	public void functionIdsAsNone() {
-		List <String> searchFunction = null;    	
-    	Filter filter = new Filter();
-    	
-    	filter.setFunctionIds(searchFunction);
-    	
-    	DeviceCalcTestCase deviceCalcTestCaseInstance = new DeviceCalcTestCase(filter);
-    	List <String> filteredDeviceList = deviceCalcTestCaseInstance.getFuntionsByDevicesFiltered();
-    	assertTrue(!filteredDeviceList.isEmpty());		
 	}
 
 	
@@ -521,21 +501,6 @@ public class DeviceCalculatorTest {
     	assertTrue(filteredDeviceList.isEmpty());
 	}
 	
-	/**
-	 * Gets groups as null filter object.
-	 */
-	@Test
-	public void groupIdsAsNone() {
-		List <String> searchGroup = null;    	
-    	Filter filter = new Filter();
-    	
-    	filter.setFunctionIds(searchGroup);
-    	
-    	DeviceCalcTestCase deviceCalcTestCaseInstance = new DeviceCalcTestCase(filter);
-    	List <String> filteredDeviceList = deviceCalcTestCaseInstance.getGroupsByDevicesFiltered();
-    	assertTrue(!filteredDeviceList.isEmpty());		
-	}
-	
 	
 	/**
 	 * Get rooms by all filters.
@@ -556,7 +521,7 @@ public class DeviceCalculatorTest {
     	filter.setRoomIds(searchRooms);
     	
     	DeviceCalcTestCase deviceCalcTestCaseInstance = new DeviceCalcTestCase(filter);
-    	List <String> filteredDeviceList = deviceCalcTestCaseInstance.getGroupsByDevicesFiltered();
+    	List <String> filteredDeviceList = deviceCalcTestCaseInstance.getRoomsByDevicesFiltered();
     	assertTrue(!Collections.disjoint(filteredDeviceList, searchRooms));
 	}
 	
@@ -573,7 +538,7 @@ public class DeviceCalculatorTest {
     	filter.setDeviceIds(searchDevices);
     	
     	DeviceCalcTestCase deviceCalcTestCaseInstance = new DeviceCalcTestCase(filter);
-    	List <String> filteredDeviceList = deviceCalcTestCaseInstance.getGroupsByDevicesFiltered();
+    	List <String> filteredDeviceList = deviceCalcTestCaseInstance.getRoomsByDevicesFiltered();
     	
     	assertTrue(filteredDeviceList.contains("testroom_0"));
     	assertTrue(filteredDeviceList.contains("testroom_1"));
@@ -592,7 +557,7 @@ public class DeviceCalculatorTest {
     	filter.setFunctionIds(searchFunctions);
     	
     	DeviceCalcTestCase deviceCalcTestCaseInstance = new DeviceCalcTestCase(filter);
-    	List <String> filteredDeviceList = deviceCalcTestCaseInstance.getGroupsByDevicesFiltered();
+    	List <String> filteredDeviceList = deviceCalcTestCaseInstance.getRoomsByDevicesFiltered();
     	
     	assertTrue(filteredDeviceList.contains("testroom_0"));
 	}
@@ -610,7 +575,7 @@ public class DeviceCalculatorTest {
     	filter.setGroupIds(searchGroups);
     	
     	DeviceCalcTestCase deviceCalcTestCaseInstance = new DeviceCalcTestCase(filter);
-    	List <String> filteredDeviceList = deviceCalcTestCaseInstance.getGroupsByDevicesFiltered();
+    	List <String> filteredDeviceList = deviceCalcTestCaseInstance.getRoomsByDevicesFiltered();
     	
     	assertTrue(filteredDeviceList.contains("testroom_0"));
     	assertTrue(filteredDeviceList.contains("testroom_1"));
@@ -629,7 +594,7 @@ public class DeviceCalculatorTest {
     	filter.setRoomIds(searchRooms);
     	
     	DeviceCalcTestCase deviceCalcTestCaseInstance = new DeviceCalcTestCase(filter);
-    	List <String> filteredDeviceList = deviceCalcTestCaseInstance.getGroupsByDevicesFiltered();
+    	List <String> filteredDeviceList = deviceCalcTestCaseInstance.getRoomsByDevicesFiltered();
     	
     	assertTrue(!Collections.disjoint(searchRooms, filteredDeviceList));
 	}
@@ -649,7 +614,7 @@ public class DeviceCalculatorTest {
     	filter.setRoomIds(searchRooms);
     	
     	DeviceCalcTestCase deviceCalcTestCaseInstance = new DeviceCalcTestCase(filter);
-    	List <String> filteredDeviceList = deviceCalcTestCaseInstance.getGroupsByDevicesFiltered();
+    	List <String> filteredDeviceList = deviceCalcTestCaseInstance.getRoomsByDevicesFiltered();
     	
     	assertTrue(!Collections.disjoint(searchRooms, filteredDeviceList));
 	}
@@ -661,7 +626,7 @@ public class DeviceCalculatorTest {
 	@Test
 	public void getAllRoomsByNoneFiltering() {
     	DeviceCalcTestCase deviceCalcTestCaseInstance = new DeviceCalcTestCase(new Filter());
-    	List <String> filteredDeviceList = deviceCalcTestCaseInstance.getGroupsByDevicesFiltered();
+    	List <String> filteredDeviceList = deviceCalcTestCaseInstance.getRoomsByDevicesFiltered();
     	
     	assertTrue(filteredDeviceList.contains("testroom_0"));
     	assertTrue(filteredDeviceList.contains("testroom_1"));
@@ -683,20 +648,5 @@ public class DeviceCalculatorTest {
     	DeviceCalcTestCase deviceCalcTestCaseInstance = new DeviceCalcTestCase(filter);
     	List <String> filteredDeviceList = deviceCalcTestCaseInstance.getGroupsByDevicesFiltered();
     	assertTrue(filteredDeviceList.isEmpty());
-	}
-	
-	/**
-	 * Gets rooms as null filter object
-	 */
-	@Test
-	public void roomIdsAsNone() {
-		List <String> searchRoom = null;    	
-    	Filter filter = new Filter();
-    	
-    	filter.setFunctionIds(searchRoom);
-    	
-    	DeviceCalcTestCase deviceCalcTestCaseInstance = new DeviceCalcTestCase(filter);
-    	List <String> filteredDeviceList = deviceCalcTestCaseInstance.getGroupsByDevicesFiltered();
-    	assertTrue(!filteredDeviceList.isEmpty());		
 	}
 }
