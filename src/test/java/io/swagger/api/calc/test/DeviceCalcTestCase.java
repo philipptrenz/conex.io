@@ -40,6 +40,7 @@ public class DeviceCalcTestCase {
 	 */
 	public List<Device> getDeviceListFiltered() {
 		List <Device> filteredDevicesResult;
+		if(filter != null) {
 		if(!filter.getDeviceIds().isEmpty() || !filter.getFunctionIds().isEmpty() ||
 				!filter.getGroupIds().isEmpty() || !filter.getRoomIds().isEmpty()) {
 			for (int filteringDevicesCounter= 0; filteringDevicesCounter < allDevicesList.size(); filteringDevicesCounter++) {
@@ -50,6 +51,7 @@ public class DeviceCalcTestCase {
         			}
         		}
         	}
+		}
         filteredDevicesResult = allDevicesList;
 		return filteredDevicesResult;
 	}
