@@ -63,7 +63,7 @@ public class FHEMConnector implements Runnable, HomeAutomationServerConnector, A
 	private final String url;
 	
 	/** The port. */
-	private final int port;
+	private final String port;
 	
 	/** The auth username. */
 	private final String authUsername;
@@ -72,7 +72,7 @@ public class FHEMConnector implements Runnable, HomeAutomationServerConnector, A
 	private final String authPassword;
 	
 	/** The fhem connection timeout. */
-	private final int fhemConnectionTimeout;
+	private final String fhemConnectionTimeout;
 	
 	/** The websocket. */
 	private WebSocketClient websocket;
@@ -102,8 +102,8 @@ public class FHEMConnector implements Runnable, HomeAutomationServerConnector, A
 	@Autowired
 	public FHEMConnector(
 			@Value("${fhem.url}") String fhemUrl, 
-			@Value("${fhem.port}") int fhemPort, 
-			@Value("${fhem.timeout}") int fhemConnectionTimeout, 
+			@Value("${fhem.port}") String fhemPort, 
+			@Value("${fhem.timeout}") String fhemConnectionTimeout, 
 			@Value("${fhem.username}") String authUsername,
 			@Value("${fhem.password}") String authPassword) {
 		
@@ -264,7 +264,7 @@ public class FHEMConnector implements Runnable, HomeAutomationServerConnector, A
 			}
 			
 			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-			con.setConnectTimeout(fhemConnectionTimeout);
+			con.setConnectTimeout(Integer.parseInt(fhemConnectionTimeout));
 			con.setRequestMethod("GET");
 			
 			responseCode = con.getResponseCode();
@@ -308,7 +308,7 @@ public class FHEMConnector implements Runnable, HomeAutomationServerConnector, A
 	private boolean isFHEMReachable() {
 	    try {
 	        try (Socket soc = new Socket()) {
-	            soc.connect(new InetSocketAddress(url, port), fhemConnectionTimeout);
+	            soc.connect(new InetSocketAddress(url, Integer.parseInt(port)), Integer.parseInt(fhemConnectionTimeout));
 	        }
 	        return true;
 	    } catch (IOException ex) {
