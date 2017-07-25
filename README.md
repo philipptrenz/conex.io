@@ -13,7 +13,7 @@ This is a prototypical implemementation for the home automation server [FHEM](ht
 The application uses `jsonlist2` and the longpoll mode `websocket` from the FHEM module `FHEMWEB` to connect to your FHEM installation.
 Therefor define a new FHEMWEB device, set attributes `longpoll` to `websocket` and `csrfToken` to `none` (current workaround).
 
-* Install Java 8, Maven and git
+* Install Java 8, Maven and git - On a Raspberry Pi open the terminal and enter `sudo apt-get install oracle-java8-jdk maven git`
 * Clone repo with `git clone https://github.com/philipptrenz/conex.io/` and switch to this folder
 * Open `src/main/resources/application.properties` and configure `fhem.url`, `fhem.port` as well as the optional credentials to fit the FHEMWEB device in your FHEM installation
 * Run with `mvn spring-boot:run` *OR* generate a runnable JAR with `mvn package` (can be found in the `target` folder)
