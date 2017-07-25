@@ -18,6 +18,8 @@ Therefor define a new FHEMWEB device, set attributes `longpoll` to `websocket` a
 * Open `src/main/resources/application.properties` and configure `fhem.url`, `fhem.port` as well as the optional credentials to fit the FHEMWEB device in your FHEM installation
 * Run with `mvn spring-boot:run` *OR* generate a runnable JAR with `mvn package` (can be found in the `target` folder)
 
+If you are using slower hardware, e.g. a Raspberry Pi, please be patient. Fetching all dependencies, compiling and getting the software to run will take a while ...
+
 The software fetches all devices via `jsonlist2` on boot and receives updates by `longpoll`. Also on global events (fhem.cfg saved, new devices installed, ...) all data gets updated with `jsonlist2` to stay in sync, no reboot is required.
 
 
