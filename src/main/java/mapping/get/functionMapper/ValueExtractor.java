@@ -108,7 +108,7 @@ public class ValueExtractor {
 				break;*/
 				
 			}
-			if (value == null) log.warn("Value is null! "+this.log_info);
+			//if (value == null) log.warn("Value is null! "+this.log_info);
 			return value;
 		}
 		
