@@ -236,32 +236,6 @@ definitions:
             minimum: 0
             maximum: 255
             default: 0
-  ColorTemperature:
-    description: Generic color temperature
-    allOf:
-      - $ref: '#/definitions/Function'
-      - properties:
-          ct:
-            description: Temperature value in Kelvin
-            type: number
-            minimum: 0
-            default: 0
-          timestamp:
-            type: string
-            format: date-time
-  Temperature:
-    description: Generic temperature
-    allOf:
-      - $ref: '#/definitions/Function'
-      - properties:
-          value:
-            description: Temperature value in Kelvin
-            type: number
-            minimum: 0
-            default: 0
-          timestamp:
-            type: string
-            format: date-time
   Error:
     type: object
     properties:
