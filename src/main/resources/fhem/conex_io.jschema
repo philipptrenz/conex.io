@@ -1,5 +1,5 @@
 {
-	"$schema": "http://json-schema.org/draft-04/schema#",
+	"$schema": "http://json-schema.org/draft-06/schema#",
 	"title": "Conex.io JSON Schema",
 	"description": "Validation of the modul descriptions",
 	"type": "object",
@@ -143,6 +143,11 @@
 				"delimiters"
 			]
 		},
+		"key_path": 
+		{
+			"type": "string",
+			"pattern": "[A-Za-z]*.*[^/]$"
+		},
 		"functions": 
 		{
 			"type": "object",
@@ -163,32 +168,20 @@
 				"set"
 			]
 		},
-		"get": 
-		{
-			"type": "array",
-			"items": 
-			{
-				"oneOf": 
-				[
-					{
-						"$ref": "#/definitions/function"
-					}
-				]
-			},
-			"additionalProperties": false
-		},
-		"function": 
+		"get.Function": 
 		{
 			"type": "object",
 			"properties": 
 			{
 				"function_id": 
 				{
-					"type": "string"
-				},
-				"class_name": 
-				{
-					"type": "string"
+					"type": "string",
+					"enum": 
+					[
+						"OnOff",
+						"Dimmer",
+						"ColorDimmer"
+					]
 				},
 				"requirements": 
 				{
@@ -196,14 +189,39 @@
 				},
 				"properties": 
 				{
-					"$ref": "#/definitions/func_properties"
+					"$ref": "#/definitions/get.properties"
 				}
 			},
 			"required": 
 			[
 				"function_id",
-				"class_name",
 				"requirements",
+				"properties"
+			]
+		},
+		"set.Function": 
+		{
+			"type": "object",
+			"properties": 
+			{
+				"function_id": 
+				{
+					"type": "string",
+					"enum": 
+					[
+						"OnOff",
+						"Dimmer",
+						"ColorDimmer"
+					]
+				},
+				"properties": 
+				{
+					"$ref": "#/definitions/set.properties"
+				}
+			},
+			"required": 
+			[
+				"function_id",
 				"properties"
 			]
 		},
@@ -212,404 +230,340 @@
 			"type": "array",
 			"items": 
 			{
-				"oneOf": 
+				"type": "object",
+				"properties": 
+				{
+					"mode": 
+					{
+						"type": "string",
+						"enum": 
+						[
+							"one_of",
+							"contains_all"
+						]
+					},
+					"key_path": 
+					{
+						"$ref": "#/definitions/key_path"
+					},
+					"attributes": 
+					{
+						"type": "array",
+						"items": 
+						{
+							"type": "string"
+						}
+					},
+					"delimiters": 
+					{
+						"type": "string"
+					}
+				},
+				"required": 
+				[
+					"mode",
+					"key_path",
+					"attributes"
+				]
+			},
+			"additionalProperties": false
+		},
+		"get.properties": 
+		{
+			"type": "array",
+			"items": 
+			{
+				"anyOf": 
 				[
 					{
-						"$ref": "#/definitions/mode.one_of"
+						"type": "object",
+						"properties": 
+						{
+							"value_name": 
+							{
+								"type": "string",
+								"enum": 
+								[
+									"isOn",
+									"value",
+									"hue",
+									"saturation"
+								]
+							},
+							"value_type": 
+							{
+								"type": "string",
+								"enum": 
+								[
+									"boolean",
+									"integer"
+								]
+							},
+							"default": 
+							{
+								"type": 
+								[
+									"boolean",
+									"integer"
+								]
+							},
+							"key_path": 
+							{
+								"$ref": "#/definitions/key_path"
+							},
+							"cases": 
+							{
+								"$ref": "#/definitions/get.cases"
+							}
+						},
+						"required": 
+						[
+							"value_name",
+							"value_type",
+							"default",
+							"key_path",
+							"cases"
+						]
 					},
 					{
-						"$ref": "#/definitions/mode.contains_all"
+						"$ref": "#/definitions/timestamp"
 					}
 				]
 			},
 			"additionalProperties": false
 		},
-		"func_properties": 
+		"set.properties": 
 		{
 			"type": "array",
-			"minItems": 1,
-			"additionalProperties": false,
 			"items": 
 			{
-				"oneOf": 
+				"type": "object",
+				"properties": 
+				{
+					"value_name": 
+					{
+						"type": "string",
+						"enum": 
+						[
+							"isOn",
+							"value",
+							"hue",
+							"saturation"
+						]
+					},
+					"value_type": 
+					{
+						"type": "string",
+						"enum": 
+						[
+							"boolean",
+							"integer"
+						]
+					},
+					"command_type": 
+					{
+						"type": "string"
+					},
+					"reading": 
+					{
+						"type": "string"
+					},
+					"cases": 
+					{
+						"$ref": "#/definitions/set.cases"
+					}
+				},
+				"required": 
 				[
-					{
-						"$ref": "#/definitions/value.modes"
-					}
+					"value_name",
+					"value_type",
+					"command_type",
+					"reading",
+					"cases"
 				]
-			}
-		},
-		"set": 
-		{
-			"type": "array",
-			"items": 
-			{
-				"function_id": 
-				{
-					"type": "string"
-				},
-				"class_name": 
-				{
-					"type": "string"
-				}
 			},
-			"required": 
-			[
-				"function_id",
-				"class_name"
-			]
+			"additionalProperties": false
 		},
-		"key_path": 
-		{
-			"type": "string",
-			"pattern": "[A-Za-z]*.*[^/]$"
-		},
-		"mode.one_of": 
-		{
-			"type": "object",
-			"properties": 
-			{
-				"mode": 
-				{
-					"type": "string",
-					"enum": 
-					[
-						"one_of"
-					]
-				},
-				"key_path": 
-				{
-					"$ref": "#/definitions/key_path"
-				},
-				"attributes": 
-				{
-					"type": "array",
-					"items": 
-					{
-						"type": "string"
-					}
-				},
-				"delimiters": 
-				{
-					"type": "string"
-				}
-			},
-			"required": 
-			[
-				"mode",
-				"key_path",
-				"attributes",
-				"delimiters"
-			]
-		},
-		"mode.contains_all": 
-		{
-			"type": "object",
-			"properties": 
-			{
-				"mode": 
-				{
-					"type": "string",
-					"enum": 
-					[
-						"contains_all"
-					]
-				},
-				"key_path": 
-				{
-					"$ref": "#/definitions/key_path"
-				},
-				"attributes": 
-				{
-					"type": "array",
-					"items": 
-					{
-						"type": "string"
-					}
-				},
-				"delimiters": 
-				{
-					"type": "string"
-				}
-			},
-			"required": 
-			[
-				"mode",
-				"key_path",
-				"attributes",
-				"delimiters"
-			]
-		},
-		"value.modes": 
+		"timestamp": 
 		{
 			"type": "object",
 			"properties": 
 			{
 				"value_name": 
 				{
-					"type": "string"
-				},
-				"key_path": 
-				{
-					"$ref": "#/definitions/key_path"
+					"type": "string",
+					"enum": 
+					[
+						"timestamp"
+					]
 				},
 				"value_type": 
 				{
 					"type": "string",
 					"enum": 
 					[
-						"integer",
-						"boolean",
 						"date-time"
 					]
 				},
-				"default": 
+				"key_path": 
 				{
-					"type": 
-					[
-						"string",
-						"boolean",
-						"integer"
-					]
-				},
-				"cases": 
-				{
-
+					"$ref": "#/definitions/key_path"
 				},
 				"format": 
 				{
-
+					"type": "string"
 				}
 			},
-			"oneOf": 
-			[
-				{
-					"properties": 
-					{
-						"value_type": 
-						{
-							"type": "string",
-							"enum": 
-							[
-								"integer"
-							]
-						},
-						"default": 
-						{
-							"type": "integer"
-						},
-						"cases": 
-						{
-							"$ref": "#/definitions/cases"
-						}
-					},
-					"required": 
-					[
-						"default",
-						"cases"
-					],
-					"not": 
-					{
-						"required": 
-						[
-							"format"
-						]
-					}
-				},
-				{
-					"properties": 
-					{
-						"value_type": 
-						{
-							"type": "string",
-							"enum": 
-							[
-								"boolean"
-							]
-						},
-						"default": 
-						{
-							"type": "boolean"
-						},
-						"cases": 
-						{
-							"$ref": "#/definitions/cases"
-						}
-					},
-					"required": 
-					[
-						"default",
-						"cases"
-					],
-					"not": 
-					{
-						"required": 
-						[
-							"format"
-						]
-					}
-				},
-				{
-					"properties": 
-					{
-						"value_type": 
-						{
-							"type": "string",
-							"enum": 
-							[
-								"date-time"
-							]
-						},
-						"format": 
-						{
-							"type": "string"
-						}
-					},
-					"required": 
-					[
-						"format"
-					],
-					"not": 
-					{
-						"required": 
-						[
-							"cases"
-						]
-					}
-				}
-			],
-			"additionalProperties": false,
 			"required": 
 			[
 				"value_name",
+				"value_type",
 				"key_path",
-				"value_type"
+				"format"
 			]
 		},
-		"cases": 
+		"get.cases": 
 		{
 			"type": "array",
 			"items": 
 			{
-				"oneOf": 
-				[
+				"type": "object",
+				"properties": 
+				{
+					"extract_mode": 
 					{
-						"$ref": "#/definitions/extract_mode.direct"
+						"type": "string",
+						"enum": 
+						[
+							"direct",
+							"range"
+						]
 					},
+					"value": 
 					{
-						"$ref": "#/definitions/extract_mode.range"
+						"type": "boolean"
 					},
+					"minimum": 
 					{
-						"$ref": "#/definitions/extract_mode.with_constraint"
+						"type": "integer"
+					},
+					"maximum": 
+					{
+						"type": "integer"
+					},
+					"regex": 
+					{
+						"type": 
+						[
+							"array",
+							"string"
+						]
 					}
+				},
+				"required": 
+				[
+					"extract_mode",
+					"regex"
 				]
 			},
 			"additionalProperties": false
 		},
-		"extract_mode.direct": 
+		"set.cases": 
 		{
-			"type": "object",
-			"properties": 
+			"type": "array",
+			"items": 
 			{
-				"extract_mode": 
+				"type": "object",
+				"properties": 
 				{
-					"type": "string",
-					"enum": 
-					[
-						"direct"
-					]
-				},
-				"value": 
-				{
-					"type": "string"
-				},
-				"regex": 
-				{
-					"type": "array",
-					"items": 
+					"inject_mode": 
+					{
+						"type": "string",
+						"enum": 
+						[
+							"direct",
+							"from_to",
+							"range"
+						]
+					},
+					"value": 
+					{
+						"type": "boolean"
+					},
+					"parameter": 
 					{
 						"type": "string"
-					}
-				}
-			},
-			"required": 
-			[
-				"extract_mode",
-				"value",
-				"regex"
-			]
-		},
-		"extract_mode.with_constraint": 
-		{
-			"type": "object",
-			"properties": 
-			{
-				"extract_mode": 
-				{
-					"type": "string",
-					"enum": 
-					[
-						"with_constraint"
-					]
-				},
-				"constraint": 
-				{
-					"type": "string",
-					"enum": 
-					[
-						"min",
-						"max"
-					]
-				},
-				"regex": 
-				{
-					"type": "array",
-					"items": 
+					},
+					"minimum": 
+					{
+						"type": "integer"
+					},
+					"maximum": 
+					{
+						"type": "integer"
+					},
+					"prefix": 
 					{
 						"type": "string"
+					},
+					"sufix": 
+					{
+						"type": "string"
+					},
+					"mapping": 
+					{
+						"type": "array",
+						"items": 
+						{
+							"type": "object",
+							"properties": 
+							{
+								"from": 
+								{
+									"type": "integer"
+								},
+								"to": 
+								{
+									"type": "integer"
+								},
+								"parameter": 
+								{
+									"type": "string"
+								}
+							},
+							"required": 
+							[
+								"from",
+								"to",
+								"parameter"
+							]
+						}
 					}
-				}
+				},
+				"required": 
+				[
+					"inject_mode"
+				]
 			},
-			"required": 
-			[
-				"extract_mode",
-				"constraint",
-				"regex"
-			]
+			"additionalProperties": false
 		},
-		"extract_mode.range": 
+		"get": 
 		{
-			"type": "object",
-			"properties": 
+			"type": "array",
+			"items": 
 			{
-				"extract_mode": 
-				{
-					"type": "string",
-					"enum": 
-					[
-						"range"
-					]
-				},
-				"minimum": 
-				{
-					"type": "integer"
-				},
-				"maximum": 
-				{
-					"type": "integer"
-				},
-				"regex": 
-				{
-					"type": "string"
-				}
+				"$ref": "#/definitions/get.Function"
 			},
-			"required": 
-			[
-				"extract_mode",
-				"minimum",
-				"maximum",
-				"regex"
-			]
+			"additionalProperties": false
+		},
+		"set": 
+		{
+			"type": "array",
+			"items": 
+			{
+				"$ref": "#/definitions/set.Function"
+			},
+			"additionalProperties": false
 		}
 	}
 }
