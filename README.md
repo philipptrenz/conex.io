@@ -12,7 +12,7 @@ This is a prototypical implemementation for the home automation server [FHEM](ht
 
 ## Related Publications
 
-[1] O.Droegehorn, P.Trenz, B.Brausse, T.Schwan, C.Voscort and M.Wemmer. **Capability Based Communication for Green Buildings and Homes: A REST-like API within the conex.io project**. Proceedings of the 51st Hawain International Conference on System Sciences, ISBN 978-0-9981331-1-9, p.5767-5776, URI: http://hdl.handle.net/10125/50612, 2018. [PDF](http://scholarspace.manoa.hawaii.edu/bitstream/10125/50612/1/paper0725.pdf).
+[1] O. Droegehorn, P. Trenz, B. Brausse, T. Schwan, C. Voscort and M. Wemmer. **Capability Based Communication for Green Buildings and Homes: A REST-like API within the conex.io project**. Proceedings of the 51st Hawain International Conference on System Sciences, ISBN 978-0-9981331-1-9, p.5767-5776, URI: http://hdl.handle.net/10125/50612, 2018. [PDF](http://scholarspace.manoa.hawaii.edu/bitstream/10125/50612/1/paper0725.pdf).
 
 ## Get started
 
