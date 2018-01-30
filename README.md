@@ -14,7 +14,7 @@ This is a prototypical implemementation for the home automation server [FHEM](ht
 
 If you use conex.io in an academic work, please cite:
 ```
-@inproceedings{DroeTreBra2018,
+@inproceedings{Droe2018,
 	title = {Capability Based Communication for Green Buildings and Homes - a REST-like API within the conex.io Project -},
 	author = {O. Droegehorn, P. Trenz, B. Brausse, T. Schwan, C. Voscort, M. Wemmer},
 	booktitle = {Proceedings of the 51st Hawain International Conference on System Sciences},
